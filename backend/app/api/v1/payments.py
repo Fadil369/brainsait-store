@@ -502,13 +502,22 @@ async def validate_apple_pay_merchant(
     # Validate that the validation_url is an Apple Pay domain
     parsed_url = urllib.parse.urlparse(validation_url)
     hostname = parsed_url.hostname
-    if not hostname or not (
-        hostname.endswith(".apple.com") or
-        hostname == "apple-pay-gateway.apple.com"
+    scheme = parsed_url.scheme
+    allowed_hostnames = {
+        "apple-pay-gateway.apple.com",
+        "apple-pay-gateway-nc.apple.com",
+        "apple-pay-gateway-pr.apple.com",
+        "apple-pay-gateway-aus.apple.com",
+        "apple-pay-gateway-cert.apple.com",
+    }
+    if (
+        scheme != "https"
+        or not hostname
+        or hostname not in allowed_hostnames
     ):
         raise HTTPException(
             status_code=400,
-            detail="Invalid validation_url: must be an Apple Pay domain"
+            detail="Invalid validation_url: must be a valid Apple Pay gateway domain over HTTPS"
         )
 
     try:
