@@ -14,6 +14,7 @@ import hmac
 import hashlib
 import json
 import httpx
+import urllib.parse
 from datetime import datetime, timedelta
 import logging
 
@@ -498,6 +499,18 @@ async def validate_apple_pay_merchant(
 ):
     """Validate Apple Pay merchant session"""
     
+    # Validate that the validation_url is an Apple Pay domain
+    parsed_url = urllib.parse.urlparse(validation_url)
+    hostname = parsed_url.hostname
+    if not hostname or not (
+        hostname.endswith(".apple.com") or
+        hostname == "apple-pay-gateway.apple.com"
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid validation_url: must be an Apple Pay domain"
+        )
+
     try:
         validation_data = {
             "merchantIdentifier": settings.APPLE_PAY_MERCHANT_ID,
