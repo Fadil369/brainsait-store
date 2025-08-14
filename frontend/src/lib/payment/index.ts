@@ -107,8 +107,7 @@ export class PaymentService {
         intent: 'capture',
         'enable-funding': 'venmo,paylater',
         'disable-funding': 'card',
-        'data-client-token': undefined,
-      });
+      } as any);
 
       // Payment services initialized successfully
     } catch (error) {
@@ -309,9 +308,9 @@ export class PaymentService {
   async isApplePayAvailable(): Promise<boolean> {
     try {
       // Check if Apple Pay is available
-      if (!window.ApplePaySession) return false;
+      if (!(window as any).ApplePaySession) return false;
       
-      return await window.ApplePaySession.canMakePaymentsWithActiveCard(config.applePay.merchantId);
+      return await (window as any).ApplePaySession.canMakePaymentsWithActiveCard(config.applePay.merchantId);
     } catch (error) {
       // console.error('Apple Pay availability check failed:', error);
       return false;
@@ -347,7 +346,7 @@ export class PaymentService {
         },
       };
 
-      const session = new window.ApplePaySession(3, paymentRequest);
+      const session = new (window as any).ApplePaySession(3, paymentRequest);
 
       session.onvalidatemerchant = async (event: any) => {
         const validationData = await validationResponse.json();
@@ -369,14 +368,14 @@ export class PaymentService {
           });
 
           if (paymentResponse.ok) {
-            session.completePayment(window.ApplePaySession.STATUS_SUCCESS);
+            session.completePayment((window as any).ApplePaySession.STATUS_SUCCESS);
             window.location.href = `/payment/success?orderId=${orderId}`;
           } else {
-            session.completePayment(window.ApplePaySession.STATUS_FAILURE);
+            session.completePayment((window as any).ApplePaySession.STATUS_FAILURE);
           }
         } catch (error) {
           // console.error('Apple Pay processing error:', error);
-          session.completePayment(window.ApplePaySession.STATUS_FAILURE);
+          session.completePayment((window as any).ApplePaySession.STATUS_FAILURE);
         }
       };
 

@@ -231,28 +231,40 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
         </h4>
         
         <div className="space-y-4">
-          <Input
-            label={language === 'ar' ? 'الاسم الكامل' : 'Full Name'}
-            value={customerData.name}
-            onChange={(e) => setCustomerData({...customerData, name: e.target.value})}
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {language === 'ar' ? 'الاسم الكامل' : 'Full Name'}
+            </label>
+            <Input
+              value={customerData.name}
+              onChange={(e) => setCustomerData({...customerData, name: e.target.value})}
+              required
+            />
+          </div>
           
-          <Input
-            label={language === 'ar' ? 'رقم الجوال' : 'Mobile Number'}
-            value={customerData.phone}
-            onChange={(e) => setCustomerData({...customerData, phone: e.target.value})}
-            placeholder="+966501234567"
-            required
-          />
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {language === 'ar' ? 'رقم الجوال' : 'Mobile Number'}
+            </label>
+            <Input
+              value={customerData.phone}
+              onChange={(e) => setCustomerData({...customerData, phone: e.target.value})}
+              placeholder="+966501234567"
+              required
+            />
+          </div>
           
           {selectedMethod === 'mada' && (
-            <Input
-              label={language === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
-              type="email"
-              value={customerData.email}
-              onChange={(e) => setCustomerData({...customerData, email: e.target.value})}
-            />
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {language === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
+              </label>
+              <Input
+                type="email"
+                value={customerData.email}
+                onChange={(e) => setCustomerData({...customerData, email: e.target.value})}
+              />
+            </div>
           )}
         </div>
       </div>
@@ -397,8 +409,10 @@ const StripePaymentForm: React.FC<{
 
       if (result.error) {
         onError(result.error.message || 'Payment failed');
+      } else if ('paymentIntent' in result && result.paymentIntent) {
+        onSuccess((result.paymentIntent as any).id);
       } else {
-        onSuccess(result.paymentIntent.id);
+        onError('Payment failed - no payment intent');
       }
     } catch (error) {
       console.error('Stripe payment error:', error);

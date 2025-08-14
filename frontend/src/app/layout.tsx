@@ -1,10 +1,9 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/lib/providers';
 
-const inter = Inter({ subsets: ['latin'] });
+// Use system fonts instead of Google Fonts for static export compatibility
 
 export const metadata: Metadata = {
   title: 'BrainSAIT Store - Digital Innovation Hub',
@@ -122,7 +121,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         <Providers>
           {children}
         </Providers>
