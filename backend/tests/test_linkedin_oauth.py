@@ -1,3 +1,10 @@
+"""
+Tests for LinkedIn OAuth integration.
+
+This module contains tests for the LinkedIn OAuth functionality
+including URL generation and authentication flow.
+"""
+
 from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 import sys
@@ -15,7 +22,8 @@ from app.api.v1.integrations_linkedin import (  # noqa: E402
 )
 
 
-def get_settings_override():
+def get_settings_override() -> LinkedInSettings:
+    """Provide test settings for LinkedIn integration."""
     return LinkedInSettings(
         client_id="test_client_id",
         client_secret="test_client_secret",
@@ -24,7 +32,8 @@ def get_settings_override():
     )
 
 
-def create_app():
+def create_app() -> FastAPI:
+    """Create a test FastAPI application with LinkedIn router."""
     app = FastAPI()
     # Override the Depends(get_li_settings) provider
     app.dependency_overrides[get_li_settings] = get_settings_override
@@ -32,7 +41,8 @@ def create_app():
     return app
 
 
-def test_oauth_url_generation():
+def test_oauth_url_generation() -> None:
+    """Test that OAuth URL generation works correctly with proper parameters."""
     app = create_app()
     client = TestClient(app)
     r = client.get(

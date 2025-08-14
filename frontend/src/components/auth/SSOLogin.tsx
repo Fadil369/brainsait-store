@@ -22,7 +22,6 @@ interface SSOLoginProps {
 export const SSOLogin: React.FC<SSOLoginProps> = ({
   tenantId,
   onSuccess,
-  onError,
   className
 }) => {
   const [providers, setProviders] = useState<SSOProvider[]>([]);
@@ -30,25 +29,25 @@ export const SSOLogin: React.FC<SSOLoginProps> = ({
   const { language } = useAppStore();
 
   useEffect(() => {
-    fetchSSOProviders();
-  }, [tenantId]);
-
-  const fetchSSOProviders = async () => {
-    try {
-      const response = await fetch('/api/v1/auth/sso/providers', {
-        headers: {
-          'X-Tenant-ID': tenantId || 'default',
-        },
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        setProviders(data);
+    const fetchProviders = async () => {
+      try {
+        const response = await fetch('/api/v1/auth/sso/providers', {
+          headers: {
+            'X-Tenant-ID': tenantId || 'default',
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setProviders(data);
+        }
+      } catch (error) {
+        // Error handling could be improved with user feedback
       }
-    } catch (error) {
-      console.error('Failed to fetch SSO providers:', error);
-    }
-  };
+    };
+
+    fetchProviders();
+  }, [tenantId]);
 
   const handleSSOLogin = (provider: SSOProvider) => {
     setLoading(true);

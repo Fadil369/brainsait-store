@@ -52,7 +52,7 @@ export const SSOManagement: React.FC<SSOManagementProps> = ({ className }) => {
         setConfigs(data);
       }
     } catch (error) {
-      console.error('Failed to fetch SSO configs:', error);
+      // Error handling could be improved with user feedback
     } finally {
       setLoading(false);
     }
@@ -73,7 +73,7 @@ export const SSOManagement: React.FC<SSOManagementProps> = ({ className }) => {
         await fetchSSOConfigs();
       }
     } catch (error) {
-      console.error('Failed to toggle SSO config:', error);
+      // Error handling could be improved with user feedback
     }
   };
 
@@ -421,7 +421,7 @@ const SSOConfigForm: React.FC<SSOConfigFormProps> = ({ config, onSuccess, onCanc
         alert(error.detail || 'Failed to save SSO configuration');
       }
     } catch (error) {
-      console.error('Failed to save SSO config:', error);
+      // Error handling could be improved with user feedback
       alert('Failed to save SSO configuration');
     } finally {
       setLoading(false);

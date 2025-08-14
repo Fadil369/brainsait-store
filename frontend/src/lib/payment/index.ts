@@ -110,9 +110,9 @@ export class PaymentService {
         'data-client-token': undefined,
       });
 
-      console.log('Payment services initialized successfully');
+      // Payment services initialized successfully
     } catch (error) {
-      console.error('Failed to initialize payment services:', error);
+      // Failed to initialize payment services
       throw error;
     }
   }
@@ -124,7 +124,7 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to fetch payment methods');
       return await response.json();
     } catch (error) {
-      console.error('Error fetching payment methods:', error);
+      // console.error('Error fetching payment methods:', error);
       // Return default methods if API fails
       return this.getDefaultPaymentMethods();
     }
@@ -209,7 +209,7 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to create Stripe payment');
       return await response.json();
     } catch (error) {
-      console.error('Stripe payment creation failed:', error);
+      // console.error('Stripe payment creation failed:', error);
       throw error;
     }
   }
@@ -228,7 +228,7 @@ export class PaymentService {
 
       return result;
     } catch (error) {
-      console.error('Stripe payment confirmation failed:', error);
+      // console.error('Stripe payment confirmation failed:', error);
       throw error;
     }
   }
@@ -250,7 +250,7 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to create PayPal order');
       return await response.json();
     } catch (error) {
-      console.error('PayPal order creation failed:', error);
+      // console.error('PayPal order creation failed:', error);
       throw error;
     }
   }
@@ -290,17 +290,17 @@ export class PaymentService {
               throw new Error('Payment capture failed');
             }
           } catch (error) {
-            console.error('PayPal capture error:', error);
+            // console.error('PayPal capture error:', error);
             window.location.href = `/payment/error?error=${encodeURIComponent('Payment processing failed')}`;
           }
         },
         onError: (err: any) => {
-          console.error('PayPal error:', err);
+          // console.error('PayPal error:', err);
           window.location.href = `/payment/error?error=${encodeURIComponent('PayPal payment failed')}`;
         },
       }).render(`#${containerId}`);
     } catch (error) {
-      console.error('PayPal button rendering failed:', error);
+      // console.error('PayPal button rendering failed:', error);
       throw error;
     }
   }
@@ -313,7 +313,7 @@ export class PaymentService {
       
       return await window.ApplePaySession.canMakePaymentsWithActiveCard(config.applePay.merchantId);
     } catch (error) {
-      console.error('Apple Pay availability check failed:', error);
+      // console.error('Apple Pay availability check failed:', error);
       return false;
     }
   }
@@ -375,14 +375,14 @@ export class PaymentService {
             session.completePayment(window.ApplePaySession.STATUS_FAILURE);
           }
         } catch (error) {
-          console.error('Apple Pay processing error:', error);
+          // console.error('Apple Pay processing error:', error);
           session.completePayment(window.ApplePaySession.STATUS_FAILURE);
         }
       };
 
       session.begin();
     } catch (error) {
-      console.error('Apple Pay initialization failed:', error);
+      // console.error('Apple Pay initialization failed:', error);
       throw error;
     }
   }
@@ -407,7 +407,7 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to create Mada payment');
       return await response.json();
     } catch (error) {
-      console.error('Mada payment creation failed:', error);
+      // console.error('Mada payment creation failed:', error);
       throw error;
     }
   }
@@ -429,7 +429,7 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to create STC Pay payment');
       return await response.json();
     } catch (error) {
-      console.error('STC Pay payment creation failed:', error);
+      // console.error('STC Pay payment creation failed:', error);
       throw error;
     }
   }
@@ -447,7 +447,7 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to sync products to Stripe');
       return await response.json();
     } catch (error) {
-      console.error('Stripe product sync failed:', error);
+      // console.error('Stripe product sync failed:', error);
       throw error;
     }
   }
@@ -469,7 +469,7 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to create payment link');
       return await response.json();
     } catch (error) {
-      console.error('Payment link creation failed:', error);
+      // console.error('Payment link creation failed:', error);
       throw error;
     }
   }
