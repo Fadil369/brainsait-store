@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import { api } from './client';
 import { CartItem, CustomerInfo, PaymentMethod, CheckoutData } from '@/types';
 
@@ -118,11 +119,16 @@ export const paymentsApi = {
 };
 
 // Mock implementation for development
+// Helper to generate a secure random string
+function secureRandomString(length: number) {
+  return randomBytes(length).toString('hex').substr(0, length);
+}
+
 export const mockOrdersApi = {
   createOrder: async (orderData: CreateOrderRequest) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const orderId = `order_${Date.now()}_${secureRandomString(18)}`;
     const now = new Date().toISOString();
     
     const order: Order = {
@@ -180,8 +186,8 @@ export const mockPaymentsApi = {
     await new Promise(resolve => setTimeout(resolve, 800));
     
     const paymentIntent: PaymentIntent = {
-      id: `pi_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      clientSecret: `pi_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`,
+      id: `pi_${Date.now()}_${secureRandomString(18)}`,
+      clientSecret: `pi_${Date.now()}_secret_${secureRandomString(18)}`,
       amount: Math.round(checkoutData.totals.total * 100),
       currency: 'SAR',
       status: 'requires_payment_method',
@@ -196,7 +202,7 @@ export const mockPaymentsApi = {
     return {
       data: {
         success: true,
-        orderId: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        orderId: `order_${Date.now()}_${secureRandomString(18)}`,
       }
     };
   },
