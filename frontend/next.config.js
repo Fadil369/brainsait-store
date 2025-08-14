@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    appDir: true,
+    // appDir is now default in Next.js 14
   },
   
   // Image optimization
@@ -167,7 +167,7 @@ const nextConfig = {
   i18n: {
     locales: ['en', 'ar'],
     defaultLocale: 'en',
-    localeDetection: true,
+    localeDetection: false, // Set to false for Next.js 14
   },
 
   // Trailing slash
