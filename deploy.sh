@@ -65,7 +65,7 @@ deploy_frontend() {
     echo -e "${YELLOW}📦 Installing frontend dependencies...${NC}"
     npm ci
     
-    # Build the application
+    # Build the application for static export
     echo -e "${YELLOW}🔨 Building frontend application...${NC}"
     npm run build
     
@@ -74,14 +74,22 @@ deploy_frontend() {
     
     # Check if using Wrangler Pages or manual upload
     if command -v wrangler &> /dev/null; then
-        wrangler pages deploy out --project-name brainsait-store-frontend
+        # Try to deploy using Pages
+        wrangler pages deploy out --project-name brainsait-store-frontend --compatibility-date=2024-01-15
+        
+        # Set up custom domain if not already configured
+        echo -e "${YELLOW}🌐 Setting up custom domain...${NC}"
+        echo "Manual step required: Configure custom domain 'store.brainsait.io' in Cloudflare Dashboard"
     else
         echo -e "${RED}❌ Wrangler CLI not available for Pages deployment${NC}"
         echo -e "${YELLOW}📋 Manual deployment required:${NC}"
-        echo "1. Go to Cloudflare Dashboard > Pages"
-        echo "2. Create new project: brainsait-store-frontend"
-        echo "3. Upload the 'out' directory"
-        echo "4. Configure custom domain: store.brainsait.io"
+        echo "1. Install Wrangler CLI: npm install -g wrangler"
+        echo "2. Login: wrangler login"
+        echo "3. Go to Cloudflare Dashboard > Pages"
+        echo "4. Create new project: brainsait-store-frontend"
+        echo "5. Upload the 'out' directory"
+        echo "6. Configure custom domain: store.brainsait.io"
+        echo "7. Or use: wrangler pages deploy out --project-name brainsait-store-frontend"
     fi
     
     cd ..
@@ -92,11 +100,11 @@ deploy_frontend() {
 deploy_backend() {
     echo -e "${BLUE}⚙️  Deploying backend to Cloudflare Workers...${NC}"
     
-    cd backend
+    cd backend/workers
     
     # Install dependencies
-    echo -e "${YELLOW}📦 Installing backend dependencies...${NC}"
-    pip install -r requirements.txt
+    echo -e "${YELLOW}📦 Installing Workers dependencies...${NC}"
+    npm install
     
     # Set up Cloudflare secrets
     echo -e "${YELLOW}🔐 Setting up Cloudflare secrets...${NC}"
@@ -110,16 +118,29 @@ deploy_backend() {
     echo "wrangler secret put SECRET_KEY"
     echo "wrangler secret put APP_STORE_SHARED_SECRET"
     
+    # Create KV namespace if it doesn't exist
+    echo -e "${YELLOW}🗂️  Setting up KV namespaces...${NC}"
+    if command -v wrangler &> /dev/null; then
+        wrangler kv:namespace create "RATE_LIMIT" || echo "KV namespace might already exist"
+        echo -e "${YELLOW}⚠️  Update wrangler.toml with the generated KV namespace IDs${NC}"
+    fi
+    
     # Deploy the worker
-    echo -e "${YELLOW}🚀 Deploying to Cloudflare Workers...${NC}"
+    echo -e "${YELLOW}🚀 Deploying API Gateway to Cloudflare Workers...${NC}"
     
-    # This would deploy the FastAPI app as a Worker
-    # Note: FastAPI on Workers requires additional setup
-    echo -e "${YELLOW}⚠️  FastAPI Workers deployment requires additional configuration${NC}"
-    echo "Consider using Cloudflare Workers with Hono.js or deploying to Cloudflare Pages Functions"
+    if command -v wrangler &> /dev/null; then
+        wrangler deploy --env production
+        echo -e "${GREEN}✅ Workers API Gateway deployed${NC}"
+    else
+        echo -e "${RED}❌ Wrangler CLI not available${NC}"
+        echo -e "${YELLOW}📋 Manual deployment required:${NC}"
+        echo "1. Install Wrangler CLI: npm install -g wrangler"
+        echo "2. Login: wrangler login"
+        echo "3. Deploy: wrangler deploy --env production"
+    fi
     
-    cd ..
-    echo -e "${GREEN}✅ Backend deployment setup completed${NC}"
+    cd ../..
+    echo -e "${GREEN}✅ Backend deployment completed${NC}"
 }
 
 # Configure DNS and domains

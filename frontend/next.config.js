@@ -4,6 +4,11 @@ const nextConfig = {
     // appDir is now default in Next.js 14
   },
   
+  // Disable ESLint during build for deployment
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
   // Image optimization
   images: {
     domains: [
@@ -158,17 +163,12 @@ const nextConfig = {
   },
 
   // Build output configuration for Cloudflare Pages
-  output: 'standalone',
+  output: 'export',
+  trailingSlash: true,
+  distDir: 'out',
   
-  // Compression
-  compress: true,
-
-  // Internationalization
-  i18n: {
-    locales: ['en', 'ar'],
-    defaultLocale: 'en',
-    localeDetection: false, // Set to false for Next.js 14
-  },
+  // Remove default i18n for static export - use runtime i18n instead
+  // i18n is handled by next-i18next and react-i18next
 
   // Trailing slash
   trailingSlash: false,

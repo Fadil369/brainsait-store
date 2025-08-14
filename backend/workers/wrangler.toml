@@ -1,0 +1,68 @@
+# Cloudflare Workers Configuration for BrainSAIT Store API Gateway
+name = "brainsait-store-api"
+main = "src/index.js"
+compatibility_date = "2024-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+# KV Storage for Rate Limiting and Caching
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "your-kv-namespace-id"
+
+# Analytics Engine for tracking
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "brainsait_store_analytics"
+
+# Production Environment
+[env.production]
+name = "brainsait-store-api-prod"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+BACKEND_BASE_URL = "https://backend.brainsait.io"
+
+[[env.production.routes]]
+pattern = "api.store.brainsait.io/*"
+zone_name = "brainsait.io"
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "your-prod-kv-namespace-id"
+
+[[env.production.analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "brainsait_store_analytics_prod"
+
+# Staging Environment
+[env.staging]
+name = "brainsait-store-api-staging"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+BACKEND_BASE_URL = "https://staging-backend.brainsait.io"
+
+[[env.staging.routes]]
+pattern = "staging-api.store.brainsait.io/*"
+zone_name = "brainsait.io"
+
+[[env.staging.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "your-staging-kv-namespace-id"
+
+[[env.staging.analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "brainsait_store_analytics_staging"
+
+# Development Environment (local)
+[env.development]
+name = "brainsait-store-api-dev"
+
+[env.development.vars]
+ENVIRONMENT = "development"
+BACKEND_BASE_URL = "http://localhost:8000"
+
+# Miniflare configuration for local development
+[vars]
+ENVIRONMENT = "development"
+BACKEND_BASE_URL = "http://localhost:8000"

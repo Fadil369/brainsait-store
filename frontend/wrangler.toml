@@ -1,0 +1,52 @@
+# Cloudflare Pages Configuration for BrainSAIT Store Frontend
+name = "brainsait-store-frontend"
+compatibility_date = "2024-01-15"
+
+# Pages Configuration
+[build]
+command = "npm run build"
+destination = "out"
+
+# Environment Variables for Production
+[env.production.vars]
+ENVIRONMENT = "production"
+NEXT_PUBLIC_API_URL = "https://api.store.brainsait.io"
+
+# Environment Variables for Staging
+[env.staging.vars]
+ENVIRONMENT = "staging"
+NEXT_PUBLIC_API_URL = "https://staging-api.store.brainsait.io"
+
+# Custom Domain Configuration
+[[env.production.routes]]
+pattern = "store.brainsait.io/*"
+zone_name = "brainsait.io"
+
+[[env.staging.routes]]
+pattern = "staging-store.brainsait.io/*"
+zone_name = "brainsait.io"
+
+# Headers for security and Apple Pay support
+[[headers]]
+for = "/*"
+[headers.values]
+X-Frame-Options = "DENY"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[headers]]
+for = "/.well-known/apple-developer-merchantid-domain-association*"
+[headers.values]
+Content-Type = "text/plain"
+Cache-Control = "public, max-age=86400"
+
+# Redirects
+[[redirects]]
+from = "/admin"
+to = "/dashboard"
+status = 301
+
+# Functions for API proxy if needed
+[functions]
+directory = "functions"

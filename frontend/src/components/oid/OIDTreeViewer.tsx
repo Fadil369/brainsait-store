@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Badge } from '@/components/ui/Badge';
 import { 
   ChevronRight, 
   ChevronDown, 
@@ -15,7 +15,7 @@ import {
   FolderOpen,
   Folder,
   ExternalLink,
-  Sync
+  RotateCw as Sync  // Use RotateCw instead of Sync
 } from 'lucide-react';
 import { oidSystemService, OIDUtils } from '@/lib/oid-integration';
 
@@ -433,11 +433,11 @@ export default function OIDTreeViewer() {
                     <div>
                       <span className="font-medium">Relationships:</span>
                       <div className="mt-2 space-y-2">
-                        {selectedNode.relationships.dependencies?.length > 0 && (
+                        {(selectedNode.relationships?.dependencies?.length ?? 0) > 0 && (
                           <div>
                             <p className="text-xs font-medium text-muted-foreground">Dependencies:</p>
                             <div className="flex flex-wrap gap-1">
-                              {selectedNode.relationships.dependencies.map((dep, index) => (
+                              {selectedNode.relationships?.dependencies?.map((dep, index) => (
                                 <Badge key={index} variant="outline" className="text-xs">
                                   {dep}
                                 </Badge>
@@ -446,11 +446,11 @@ export default function OIDTreeViewer() {
                           </div>
                         )}
                         
-                        {selectedNode.relationships.integrates_with?.length > 0 && (
+                        {(selectedNode.relationships?.integrates_with?.length ?? 0) > 0 && (
                           <div>
                             <p className="text-xs font-medium text-muted-foreground">Integrates with:</p>
                             <div className="flex flex-wrap gap-1">
-                              {selectedNode.relationships.integrates_with.map((integration, index) => (
+                              {selectedNode.relationships?.integrates_with?.map((integration, index) => (
                                 <Badge key={index} variant="outline" className="text-xs">
                                   {integration}
                                 </Badge>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { CalendarIcon, Download, TrendingUp, Users, ShoppingCart, CreditCard } from 'lucide-react';
@@ -35,7 +35,7 @@ interface AnalyticsData {
   dashboard: any;
 }
 
-interface DateRange {
+interface CustomDateRange {
   from: Date | undefined;
   to: Date | undefined;
 }
@@ -45,7 +45,7 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 export default function AnalyticsDashboard() {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [dateRange, setDateRange] = useState<DateRange>({
+  const [dateRange, setDateRange] = useState<CustomDateRange>({
     from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
     to: new Date()
   });
@@ -93,7 +93,7 @@ export default function AnalyticsDashboard() {
     fetchData();
   }, [dateRange]);
 
-  const exportReport = async (reportType: string, format: string = 'json') => {
+  const exportReport = async (reportType: string, exportFormat: string = 'json') => {
     try {
       const token = localStorage.getItem('authToken');
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -101,7 +101,7 @@ export default function AnalyticsDashboard() {
       const endDate = dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : '';
       
       const response = await fetch(
-        `${baseUrl}/api/v1/analytics/export?report_type=${reportType}&format=${format}&start_date=${startDate}&end_date=${endDate}`,
+        `${baseUrl}/api/v1/analytics/export?report_type=${reportType}&format=${exportFormat}&start_date=${startDate}&end_date=${endDate}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -111,7 +111,7 @@ export default function AnalyticsDashboard() {
 
       const data = await response.json();
       
-      if (format === 'json') {
+      if (exportFormat === 'json') {
         const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -181,7 +181,7 @@ export default function AnalyticsDashboard() {
                 mode="range"
                 defaultMonth={dateRange?.from}
                 selected={dateRange}
-                onSelect={setDateRange}
+                onSelect={(range) => range && setDateRange({ from: range.from, to: range.to })}
                 numberOfMonths={2}
               />
             </PopoverContent>

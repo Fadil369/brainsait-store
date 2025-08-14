@@ -14,9 +14,11 @@ const badgeVariants = cva(
         pro: 'bg-vision-purple text-white',
         vision2030: 'bg-gradient-primary text-white',
         default: 'bg-gray/20 text-text-secondary',
+        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         success: 'bg-success text-white',
         warning: 'bg-warning text-white',
         error: 'bg-red-500 text-white',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
       },
       size: {
         sm: 'text-xs px-2 py-0.5',
