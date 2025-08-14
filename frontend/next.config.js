@@ -3,12 +3,12 @@ const nextConfig = {
   experimental: {
     // appDir is now default in Next.js 14
   },
-  
+
   // Disable ESLint during build for deployment
   eslint: {
     ignoreDuringBuilds: true,
   },
-  
+
   // Image optimization
   images: {
     domains: [
@@ -34,7 +34,7 @@ const nextConfig = {
   // Optimize performance
   poweredByHeader: false,
   reactStrictMode: true,
-  
+
   // Configure for Arabic RTL support and bundle optimization
   webpack: (config, { dev, isServer }) => {
     if (!isServer) {
@@ -81,95 +81,102 @@ const nextConfig = {
   },
   // Security and Apple Pay headers
   async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'geolocation=(), microphone=(), camera=()',
-          },
-        ],
-      },
-      {
-        source: '/.well-known/apple-developer-merchantid-domain-association.txt',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400',
-          },
-        ],
-      },
-      {
-        source: '/.well-known/apple-developer-merchantid-domain-association',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400',
-          },
-        ],
-      },
-    ];
+    // Headers only work with dynamic rendering, not static export
+    // These will be handled by Cloudflare Workers/Pages
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/(.*)',
+          headers: [
+            {
+              key: 'X-Frame-Options',
+              value: 'DENY',
+            },
+            {
+              key: 'X-Content-Type-Options',
+              value: 'nosniff',
+            },
+            {
+              key: 'Referrer-Policy',
+              value: 'strict-origin-when-cross-origin',
+            },
+            {
+              key: 'Permissions-Policy',
+              value: 'geolocation=(), microphone=(), camera=()',
+            },
+          ],
+        },
+        {
+          source: '/.well-known/apple-developer-merchantid-domain-association.txt',
+          headers: [
+            {
+              key: 'Content-Type',
+              value: 'text/plain',
+            },
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=86400',
+            },
+          ],
+        },
+        {
+          source: '/.well-known/apple-developer-merchantid-domain-association',
+          headers: [
+            {
+              key: 'Content-Type',
+              value: 'text/plain',
+            },
+            {
+              key: 'Cache-Control',
+              value: 'public, max-age=86400',
+            },
+          ],
+        },
+      ];
+    }
+    return [];
   },
 
   // Redirects and rewrites
   async redirects() {
-    return [
-      {
-        source: '/admin',
-        destination: '/dashboard',
-        permanent: true,
-      },
-    ];
+    // Redirects only work with dynamic rendering, not static export
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/admin',
+          destination: '/dashboard',
+          permanent: true,
+        },
+      ];
+    }
+    return [];
   },
 
   async rewrites() {
-    const rewrites = [
-      {
-        source: '/.well-known/apple-developer-merchantid-domain-association.txt',
-        destination: '/.well-known/apple-developer-merchantid-domain-association.txt',
-      },
-    ];
-
-    // API proxy for development
+    // Rewrites only work with dynamic rendering, not static export
     if (process.env.NODE_ENV === 'development') {
-      rewrites.push({
-        source: '/api/:path*',
-        destination: 'http://localhost:8000/api/:path*',
-      });
+      return [
+        {
+          source: '/.well-known/apple-developer-merchantid-domain-association.txt',
+          destination: '/.well-known/apple-developer-merchantid-domain-association.txt',
+        },
+        {
+          source: '/api/:path*',
+          destination: 'http://localhost:8000/api/:path*',
+        },
+      ];
     }
-
-    return rewrites;
+    return [];
   },
 
   // Build output configuration for Cloudflare Pages
   output: 'export',
   trailingSlash: true,
   distDir: 'out',
-  
+
   // Remove default i18n for static export - use runtime i18n instead
   // i18n is handled by next-i18next and react-i18next
-  
+
   // Compression
   compress: true
 };

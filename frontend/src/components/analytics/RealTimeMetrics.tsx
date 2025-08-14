@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/Badge';
-import { TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Activity } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { RealTimeMetrics as RealTimeMetricsType } from '@/lib/analytics';
 import { analyticsService } from '@/lib/analytics';
-import type { RealTimeMetrics } from '@/lib/analytics';
+import { Activity, DollarSign, ShoppingCart, TrendingDown, TrendingUp, Users } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 interface MetricCardProps {
   title: string;
@@ -59,7 +59,7 @@ function MetricCard({ title, value, change, icon, trend = 'neutral', description
 }
 
 export default function RealTimeMetrics() {
-  const [metrics, setMetrics] = useState<RealTimeMetrics | null>(null);
+  const [metrics, setMetrics] = useState<RealTimeMetricsType | null>(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
 

@@ -3,8 +3,8 @@
  * Supports Stripe, PayPal, Apple Pay, and Saudi local gateways
  */
 
-import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { loadScript } from '@paypal/paypal-js';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 
 // Types
 export interface PaymentMethod {
@@ -96,24 +96,19 @@ export class PaymentService {
 
   // Initialize payment services
   async initialize() {
-    try {
-      // Initialize Stripe
-      this.stripe = await getStripe();
-      
-      // Initialize PayPal
-      this.paypal = await loadScript({
-        'client-id': config.paypal.clientId,
-        currency: config.paypal.currency,
-        intent: 'capture',
-        'enable-funding': 'venmo,paylater',
-        'disable-funding': 'card',
-      } as any);
+    // Initialize Stripe
+    this.stripe = await getStripe();
 
-      // Payment services initialized successfully
-    } catch (error) {
-      // Failed to initialize payment services
-      throw error;
-    }
+    // Initialize PayPal
+    this.paypal = await loadScript({
+      'client-id': config.paypal.clientId,
+      currency: config.paypal.currency,
+      intent: 'capture',
+      'enable-funding': 'venmo,paylater',
+      'disable-funding': 'card',
+    } as any);
+
+    // Payment services initialized successfully
   }
 
   // Get available payment methods
@@ -309,7 +304,7 @@ export class PaymentService {
     try {
       // Check if Apple Pay is available
       if (!(window as any).ApplePaySession) return false;
-      
+
       return await (window as any).ApplePaySession.canMakePaymentsWithActiveCard(config.applePay.merchantId);
     } catch (error) {
       // console.error('Apple Pay availability check failed:', error);

@@ -6,19 +6,21 @@ python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 python-dotenv==1.0.0
 
-# Database
+# Database - Using compatible versions for Python 3.13
 sqlalchemy==2.0.25
 alembic==1.13.1
+# Using psycopg instead of psycopg2-binary for better Python 3.13 compatibility
+psycopg[binary]==3.2.9
+# Using compatible asyncpg version
 asyncpg==0.29.0
-psycopg2-binary==2.9.9
 
 # Multi-tenant & Auth
 authlib==1.3.1
 httpx==0.26.0
 redis==5.0.1
 
-# API & Validation
-pydantic==2.5.3
+# API & Validation - Using compatible versions
+pydantic==2.6.0
 pydantic-settings==2.1.0
 email-validator==2.1.0
 
