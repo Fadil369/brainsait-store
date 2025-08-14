@@ -196,7 +196,7 @@ export const mockPaymentsApi = {
     return { data: paymentIntent };
   },
 
-  confirmPayment: async (paymentIntentId: string) => {
+  confirmPayment: async (_paymentIntentId: string) => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     return {

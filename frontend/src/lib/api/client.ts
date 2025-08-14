@@ -1,6 +1,6 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-// Extend the InternalAxiosRequestConfig interface to include metadata
+// Extend the axios interface to include metadata
 declare module 'axios' {
   interface InternalAxiosRequestConfig {
     metadata?: {
@@ -9,6 +9,7 @@ declare module 'axios' {
     };
   }
 }
+
 import { ApiResponse } from '@/types';
 
 // API configuration
@@ -61,7 +62,7 @@ apiClient.interceptors.response.use(
     if (process.env.NODE_ENV === 'development') {
       const endTime = Date.now();
       const startTime = response.config.metadata?.startTime || endTime;
-      // API Request logged: ${response.config.method?.toUpperCase()} ${response.config.url} - ${endTime - startTime}ms
+      console.debug(`API Request: ${response.config.method?.toUpperCase()} ${response.config.url} - ${endTime - startTime}ms`);
     }
 
     return response;
