@@ -68,103 +68,84 @@ export class AppStoreService {
    * Validate App Store receipt
    */
   async validateReceipt(request: ReceiptValidationRequest): Promise<ReceiptValidationResponse> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/v1/app-store/validate-receipt`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify(request),
-      });
+    const response = await fetch(`${this.baseUrl}/api/v1/app-store/validate-receipt`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify(request),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Receipt validation failed: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      return result.data;
-    } catch (error) {
-      throw error;
+    if (!response.ok) {
+      throw new Error(`Receipt validation failed: ${response.statusText}`);
     }
+
+    const result = await response.json();
+    return result.data;
   }
 
   /**
    * Complete App Store purchase
    */
   async completePurchase(request: PurchaseCompletionRequest): Promise<any> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/v1/app-store/purchase/complete`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify(request),
-      });
+    const response = await fetch(`${this.baseUrl}/api/v1/app-store/purchase/complete`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify(request),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Purchase completion failed: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      return result.data;
-    } catch (error) {
-      // Error completing purchase
-      throw error;
+    if (!response.ok) {
+      throw new Error(`Purchase completion failed: ${response.statusText}`);
     }
+
+    const result = await response.json();
+    return result.data;
   }
 
   /**
    * Get transaction information
    */
   async getTransactionInfo(transactionId: string): Promise<any> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/v1/app-store/transaction-info`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({ transaction_id: transactionId }),
-      });
+    const response = await fetch(`${this.baseUrl}/api/v1/app-store/transaction-info`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({ transaction_id: transactionId }),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Transaction lookup failed: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      return result.data;
-    } catch (error) {
-      // Error fetching transaction info
-      throw error;
+    if (!response.ok) {
+      throw new Error(`Transaction lookup failed: ${response.statusText}`);
     }
+
+    const result = await response.json();
+    return result.data;
   }
 
   /**
    * Get subscription status
    */
   async getSubscriptionStatus(originalTransactionId: string): Promise<any> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/v1/app-store/subscription-status`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-        body: JSON.stringify({ original_transaction_id: originalTransactionId }),
-      });
+    const response = await fetch(`${this.baseUrl}/api/v1/app-store/subscription-status`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({ original_transaction_id: originalTransactionId }),
+    });
 
-      if (!response.ok) {
-        throw new Error(`Subscription lookup failed: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      return result.data;
-    } catch (error) {
-      // Error fetching subscription status
-      throw error;
+    if (!response.ok) {
+      throw new Error(`Subscription lookup failed: ${response.statusText}`);
     }
+
+    const result = await response.json();
+    return result.data;
   }
 
   /**
@@ -241,30 +222,25 @@ export class AppStoreService {
    * Handle purchase result from iOS
    */
   async handlePurchaseResult(transaction: any): Promise<any> {
-    try {
-      const receiptData = transaction.transactionReceipt;
-      const transactionId = transaction.transactionIdentifier;
-      const productId = transaction.productIdentifier;
+    const receiptData = transaction.transactionReceipt;
+    const transactionId = transaction.transactionIdentifier;
+    const productId = transaction.productIdentifier;
 
-      // First validate the receipt
-      const validation = await this.validateiOSReceipt(receiptData);
+    // First validate the receipt
+    const validation = await this.validateiOSReceipt(receiptData);
 
-      if (!validation.verified) {
-        throw new Error('Receipt validation failed');
-      }
-
-      // Complete the purchase
-      const completion = await this.completePurchase({
-        receipt_data: receiptData,
-        transaction_id: transactionId,
-        product_id: productId,
-      });
-
-      return completion;
-    } catch (error) {
-      // Error handling purchase result
-      throw error;
+    if (!validation.verified) {
+      throw new Error('Receipt validation failed');
     }
+
+    // Complete the purchase
+    const completion = await this.completePurchase({
+      receipt_data: receiptData,
+      transaction_id: transactionId,
+      product_id: productId,
+    });
+
+    return completion;
   }
 }
 

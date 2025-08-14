@@ -50,7 +50,7 @@ export const SSOLogin: React.FC<SSOLoginProps> = ({
     };
 
     fetchProviders();
-  }, [tenantId]);
+  }, [tenantId, onError]);
 
   const handleSSOLogin = (provider: SSOProvider) => {
     setLoading(true);
@@ -212,7 +212,7 @@ export const SSOCallbackHandler: React.FC = () => {
         setStatus('error');
         setMessage('No authentication token received');
       }
-    } catch (error) {
+    } catch (err) {
       setStatus('error');
       setMessage('Authentication failed');
     }

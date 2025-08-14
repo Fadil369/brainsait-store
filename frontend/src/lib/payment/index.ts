@@ -185,25 +185,21 @@ export class PaymentService {
 
   // Stripe Payment Processing
   async createStripePayment(orderId: string, returnUrl?: string): Promise<PaymentIntent> {
-    try {
-      const response = await fetch(`${config.api.baseUrl}/payments/stripe/intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-          return_url: returnUrl || `${window.location.origin}/payment/success`,
-          cancel_url: `${window.location.origin}/payment/cancel`,
-        }),
-      });
+    const response = await fetch(`${config.api.baseUrl}/payments/stripe/intent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({
+        order_id: orderId,
+        return_url: returnUrl || `${window.location.origin}/payment/success`,
+        cancel_url: `${window.location.origin}/payment/cancel`,
+      }),
+    });
 
-      if (!response.ok) throw new Error('Failed to create Stripe payment');
-      return await response.json();
-    } catch (error) {
-      throw error;
-    }
+    if (!response.ok) throw new Error('Failed to create Stripe payment');
+    return await response.json();
   }
 
   async confirmStripePayment(clientSecret: string, paymentMethod?: any): Promise<any> {
@@ -242,46 +238,42 @@ export class PaymentService {
       await this.initialize();
     }
 
-    try {
-      await this.paypal.Buttons({
-        style: {
-          layout: 'vertical',
-          color: 'gold',
-          shape: 'rect',
-          label: 'paypal',
-          height: 50,
-        },
-        createOrder: async () => {
-          const payment = await this.createPayPalOrder(orderId);
-          return payment.payment_intent_id;
-        },
-        onApprove: async (data: any) => {
-          try {
-            const response = await fetch(`${config.api.baseUrl}/payments/paypal/capture/${data.orderID}`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-              },
-            });
+    await this.paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color: 'gold',
+        shape: 'rect',
+        label: 'paypal',
+        height: 50,
+      },
+      createOrder: async () => {
+        const payment = await this.createPayPalOrder(orderId);
+        return payment.payment_intent_id;
+      },
+      onApprove: async (data: any) => {
+        try {
+          const response = await fetch(`${config.api.baseUrl}/payments/paypal/capture/${data.orderID}`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+            },
+          });
 
-            if (response.ok) {
-              const result = await response.json();
-              // Redirect to success page
-              window.location.href = `/payment/success?orderId=${orderId}&captureId=${result.capture_id}`;
-            } else {
-              throw new Error('Payment capture failed');
-            }
-          } catch (error) {
-            window.location.href = `/payment/error?error=${encodeURIComponent('Payment processing failed')}`;
+          if (response.ok) {
+            const result = await response.json();
+            // Redirect to success page
+            window.location.href = `/payment/success?orderId=${orderId}&captureId=${result.capture_id}`;
+          } else {
+            throw new Error('Payment capture failed');
           }
-        },
-        onError: () => {
-          window.location.href = `/payment/error?error=${encodeURIComponent('PayPal payment failed')}`;
-        },
-      }).render(`#${containerId}`);
-    } catch (error) {
-      throw error;
-    }
+        } catch (error) {
+          window.location.href = `/payment/error?error=${encodeURIComponent('Payment processing failed')}`;
+        }
+      },
+      onError: () => {
+        window.location.href = `/payment/error?error=${encodeURIComponent('PayPal payment failed')}`;
+      },
+    }).render(`#${containerId}`);
   }
 
   // Apple Pay Processing
@@ -297,9 +289,8 @@ export class PaymentService {
   }
 
   async processApplePayPayment(orderId: string): Promise<void> {
-    try {
-      // Validate Apple Pay merchant
-      const validationResponse = await fetch(`${config.api.baseUrl}/payments/apple-pay/validate`, {
+    // Validate Apple Pay merchant
+    const validationResponse = await fetch(`${config.api.baseUrl}/payments/apple-pay/validate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -358,9 +349,6 @@ export class PaymentService {
       };
 
       session.begin();
-    } catch (error) {
-      throw error;
-    }
   }
 
   // Saudi Local Payment Methods

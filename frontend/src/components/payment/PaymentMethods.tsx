@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAppStore } from '@/stores';
@@ -171,9 +172,11 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
       >
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 bg-glass-bg rounded-lg flex items-center justify-center">
-            <img 
+            <Image 
               src={method.logo_url} 
               alt={method.name}
+              width={32}
+              height={32}
               className="w-8 h-8 object-contain"
               onError={(e) => {
                 e.currentTarget.src = '/payment-logos/default.svg';
