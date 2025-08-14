@@ -1,0 +1,1221 @@
+[
+  {
+    "id": "gh_1014729208",
+    "category": "websites",
+    "title": "Givc",
+    "arabicTitle": "موقع Givc",
+    "description": "GIVC Healthcare Platform",
+    "price": 2199,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🌐",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/GIVC",
+    "clone_url": "https://github.com/Fadil369/GIVC.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "JavaScript",
+    "created_at": "2025-07-06T09:51:00Z",
+    "updated_at": "2025-08-11T14:46:34Z",
+    "demo": {
+      "title": "Givc - Live Demo",
+      "arabicTitle": "عرض مباشر - Givc",
+      "preview": "🚀 Explore Givc - Modern web application with responsive design. Built with JavaScript and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1035531297",
+    "category": "ai",
+    "title": "Solo Spark",
+    "arabicTitle": "ذكي Solo Spark",
+    "description": "🚀 BrainSAIT Innovation Lab - Solo-Prototype: AI-Powered Innovation Journey from Ideas to Prototypes | من الأفكار إلى الابتكار",
+    "price": 1699,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/Solo-Spark",
+    "clone_url": "https://github.com/Fadil369/Solo-Spark.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "TypeScript",
+    "created_at": "2025-08-10T15:43:50Z",
+    "updated_at": "2025-08-10T16:02:59Z",
+    "demo": {
+      "title": "Solo Spark - Live Demo",
+      "arabicTitle": "عرض مباشر - Solo Spark",
+      "preview": "🚀 Explore Solo Spark - AI-powered solution with machine learning capabilities. Built with TypeScript and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1033030835",
+    "category": "ai",
+    "title": "Brainsait Io",
+    "arabicTitle": "ذكي Brainsait Io",
+    "description": "Healthcare Technology Solutions",
+    "price": 1699,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/brainsait-io",
+    "clone_url": "https://github.com/Fadil369/brainsait-io.git",
+    "stars": 1,
+    "forks": 0,
+    "language": "HTML",
+    "created_at": "2025-08-06T07:40:33Z",
+    "updated_at": "2025-08-07T08:36:54Z",
+    "demo": {
+      "title": "Brainsait Io - Live Demo",
+      "arabicTitle": "عرض مباشر - Brainsait Io",
+      "preview": "🚀 Explore Brainsait Io - AI-powered solution with machine learning capabilities. Built with HTML and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1018227436",
+    "category": "ai",
+    "title": "Oi Vs Ai Book",
+    "arabicTitle": "ذكي Oi Vs Ai Book",
+    "description": "OI vs AI: Original Intelligence and the Rise of the Machine Mind - Book Website",
+    "price": 1699,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/oi-vs-ai-book",
+    "clone_url": "https://github.com/Fadil369/oi-vs-ai-book.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "HTML",
+    "created_at": "2025-07-11T20:45:24Z",
+    "updated_at": "2025-07-29T15:33:36Z",
+    "demo": {
+      "title": "Oi Vs Ai Book - Live Demo",
+      "arabicTitle": "عرض مباشر - Oi Vs Ai Book",
+      "preview": "🚀 Explore Oi Vs Ai Book - AI-powered solution with machine learning capabilities. Built with HTML and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_982042478",
+    "category": "tools",
+    "title": "Healthlinc",
+    "arabicTitle": "أداة Healthlinc",
+    "description": "A full-stack Agentic Healthcare RCM & EHR systems, using FHIR, HL7",
+    "price": 799,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "`feature/*`: feature branches"
+    ],
+    "github_url": "https://github.com/Fadil369/HealthLinc",
+    "clone_url": "https://github.com/Fadil369/HealthLinc.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "Python",
+    "created_at": "2025-05-12T09:36:58Z",
+    "updated_at": "2025-07-22T12:04:59Z",
+    "demo": {
+      "title": "Healthlinc - Live Demo",
+      "arabicTitle": "عرض مباشر - Healthlinc",
+      "preview": "🚀 Explore Healthlinc - Utility tool for enhanced productivity. Built with Python and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1023638961",
+    "category": "ai",
+    "title": "Lincai Chat",
+    "arabicTitle": "ذكي Lincai Chat",
+    "description": "LinCAI Chat - AI-powered chat application with FastRTC real-time audio streaming",
+    "price": 1699,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/lincai-chat",
+    "clone_url": "https://github.com/Fadil369/lincai-chat.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "TypeScript",
+    "created_at": "2025-07-21T13:14:54Z",
+    "updated_at": "2025-07-21T13:21:04Z",
+    "demo": {
+      "title": "Lincai Chat - Live Demo",
+      "arabicTitle": "عرض مباشر - Lincai Chat",
+      "preview": "🚀 Explore Lincai Chat - AI-powered solution with machine learning capabilities. Built with TypeScript and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1019988166",
+    "category": "ai",
+    "title": "Oi Vs Ai Fresh",
+    "arabicTitle": "ذكي Oi Vs Ai Fresh",
+    "description": "OI vs AI bilingual ebook platform",
+    "price": 1699,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/oi-vs-ai-fresh",
+    "clone_url": "https://github.com/Fadil369/oi-vs-ai-fresh.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "HTML",
+    "created_at": "2025-07-15T07:10:35Z",
+    "updated_at": "2025-07-21T09:58:53Z",
+    "demo": {
+      "title": "Oi Vs Ai Fresh - Live Demo",
+      "arabicTitle": "عرض مباشر - Oi Vs Ai Fresh",
+      "preview": "🚀 Explore Oi Vs Ai Fresh - AI-powered solution with machine learning capabilities. Built with HTML and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1013118459",
+    "category": "websites",
+    "title": "Contextlinc",
+    "arabicTitle": "موقع Contextlinc",
+    "description": "Next-generation context engineering platform",
+    "price": 2199,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🌐",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/contextlinc",
+    "clone_url": "https://github.com/Fadil369/contextlinc.git",
+    "stars": 2,
+    "forks": 0,
+    "language": "HTML",
+    "created_at": "2025-07-03T11:41:01Z",
+    "updated_at": "2025-07-21T09:50:03Z",
+    "demo": {
+      "title": "Contextlinc - Live Demo",
+      "arabicTitle": "عرض مباشر - Contextlinc",
+      "preview": "🚀 Explore Contextlinc - Modern web application with responsive design. Built with HTML and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1021489705",
+    "category": "ai",
+    "title": "Al Tawnia Claims Intelligence",
+    "arabicTitle": "ذكي Al Tawnia Claims Intelligence",
+    "description": " AI-powered insurance claims analysis platform for instant processing and reporting",
+    "price": 1699,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/al-tawnia-claims-intelligence",
+    "clone_url": "https://github.com/Fadil369/al-tawnia-claims-intelligence.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "Python",
+    "created_at": "2025-07-17T13:26:07Z",
+    "updated_at": "2025-07-17T13:28:05Z",
+    "demo": {
+      "title": "Al Tawnia Claims Intelligence - Live Demo",
+      "arabicTitle": "عرض مباشر - Al Tawnia Claims Intelligence",
+      "preview": "🚀 Explore Al Tawnia Claims Intelligence - AI-powered solution with machine learning capabilities. Built with Python and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1017588314",
+    "category": "ai",
+    "title": "Copilot Template",
+    "arabicTitle": "ذكي Copilot Template",
+    "description": "🤖 BrainSAIT GitHub Copilot Coding Agent Template",
+    "price": 1599,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/copilot-template",
+    "clone_url": "https://github.com/Fadil369/copilot-template.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2025-07-10T19:13:01Z",
+    "updated_at": "2025-07-11T14:10:09Z",
+    "demo": {
+      "title": "Copilot Template - Live Demo",
+      "arabicTitle": "عرض مباشر - Copilot Template",
+      "preview": "🚀 Explore Copilot Template - AI-powered solution with machine learning capabilities. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_1013338644",
+    "category": "tools",
+    "title": "Blog",
+    "arabicTitle": "أداة Blog",
+    "description": "Innovation &   Improvement Articles",
+    "price": 699,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/blog",
+    "clone_url": "https://github.com/Fadil369/blog.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2025-07-03T18:23:41Z",
+    "updated_at": "2025-07-03T19:36:59Z",
+    "demo": {
+      "title": "Blog - Live Demo",
+      "arabicTitle": "عرض مباشر - Blog",
+      "preview": "🚀 Explore Blog - Utility tool for enhanced productivity. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_993785801",
+    "category": "ai",
+    "title": "Brainsait Optimized",
+    "arabicTitle": "ذكي Brainsait Optimized",
+    "description": "BrainSAIT برينسايت - Advanced AI Platform with Healthcare-LINC Integration",
+    "price": 1599,
+    "badge": "UPDATED",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Open Source",
+      "⭐ Community Driven",
+      "🔧 Customizable",
+      "📱 Production Ready"
+    ],
+    "github_url": "https://github.com/Fadil369/brainsait-optimized",
+    "clone_url": "https://github.com/Fadil369/brainsait-optimized.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2025-05-31T14:18:10Z",
+    "updated_at": "2025-05-31T14:18:10Z",
+    "demo": {
+      "title": "Brainsait Optimized - Live Demo",
+      "arabicTitle": "عرض مباشر - Brainsait Optimized",
+      "preview": "🚀 Explore Brainsait Optimized - AI-powered solution with machine learning capabilities. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_941734434",
+    "category": "ai",
+    "title": "Azure Fhir Integration",
+    "arabicTitle": "ذكي Azure Fhir Integration",
+    "description": "for seamless azure-fhir-integration ",
+    "price": 1499,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/azure-fhir-integration",
+    "clone_url": "https://github.com/Fadil369/azure-fhir-integration.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2025-03-03T00:34:57Z",
+    "updated_at": "2025-03-03T01:23:59Z",
+    "demo": {
+      "title": "Azure Fhir Integration - Live Demo",
+      "arabicTitle": "عرض مباشر - Azure Fhir Integration",
+      "preview": "🚀 Explore Azure Fhir Integration - AI-powered solution with machine learning capabilities. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_887820259",
+    "category": "ai",
+    "title": "Brainsait.Github.Io",
+    "arabicTitle": "ذكي Brainsait.Github.Io",
+    "description": "To revolutionize the healthcare industry by leveraging technology and AI to provide smart, sustainable solutions that promote better health outcomes and improve patient experience.",
+    "price": 1499,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🤖",
+    "features": [
+      "[technologies used](#technologies-used)",
+      "[getting started](#getting-started)",
+      "[installation](#installation)",
+      "[usage](#usage)"
+    ],
+    "github_url": "https://github.com/Fadil369/brainsait.github.io",
+    "clone_url": "https://github.com/Fadil369/brainsait.github.io.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "HTML",
+    "created_at": "2024-11-13T10:45:00Z",
+    "updated_at": "2025-02-25T06:51:20Z",
+    "demo": {
+      "title": "Brainsait.Github.Io - Live Demo",
+      "arabicTitle": "عرض مباشر - Brainsait.Github.Io",
+      "preview": "🚀 Explore Brainsait.Github.Io - AI-powered solution with machine learning capabilities. Built with HTML and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_912367857",
+    "category": "tools",
+    "title": "Cli Pro",
+    "arabicTitle": "أداة Cli Pro",
+    "description": "CLI_PRO",
+    "price": 599,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/CLI_PRO",
+    "clone_url": "https://github.com/Fadil369/CLI_PRO.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2025-01-05T11:35:48Z",
+    "updated_at": "2025-01-05T11:35:51Z",
+    "demo": {
+      "title": "Cli Pro - Live Demo",
+      "arabicTitle": "عرض مباشر - Cli Pro",
+      "preview": "🚀 Explore Cli Pro - Utility tool for enhanced productivity. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_903240957",
+    "category": "websites",
+    "title": "Astrolinc",
+    "arabicTitle": "موقع Astrolinc",
+    "description": "All-in-one web framework for building fast, content-focused websites. By default, Astro builds websites that have zero JavaScript runtime code.",
+    "price": 1999,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🌐",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/astrolinc",
+    "clone_url": "https://github.com/Fadil369/astrolinc.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2024-12-14T04:42:02Z",
+    "updated_at": "2024-12-14T04:56:07Z",
+    "demo": {
+      "title": "Astrolinc - Live Demo",
+      "arabicTitle": "عرض مباشر - Astrolinc",
+      "preview": "🚀 Explore Astrolinc - Modern web application with responsive design. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_878919455",
+    "category": "tools",
+    "title": "Skills Hello Github Actions",
+    "arabicTitle": "أداة Skills Hello Github Actions",
+    "description": "My clone repository",
+    "price": 599,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/skills-hello-github-actions",
+    "clone_url": "https://github.com/Fadil369/skills-hello-github-actions.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2024-10-26T13:25:12Z",
+    "updated_at": "2024-12-13T14:55:21Z",
+    "demo": {
+      "title": "Skills Hello Github Actions - Live Demo",
+      "arabicTitle": "عرض مباشر - Skills Hello Github Actions",
+      "preview": "🚀 Explore Skills Hello Github Actions - Utility tool for enhanced productivity. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_895023678",
+    "category": "websites",
+    "title": "Interactive Resume",
+    "arabicTitle": "موقع Interactive Resume",
+    "description": "This project is an interactive, web-based resume for Dr. Mohamed El Fadil, a Neuroscience Researcher and Tech Developer. The goal is to provide a visually stunning, interactive representation of his career journey, emphasizing his skills and experience in healthcare technology, population health management, and digital healthcare innovation.",
+    "price": 1999,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🌐",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/interactive-resume",
+    "clone_url": "https://github.com/Fadil369/interactive-resume.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "JavaScript",
+    "created_at": "2024-11-27T12:26:36Z",
+    "updated_at": "2024-11-27T13:09:33Z",
+    "demo": {
+      "title": "Interactive Resume - Live Demo",
+      "arabicTitle": "عرض مباشر - Interactive Resume",
+      "preview": "🚀 Explore Interactive Resume - Modern web application with responsive design. Built with JavaScript and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_873962256",
+    "category": "websites",
+    "title": "Nhsdev",
+    "arabicTitle": "موقع Nhsdev",
+    "description": "Dev-NHS based “Sandbox” repository for healthcare-Technology solutions development ",
+    "price": 1999,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🌐",
+    "features": [
+      "[pages](pages): solutions for pages workflows",
+      "[icons](icons): svg icons for the relevant template"
+    ],
+    "github_url": "https://github.com/Fadil369/nhsdev",
+    "clone_url": "https://github.com/Fadil369/nhsdev.git",
+    "stars": 0,
+    "forks": 0,
+    "language": "TypeScript",
+    "created_at": "2024-10-17T02:43:31Z",
+    "updated_at": "2024-10-17T22:18:46Z",
+    "demo": {
+      "title": "Nhsdev - Live Demo",
+      "arabicTitle": "عرض مباشر - Nhsdev",
+      "preview": "🚀 Explore Nhsdev - Modern web application with responsive design. Built with TypeScript and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_847474090",
+    "category": "apps",
+    "title": "Terra Linc App",
+    "arabicTitle": "تطبيق Terra Linc App",
+    "description": "infrastructure as a services, leveraging terraform hashicorp platform. ",
+    "price": 2999,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "📱",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/terra-linc-app",
+    "clone_url": "https://github.com/Fadil369/terra-linc-app.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2024-08-25T23:11:31Z",
+    "updated_at": "2024-08-25T23:11:34Z",
+    "demo": {
+      "title": "Terra Linc App - Live Demo",
+      "arabicTitle": "عرض مباشر - Terra Linc App",
+      "preview": "🚀 Explore Terra Linc App - Mobile application with native performance. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_830783407",
+    "category": "tools",
+    "title": "Cloudflare Linc",
+    "arabicTitle": "أداة Cloudflare Linc",
+    "description": "cloudflare repo link",
+    "price": 599,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/cloudflare-linc",
+    "clone_url": "https://github.com/Fadil369/cloudflare-linc.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2024-07-19T01:56:10Z",
+    "updated_at": "2024-07-19T01:56:14Z",
+    "demo": {
+      "title": "Cloudflare Linc - Live Demo",
+      "arabicTitle": "عرض مباشر - Cloudflare Linc",
+      "preview": "🚀 Explore Cloudflare Linc - Utility tool for enhanced productivity. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_775573804",
+    "category": "tools",
+    "title": "Ci Cd",
+    "arabicTitle": "أداة Ci Cd",
+    "description": "fantastic automation",
+    "price": 599,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/ci-cd",
+    "clone_url": "https://github.com/Fadil369/ci-cd.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2024-03-21T16:32:35Z",
+    "updated_at": "2024-03-21T16:32:35Z",
+    "demo": {
+      "title": "Ci Cd - Live Demo",
+      "arabicTitle": "عرض مباشر - Ci Cd",
+      "preview": "🚀 Explore Ci Cd - Utility tool for enhanced productivity. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_766609046",
+    "category": "tools",
+    "title": "Skills Copilot Codespaces Vscode",
+    "arabicTitle": "أداة Skills Copilot Codespaces Vscode",
+    "description": "My clone repository",
+    "price": 599,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/skills-copilot-codespaces-vscode",
+    "clone_url": "https://github.com/Fadil369/skills-copilot-codespaces-vscode.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2024-03-03T18:21:17Z",
+    "updated_at": "2024-03-03T18:21:17Z",
+    "demo": {
+      "title": "Skills Copilot Codespaces Vscode - Live Demo",
+      "arabicTitle": "عرض مباشر - Skills Copilot Codespaces Vscode",
+      "preview": "🚀 Explore Skills Copilot Codespaces Vscode - Utility tool for enhanced productivity. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  },
+  {
+    "id": "gh_658138078",
+    "category": "tools",
+    "title": "Skills Introduction To Github",
+    "arabicTitle": "أداة Skills Introduction To Github",
+    "description": "My clone repository",
+    "price": 599,
+    "badge": "OPEN SOURCE",
+    "badgeType": "new",
+    "icon": "🛠️",
+    "features": [
+      "📖 Well Documented",
+      "⭐ Production Ready",
+      "🔧 Easy to Setup",
+      "🚀 High Performance"
+    ],
+    "github_url": "https://github.com/Fadil369/skills-introduction-to-github",
+    "clone_url": "https://github.com/Fadil369/skills-introduction-to-github.git",
+    "stars": 0,
+    "forks": 0,
+    "language": null,
+    "created_at": "2023-06-24T22:23:11Z",
+    "updated_at": "2023-11-22T09:05:05Z",
+    "demo": {
+      "title": "Skills Introduction To Github - Live Demo",
+      "arabicTitle": "عرض مباشر - Skills Introduction To Github",
+      "preview": "🚀 Explore Skills Introduction To Github - Utility tool for enhanced productivity. Built with None and designed for production use.",
+      "features": [
+        {
+          "icon": "📂",
+          "title": "Source Code",
+          "desc": "Full access to well-documented, production-ready code"
+        },
+        {
+          "icon": "📖",
+          "title": "Documentation",
+          "desc": "Comprehensive setup guides and API documentation"
+        },
+        {
+          "icon": "🔧",
+          "title": "Customizable",
+          "desc": "Easy to modify and extend for your specific needs"
+        },
+        {
+          "icon": "🚀",
+          "title": "Deploy Ready",
+          "desc": "Optimized for production deployment and scaling"
+        }
+      ]
+    }
+  }
+]

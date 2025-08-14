@@ -1,0 +1,1953 @@
+Lead Forms
+		2025-06-18 
+Warning
+Deprecation Notice The Marketing Version 202407 (Marketing July 2024) has been sunset. We recommend that you migrate to the latest versioned APIs to avoid disruptions. See the Migration page for more details. If you haven’t yet migrated and have questions, submit a request on the LinkedIn Developer Support Portal.
+
+LinkedIn Lead Forms make it easy for advertisers to collect leads through forms that LinkedIn members can submit. With Lead Forms, marketers can collect leads at much higher conversion rates. See LinkedIn Lead Forms and Lead Sync Ads for more information.
+Besides lead syncing with Ads, LinkedIn also provides the ability to collect and sync leads through organic surfaces which would be distinguished by a leadType during lead syncing.
+The following types of leads are supported for syncing:
+Description
+leadType
+Sponsored - Leads collected directly from an ad.
+SPONSORED
+Event - Leads collected from an event page.
+EVENT
+Company - Leads collected from a company page.
+COMPANY
+Product - Leads collected from an organization's product page.
+ORGANIZATION_PRODUCT
+Note
+This page documents the APIs required to build a Lead Sync integration. Developers supporting ads and Non-ads leads will be be able to use the same integration with correct set of permissions for lead syncing.
+The following APIs are designed to support Lead Forms:
+		leadForms - Get or find Lead Forms that will appear on LinkedIn.
+		leadFormResponses - Fetch Lead Form responses.
+		leadNotifications - Create webhook subscriptions to be notified of Lead Form responses.
+Permissions
+Lead Sync API is a separate program and access to the Advertising API does not automatically grant you the access. You must apply separately to be considered for Lead Sync APIs.
+Permission
+Description
+Endpoints
+Program
+rw_ads
+Manage and read an authenticated member's ad accounts data. Can manage and read ad forms. Cannot retrieve leads through leadFormResponses. Restricted to ad accounts in which the authenticated member has one of the following ad account roles:
+		ACCOUNT_BILLING_ADMIN
+		ACCOUNT_MANAGER
+		CAMPAIGN_MANAGER
+		CREATIVE_MANAGER
+		leadForms
+Advertising API
+r_ads
+Read ad forms. Cannot retrieve leads through leadFormResponses. Restricted to ad accounts in which the authenticated member has one of the following ad account roles:
+		ACCOUNT_BILLING_ADMIN
+		ACCOUNT_MANAGER
+		CAMPAIGN_MANAGER
+		CREATIVE_MANAGER
+		VIEWER
+		leadForms
+Advertising API
+r_marketing_leadgen_automation
+Access an authenticated member's ad forms/organic forms and form responses (leads). Can manage and read leadNotifications. Reading forms and form responses are restricted to the following account and/or company page roles:
+
+Sponsored use case (leads from Ads): The authenticated user must have one of the following ad account and company page roles (on the company page associated with the Ad Account in Campaign Manager):
+
+Ad Account Roles:
+		ACCOUNT_BILLING_ADMIN
+		ACCOUNT_MANAGER
+		CAMPAIGN_MANAGER
+		CREATIVE_MANAGER
+		VIEWER
+
+Company Page (Organization) roles:
+		ADMINISTRATOR
+		LEAD_GEN_FORMS_MANAGER
+		CURATOR
+		CONTENT_ADMINISTRATOR
+		ANALYST
+
+
+Organic use case (leads not from Ads): The authenticated user must have one of the following company page roles (Note: for Event leads, one of the roles highlighted in bold are required. The other roles will not suffice):
+
+		ADMINISTRATOR
+		LEAD_GEN_FORMS_MANAGER
+		CURATOR
+		CONTENT_ADMINISTRATOR
+		ANALYST
+		leadForms
+		leadFormResponses
+		leadNotifications
+Lead Sync API
+If the authenticated member does not have the appropriate ad account or company page/organization roles, we will return a 403 error.
+See Account Access Controls for information on how to retrieve a member's ad account roles.
+See Organization Access Control for information on how to retrieve a member's company page/organization roles.
+Lead Forms
+Lead Forms are used to request data from members responding to the Lead Form. Lead Forms can include multiple questions, hidden fields, and custom consent checkboxes. Many of these components are structured as sub-objects of the Lead Form. In the next section, schemas of the parent and sub-objects are defined.
+Lead Form Schema
+Note
+This page describes schemas using a column "Returned by Default". Any field that has a non-null value will be included by default. This does not apply for empty optional fields; that is, an optional field with a null value will not be included in the response.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+id
+Long
+Numerical identifier for the form.
+Yes
+No
+Yes
+created
+Time
+An epoch time corresponding to the creation of the form.
+Yes
+No
+Yes
+lastModified
+Time
+An epoch time corresponding to the last modified of of the form.
+Yes
+No
+Yes
+creationLocale
+Locale
+Locale of the entity. This field serves as the preferred locale for all fields within the Lead Form with an object type that is capable of localization, such as MultiLocaleString.
+No
+Yes
+Yes
+owner
+LeadGenOwner
+URN that identifies the owner of the Lead Form. It's a Union of sponsoredAccount and organization. sponsoredAccount is an URN of SponsoredAccountUrn that indicates the account of the advertiser. organization is an URN of OrganizationUrn that indicates the company account of the marketer.
+No
+Yes
+Yes
+name
+string
+Name of the Lead Form provided by the owner.
+No
+Yes
+Yes
+content
+DisplayContent
+Content of the Lead Form which will be displayed to the viewer.
+No
+Yes
+Yes
+hiddenFields
+HiddenField[]
+Hidden fields used by the owner to track key attributes of the form that generated the lead. The field is empty if the owner chooses to not append any tracking attributes to the Lead Form.
+No
+Yes
+Yes
+state
+LeadGenLifecycleState
+Information about the current state of the Lead Form.
+Yes
+No
+Yes
+reviewInfo
+(optional) LeadGenReviewInfo
+Latest information about the content review of the Lead Form. It will not be present if the form has not been reviewed by the review pipeline.
+Yes
+No
+Yes
+versionId
+int
+The version ID of the form. This is a derived field and is generated on the server side.
+Yes
+No
+Yes
+versionTag
+String
+The number of times the form has been modified.
+Yes
+No
+No
+Locale DataType
+Locale is a data type in the Lead Form which indicate the locale of the form.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+language
+string
+An uppercase two-letter country code as defined by ISO-3166
+No
+Yes
+Yes
+country
+string
+A lowercase two-letter language code as defined by ISO-639-1
+No
+Yes
+Yes
+variant
+string
+Vendor or browser-specific code.
+No
+No
+Yes
+DisplayContent Sub-Object
+DisplayContent is a sub-object in the Lead Form which represents the form content to be shown to the viewers for collecting responses.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+headline
+MultiLocaleString
+Headline of the form.
+No
+Yes
+Yes
+description
+(optional) MultiLocaleString
+Description of the form. Optional since the owner may choose to not have this information.
+No
+No
+Yes
+questions
+LeadGenFormQuestion[]
+Questions to request information from the viewer. At least one question should be present.
+No
+Yes
+Yes
+legalInfo
+LeadGenFormLegalInfo
+Legal information displayed alongside the Lead Form.
+No
+Yes
+Yes
+postSubmissionInfo
+(optional) PostSubmissionInfo
+Information displayed to the user after submitting the form (e.g. thank you message, etc.). Optional since not all use cases require a post submission experience.
+No
+No
+Yes
+MultiLocaleString DataType
+MultiLocaleString is a data type in the Lead Form which represents a textual field with values for multiple locales. Most readers should use the localized field entry keyed by preferredLocale. In the Lead Form, we use the creationLocale as the preferred locale.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+localized
+map
+Maps a locale to a localized version of the string. Each key is a Locale record converted to string format, with the language, country and variant separated by underscores. Examples: 'en', 'de_DE', 'en_US_WIN', 'de__POSIX', 'fr__MAC'."
+No
+Yes
+Yes
+LeadGenFormQuestion Sub-Object
+LeadGenFormQuestion is a sub-object in the DisplayContent which one Lead Form question.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+questionId
+long
+Unique identifier of the LeadGenFormQuestion.
+Yes
+No
+Yes
+name
+string
+A human-readable, language-agnostic name for the question, used by the form owner to identify it within a form. This name is not visible to the viewer in the rendered form.
+No
+Yes
+Yes
+question
+MultiLocaleString
+The question prompt, shown to the viewer.
+No
+Yes
+Yes
+textPrompt
+(optional) MultiLocaleString
+The description or hint of the question, shown to the viewer. Empty if no hint is provided.
+No
+No
+Yes
+predefinedField
+(optional) PredefinedField
+The predefined field that the question is requesting. This field is used for specifying viewer specific fields(e.g. First name, City, School, etc.) that should be used to prefill the question response. Customized questions do not request a predefined field and will leave this field empty.
+No
+No
+Yes
+responseEditable
+boolean
+True if the member viewing the form can edit a pre-filled form response. Default is true.
+No
+No
+Yes
+responseRequired
+boolean
+True if the response is required for the question. Default is true.
+No
+No
+Yes
+questionDetails
+Union of TextQuestionDetails, MultipleChoiceQuestionDetails
+The specific details of the question including default answer, answer restrictions etc. We allow text and selection questions.
+No
+Yes
+Yes
+questionSubmissionCriteria
+(optional) Union of WorkEmailSubmissionCriteria
+The criteria for submission of response for the question. For example: allow only Non-freemium emails for the work email form question. Optional since a question submission criteria only applies to a question that uses a predefined field.
+No
+No
+Yes
+label
+(optional) string
+The label of the question specified by marketers. These labels for the questions are unique within the context of a single form.
+No
+No
+Yes
+PredefinedField Sub-Object
+PredefinedField is a sub-object within the LeadGenFormQuestion that specifies the question should use a predefined field in a Lead Form. Some of these fields can be prefilled using the viewer's profile information.
+Enum
+Symbol
+Description
+FIRST_NAME
+The first name of the viewer.
+LAST_NAME
+The last name of the viewer.
+PHONE_NUMBER
+The phone number of the viewer.
+EMAIL
+The email of the viewer.
+CITY
+The city of the viewer.
+STATE
+The state of the viewer.
+COUNTRY
+The country of the viewer.
+ZIP_CODE
+The postal code or zip code of the viewer.
+JOB_TITLE
+The latest job title of the viewer.
+JOB_FUNCTION
+The job function of the viewer's latest job (e.g. Sales, Engineering, etc.).
+SENIORITY
+The seniority of the viewer's job title (e.g. manager, director, VP, etc.).
+COMPANY_NAME
+The name of the company of the viewer's latest job.
+COMPANY_SIZE
+The size of the company of the viewer's latest job.
+INDUSTRY
+Industry of the viewer.
+DEGREE
+The degree attained from the latest school attended by the viewer.
+FIELD_OF_STUDY
+The field of study for the viewer's latest school attended.
+SCHOOL
+The name of the school the viewer last attended.
+START_DATE
+The start date of the viewer at the latest school attended.
+GRADUATION_DATE
+The graduation date of the viewer at the latest school attended.
+GENDER
+The gender of the viewer.
+WORK_EMAIL
+The work email address of the viewer.
+LINKEDIN_PROFILE_LINK
+The LinkedIn public profile URL of the viewer.
+WORK_PHONE_NUMBER
+The work phone number of the viewer
+TextQuestionDetails Sub-Object
+TextQuestionDetails is a sub-object in the LeadGenFormQuestion representing text question specific details.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+defaultResponse
+string
+Either the default response to a question as specified by the owner, or the prefilled viewer information for a predefined field. Can be empty in case the owner choose not to specify, or if the response couldn't be prefilled.
+No
+No
+Yes
+maxResponseLength
+int
+The maximum length of the response, in characters. Default is 300.
+No
+No
+Yes
+MultipleChoiceQuestionDetails Sub-Object
+MultipleChoiceQuestionDetails is a sub-object in the LeadGenFormQuestion representing the details of a multiple choice question.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+options
+MultipleChoiceQuestionOption
+The options for a multiple choice question.
+No
+Yes
+Yes
+defaultSelectedOption
+int
+Id of the option which is selected by default when shown to the viewer. If empty then No option is shown as selected.
+No
+No
+Yes
+MultipleChoiceQuestionOption Sub-Object
+MultipleChoiceQuestionOption is a sub-object in the MultipleChoiceQuestionDetails, structured as an element in the array named options. MultipleChoiceQuestionOption representing an option of a multiple choice question specified by the owner.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+id
+int
+The identifier for a MultipleChoiceQuestionOption within the context of a MultipleChoiceQuestion. This will be unique only under the scope of a MultipleChoiceQuestion.
+No
+Yes
+Yes
+text
+MultiLocaleString
+Text describing an option for a multiple choice question specified by the owner.
+No
+Yes
+Yes
+label
+(optional) string
+The label of the multiple choice option specified by marketers. These labels for the multiple choice options are unique within the context of a single form.
+No
+No
+Yes
+WorkEmailSubmissionCriteria Sub-Object
+WorkEmailSubmissionCriteria is a sub-object in the LeadGenFormQuestion representing the criteria for submission of responses to WORK_EMAIL PredefinedField.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+freemiumEmailAllowed
+boolean
+If true, then a personal or freemium domain email address will be allowed to be submitted as the response of the WORK EMAIL PredefinedField.
+No
+Yes
+Yes
+LeadGenFormLegalInfo Sub-Object
+LeadGenFormLegalInfo is a sub-object in the Lead Form representing Lead Form legal information to display to viewers.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+legalInfoId
+long
+Unique identifier of the LeadGenFormLegalInfo.
+Yes
+No
+Yes
+privacyPolicyUrl
+(optional) Url
+The URL of the privacy policy that covers any data passed to the owner of the form. Optional since it is not required to be present for all the use cases.
+No
+No
+Yes
+legalDisclaimer
+(optional) MultiLocaleString
+Owner's legal disclaimer to accompany this form. Optional since the owner may alternatively use other fields (e.g. legalDisclaimer, consents) to surface the privacy policy.
+No
+No
+Yes
+consents
+LeadGenFormConsent[]
+Additional consents used to obtain member approval for using data collected via the Lead Form. The array can be empty if no viewer consents are required by the owner. By default, this is an empty array.
+No
+No
+Yes
+LeadGenFormConsent Sub-Object
+LeadGenFormConsent is a sub-object in the LeadGenFormLegalInfo, structured as an element in the array named consents. LeadGenFormConsent representing the Lead Form consent as defined by the owner of the form. Used for obtaining member approval to collecting data.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+id
+int
+The id of the consent, unique within LeadgenFormLegalInfo object.
+No
+Yes
+Yes
+consent
+MultiLocaleString
+The custom text that appears next to the checkbox, informing the member of what use of data they are consenting to.
+No
+Yes
+Yes
+checkRequired
+boolean
+Whether the consent is required to be checked by the member when submitting the form. Default is false.
+No
+Yes
+Yes
+label
+(optional) string
+The label of the consent specified by marketers. These labels for the consents are unique within the context of a single form.
+No
+No
+Yes
+PostSubmissionInfo Sub-Object
+PostSubmissionInfo is a sub-object in the Lead Form representing the content for displaying to viewers after they submit the response.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+message
+MultiLocaleString
+The message displayed to a member after the Lead Form is submitted.
+No
+Yes
+Yes
+callToAction
+LeadGenFormCallToAction
+Call to action shown after the Lead Form submission.
+No
+Yes
+Yes
+LeadGenFormCallToAction Sub-Object
+LeadGenFormCallToAction is a sub-object in the PostSubmissionInfo representing a call to action in the form of a button or label a member can act on that opens a landing page.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+callToActionLabel
+PostSubmissionCallToActionLabel
+Label for the call to action shown to the viewer. Default is VISIT_COMPANY_WEBSITE
+No
+Yes
+Yes
+callToActionTarget
+(optional) Union of LandingPageUrl
+Target where the user is taken after clicking on the CTA. E.g. a LandingPageUrl which is a url redirect to a web page. It can be empty for CTA's which don't require additional information.
+No
+No
+Yes
+PostSubmissionCallToActionLabel Sub-Object
+PostSubmissionCallToActionLabel is a sub-object in the LeadGenFormCallToAction that predefined values of call to action to be displayed after form submission.
+Enum
+Symbol
+Description
+VISIT_COMPANY_WEBSITE
+Visit Company Website call to action.
+LEARN_MORE
+Learn More call to action.
+VIEW_NOW
+View Now call to action.
+DOWNLOAD_NoW
+Download Now call to action.
+TRY_NOW
+Try Now call to action.
+HiddenField Sub-Object
+HiddenField is a sub-object in the Lead Form, structured as an element in the array named hiddenFields. HiddenField is not displayed on the form, but can be used by marketers for tracking purposes.
+The array can contain a maximum of 20 HiddenField.
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+name
+string
+The name of the hidden field.
+No
+Yes
+Yes
+value
+string
+The content of the hidden field.
+No
+Yes
+Yes
+LeadGenLifecycleState Sub-Object
+LeadGenLifecycleState is a sub-object in the Lead Form that indicate the lifecycle stage of a Lead Form.
+Enum
+Symbol
+Description
+DRAFT
+The form is still being edited.
+PUBLISHED
+The form is published, i.e. it has gone through processing (e.g. manual review) and is ready to be used.
+ARCHIVED
+The form is archived.
+LeadGenReviewInfo Sub-Object
+LeadGenReviewInfo is a sub-object in the Lead Form that indicate the review info of the form.
+Enum
+Field
+Type
+Description
+Read Only
+Required in Write
+Returned by Default
+reviewStatus
+LeadGenFormReviewStatus
+Indicate the state of review for the Lead Form.
+Yes
+No
+Yes
+lastUpdated
+Time
+The epoch time in millisecond indicating when the review status is initiated/last updated.
+Yes
+No
+Yes
+rejectionReasons
+RejectionReason
+An array of rejection reasons for the Lead Form. It's Non-empty if the review status is REJECTED in the latest review.
+Yes
+No
+Yes
+LeadGenFormReviewStatus Sub-Object
+LeadGenFormReviewStatus is a sub-object in the LeadGenReviewInfo that indicate whether the entity has been reviewed and the result of the review.
+Enum
+Symbol
+Description
+PENDING
+The form is pending review and not serving.
+APPROVED
+The form is approved for serving.
+REJECTED
+The form is rejected.
+PREAPPROVED
+The form has been pre-approved, it's ready for serving but still need further review.
+AUTO_APPROVED
+The form has been auto approved by content model.
+NEEDS_REVIEW
+The form has been rejected by content model or policy checker or returned by fallback case that auto approval didn't make any decision.
+AUTO_REJECTED
+The form has been auto rejected by content model.
+Get Lead Forms
+Lead Forms can be fetched in 3 different ways.
+	1	Find forms by owner
+	2	Get an individual form
+	3	Fetch Multiple Lead Forms
+Find Forms by Owner
+This endpoint returns all forms that belong to a specified owner. This endpoint requires q=owner and a organization or sponsoredAccount URN in the owner parameter. The API requires Restli 2.0 header and URL encoding of URNs in the URL.
+Since an owner can have a large volume of Lead Forms, this API supports pagination using the count and start parameters.
+Parameters
+Parameter
+Type
+Description
+Required
+q
+string
+You must always set this to string owner. It indicates that you are querying based on the Owner finder, and it's the only FINDER type currently available for Lead Forms.
+Yes
+owner
+SponsoredAccountUrn/OrganizationUrn
+URN identifying the owner of the Lead Form. This is the advertiser account or organization.
+Yes
+count
+Number
+The number of results to display on each page.
+No
+start
+Number
+The index of the form to begin your result page at. Indexes start at 0. Default is 0.
+No
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadForms?owner=(organization:urn%3Ali%3Aorganization%3A5509810)&q=owner&count=1&start=0
+Sample Response
+{
+    "elements": [
+        {
+            "owner": {
+                "organization": "urn:li:organization:5509810"
+            },
+            "hiddenFields": [
+                {
+                    "name": "Entity name",
+                    "value": "Nimbus 2000"
+                }
+            ],
+            "versionId": 1,
+            "creationLocale": {
+                "country": "US",
+                "language": "en"
+            },
+            "created": 1610579725356,
+            "name": "LeadGen form for Nimbus 2000",
+            "id": 6755260984438374400,
+            "lastModified": 1610579725356,
+            "state": "PUBLISHED",
+            "content": {
+                "questions": [
+                    {
+                        "questionId": 10548,
+                        "question": {
+                            "localized": {
+                                "en_US": "First Name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "firstName",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "FIRST_NAME",
+                        "responseRequired": true
+                    },
+                    {
+                        "questionId": 10540,
+                        "question": {
+                            "localized": {
+                                "en_US": "Last Name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "lastName",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "LAST_NAME",
+                        "responseRequired": true
+                    }
+                ],
+                "description": {
+                    "localized": {
+                        "en_US": "Share your information below with {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} to be contacted with more information about Nimbus 2000"
+                    }
+                },
+                "headline": {
+                    "localized": {
+                        "en_US": "Contact {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} about Nimbus 2000"
+                    }
+                },
+                "legalInfo": {
+                    "consents": [
+                        {
+                            "checkRequired": false,
+                            "id": 1,
+                            "consent": {
+                                "localized": {
+                                    "en_US": "{localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} may contact me via email"
+                                }
+                            }
+                        }
+                    ],
+                    "legalInfoId": 5604,
+                    "privacyPolicyUrl": "https://cadfad.com/abc",
+                    "legalDisclaimer": {
+                        "localized": {
+                            "en_US": "All emails include an unsubscribe link; you may opt out at any time. {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} will not sell or distribute your email address. See our Privacy Policy for more information on how we product and manage your data."
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "paging": {
+        "start": 0,
+        "count": 1,
+        "links": []
+    }
+}
+Get A Lead Form
+Individual Lead Forms can be requested using the endpoint below that only requires Lead Form ID.
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadForms/6755260984438374400
+Sample Response
+{
+            "owner": {
+                "organization": "urn:li:organization:5509810"
+            },
+            "hiddenFields": [
+                {
+                    "name": "Entity name",
+                    "value": "Nimbus 2000"
+                }
+            ],
+            "versionId": 1,
+            "creationLocale": {
+                "country": "US",
+                "language": "en"
+            },
+            "created": 1610579725356,
+            "name": "LeadGen form for Nimbus 2000",
+            "id": 6755260984438374400,
+            "lastModified": 1610579725356,
+            "state": "PUBLISHED",
+            "content": {
+                "questions": [
+                    {
+                        "questionId": 10548,
+                        "question": {
+                            "localized": {
+                                "en_US": "First Name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "firstName",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "FIRST_NAME",
+                        "responseRequired": true
+                    },
+                    {
+                        "questionId": 10540,
+                        "question": {
+                            "localized": {
+                                "en_US": "Last Name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "lastName",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "LAST_NAME",
+                        "responseRequired": true
+                    },
+                    {
+                        "questionId": 9244,
+                        "question": {
+                            "localized": {
+                                "en_US": "Email Address"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "email",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "EMAIL",
+                        "responseRequired": true
+                    },
+                    {
+                        "questionId": 9252,
+                        "question": {
+                            "localized": {
+                                "en_US": "Job title"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "jobTitle",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "JOB_TITLE",
+                        "responseRequired": true
+                    },
+                    {
+                        "questionId": 9236,
+                        "question": {
+                            "localized": {
+                                "en_US": "Company name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "company",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "COMPANY_NAME",
+                        "responseRequired": true
+                    }
+                ],
+                "description": {
+                    "localized": {
+                        "en_US": "Share your information below with {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} to be contacted with more information about Nimbus 2000"
+                    }
+                },
+                "headline": {
+                    "localized": {
+                        "en_US": "Contact {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} about Nimbus 2000"
+                    }
+                },
+                "legalInfo": {
+                    "consents": [
+                        {
+                            "checkRequired": false,
+                            "id": 1,
+                            "consent": {
+                                "localized": {
+                                    "en_US": "{localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} may contact me via email"
+                                }
+                            }
+                        }
+                    ],
+                    "legalInfoId": 5604,
+                    "privacyPolicyUrl": "https://cadfad.com/abc",
+                    "legalDisclaimer": {
+                        "localized": {
+                            "en_US": "All emails include an unsubscribe link; you may opt out at any time. {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} will not sell or distribute your email address. See our Privacy Policy for more information on how we product and manage your data."
+                        }
+                    }
+                }
+            }
+        }
+Fetch Multiple Lead Forms
+Multiple Lead Forms can be requested by chaining multiple ids parameter that each have a Lead Form ID.
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadForms?ids=List(6083,4073)
+Sample Response
+{
+    "statuses": {
+        "6083": 200,
+        "4073": 200
+    },
+    "results": {
+        "6083": {
+            "owner": {
+                "sponsoredAccount": "urn:li:sponsoredAccount:522147830"
+            },
+            "reviewInfo": {
+                "rejectionReasons": [
+                    "CRYPTOCURRENCY",
+                    "OFFENSIVE_LANGUAGE"
+                ],
+                "lastUpdated": 1675775914000,
+                "reviewStatus": "REJECTED"
+            },
+            "hiddenFields": [],
+            "versionId": 1,
+            "creationLocale": {
+                "country": "US",
+                "language": "en"
+            },
+            "created": 1676620173813,
+            "name": "Form - Feb 17, 2023",
+            "id": 6083,
+            "lastModified": 1678689182106,
+            "state": "PUBLISHED",
+            "content": {
+                "questions": [
+                    {
+                        "questionId": 100339966,
+                        "question": {
+                            "localized": {
+                                "en_US": "First name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "First name",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "FIRST_NAME",
+                        "responseRequired": true
+                    },
+                    {
+                        "questionId": 400339966,
+                        "question": {
+                            "localized": {
+                                "en_US": "Are you interested"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "Custom question 0",
+                        "questionDetails": {
+                            "multipleChoiceQuestionDetails": {
+                                "options": [
+                                    {
+                                        "id": 0,
+                                        "text": {
+                                            "localized": {
+                                                "en_US": "Yes"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "id": 1,
+                                        "text": {
+                                            "localized": {
+                                                "en_US": "No"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "responseRequired": true
+                    }
+                ],
+                "postSubmissionInfo": {
+                    "message": {
+                        "localized": {
+                            "en_US": "Thank You"
+                        }
+                    },
+                    "callToAction": {
+                        "callToActionTarget": {
+                            "landingPageUrl": "https://cadfad.com/abc"
+                        },
+                        "callToActionLabel": "VISIT_COMPANY_WEBSITE"
+                    }
+                },
+                "headline": {
+                    "localized": {
+                        "en_US": "Test LGF"
+                    }
+                },
+                "legalInfo": {
+                    "consents": [],
+                    "legalInfoId": 100339966,
+                    "privacyPolicyUrl": "https://cadfad.com/abc"
+                }
+            }
+        },
+        "4073": {
+            "owner": {
+                "organization": "urn:li:organization:5509810"
+            },
+            "hiddenFields": [
+                {
+                    "name": "Entity name",
+                    "value": "Nimbus 2000"
+                }
+            ],
+            "versionId": 1,
+            "creationLocale": {
+                "country": "US",
+                "language": "en"
+            },
+            "created": 1610579725356,
+            "name": "LeadGen form for Nimbus 2000",
+            "id": 4073,
+            "lastModified": 1610579725356,
+            "state": "PUBLISHED",
+            "content": {
+                "questions": [
+                    {
+                        "questionId": 10548,
+                        "question": {
+                            "localized": {
+                                "en_US": "First Name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "firstName",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "FIRST_NAME",
+                        "responseRequired": true
+                    },
+                    {
+                        "questionId": 10540,
+                        "question": {
+                            "localized": {
+                                "en_US": "Last Name"
+                            }
+                        },
+                        "responseEditable": true,
+                        "name": "lastName",
+                        "questionDetails": {
+                            "textQuestionDetails": {
+                                "maxResponseLength": 300
+                            }
+                        },
+                        "predefinedField": "LAST_NAME",
+                        "responseRequired": true
+                    }
+                ],
+                "description": {
+                    "localized": {
+                        "en_US": "Share your information below with {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} to be contacted with more information about Nimbus 2000"
+                    }
+                },
+                "headline": {
+                    "localized": {
+                        "en_US": "Contact {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} about Nimbus 2000"
+                    }
+                },
+                "legalInfo": {
+                    "consents": [
+                        {
+                            "checkRequired": false,
+                            "id": 1,
+                            "consent": {
+                                "localized": {
+                                    "en_US": "{localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} may contact me via email"
+                                }
+                            }
+                        }
+                    ],
+                    "legalInfoId": 5604,
+                    "privacyPolicyUrl": "https://cadfad.com/abc",
+                    "legalDisclaimer": {
+                        "localized": {
+                            "en_US": "All emails include an unsubscribe link; you may opt out at any time. {localized={en_US=Mario Kart 8 Deluxe, es_ES=Mario Coche 8 Deluxe}, preferredLocale={country=US, language=en}} will not sell or distribute your email address. See our Privacy Policy for more information on how we product and manage your data."
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "errors": {}
+}
+Creating Lead Forms
+Currently, only ad forms can be created (creation of non sponsored forms is not supported yet). When setting the locale for an Ads Form, note that non-English forms can only be used for campaigns targeting that language, but English forms can be used with any campaign.
+Sample Request
+		http
+		curl
+POST https://api.linkedin.com/rest/leadForms
+{
+    "owner": {
+        "sponsoredAccount": "urn:li:sponsoredAccount:507857085"
+    },
+    "hiddenFields": [
+        {
+            "name": "Entity name",
+            "value": "Nimbus 2000"
+        }
+    ],
+    "creationLocale": {
+        "country": "US",
+        "language": "en"
+    },
+    "name": "LeadGen Form Creation Testing",
+    "state": "DRAFT",
+    "content": {
+        "questions": [
+            {
+                "question": {
+                    "localized": {
+                        "en_US": "First Name"
+                    }
+                },
+                "name": "firstName",
+                "questionDetails": {
+                    "textQuestionDetails": {}
+                },
+                "predefinedField": "FIRST_NAME"
+            },
+            {
+                "question": {
+                    "localized": {
+                        "en_US": "Last Name"
+                    }
+                },
+                "name": "lastName",
+                "questionDetails": {
+                    "textQuestionDetails": {}
+                },
+                "predefinedField": "LAST_NAME"
+            }
+        ],
+        "description": {
+            "localized": {
+                "en_US": "Share your information below with to be contacted with more information about Nimbus 2000"
+            }
+        },
+        "headline": {
+            "localized": {
+                "en_US": "Contact us about Nimbus 2000"
+            }
+        },
+        "postSubmissionInfo": {
+            "message": {
+                "localized": {
+                    "en_US": "This is a test"
+                }
+            },
+            "callToAction": {
+                "callToActionTarget": {
+                    "landingPageUrl": "http://www.example.com"
+                },
+                "callToActionLabel": "VISIT_COMPANY_WEBSITE"
+            }
+        },
+        "legalInfo": {
+            "consents": [
+                {
+                    "checkRequired": false,
+                    "id": 1,
+                    "consent": {
+                        "localized": {
+                            "en_US": "may contact me via email"
+                        }
+                    }
+                }
+            ],
+            "privacyPolicyUrl": "http://cadfad.com/abc",
+            "legalDisclaimer": {
+                "localized": {
+                    "en_US": "All emails include an unsubscribe link; you may opt out at any time. will not sell or distribute your email address. See our Privacy Policy for more information on how we product and manage your data."
+                }
+            }
+        }
+    }
+}
+A successful response returns a 201 Created HTTP status code and the ID of the form in the x-restli-id response header.
+Custom Text Questions
+Free form text questions can be included in forms. The response lengths must be between 1 and 300 characters.
+{
+    "name": "customTextQuestion",
+    "question": "I have a text question for you!  ?",
+    "typeSpecificQuestionDetails": {
+        "com.linkedin.ads.TextQuestionDetails": {}
+    }
+}
+Custom Multiple Choice Question
+Multiple choice questions can be included in forms. These questions require a minimum of 2 options. They can have up to 15 options.
+The following example creates an multiple choice question with 2 options.
+Sample Request
+{
+	"question": {
+		"localized": {
+			"en_US": "Are you interested"
+		}
+	},
+	"name": "Custom question 0",
+	"questionDetails": {
+		"multipleChoiceQuestionDetails": {
+			"options": [{
+					"text": {
+						"localized": {
+							"en_US": "Yes"
+						}
+					}
+				},
+				{
+					"text": {
+						"localized": {
+							"en_US": "No"
+						}
+					}
+				}
+			]
+		}
+	}
+}
+Updating Lead Forms
+You can update sponsored forms while they are in two states: pre-published and published.
+Note
+Non sponsored forms don't support edits.
+Pre-Published State
+An Ad Form is in a pre-published state when one of the following conditions is met:
+		Form is in DRAFT status.
+		Form is not linked to an Ad Creative.
+		Form is only linked to Ad Creatives that are part of DRAFT Ad Campaigns.
+In this state, you can update all fields in the form.
+Important
+Advertisers may have linked their forms to 3rd-party applications such as CRM or Marketing Automation tools. Editing a form after its schema has been ingested into the 3rd-party application may break ingestion of lead data. LinkedIn recommends warning users of this risk if your application allows editing of forms. Please advise the user to complete the following steps after editing:
+	1	Delete previously created test leads synced to any 3rd-party partner applications they use.
+	2	Re-map the form schema with the updated form fields in the 3rd-party application.
+Published State
+If an Ad Form does not meet the above conditions, it is in the published state. In this state, you can edit the following fields:
+		headline
+		description
+		legalDisclaimer
+		landingPageUrl
+		privacyPageUrl
+		thankYouMessage
+		thankYouPageCta
+		status
+Sponsored Forms linked to Sponsored InMail and Conversation Ads cannot be edited in this state.
+Sample Request
+Make sure to set the Content-Type header to application/json.
+		http
+		curl
+POST https://api.linkedin.com/rest/leadForms/656
+{
+    "patch": {
+        "$set": {
+            "state": "ARCHIVED"
+           
+        }
+    }
+} 
+A successful response returns a 204 No Content HTTP status code.
+If the form is not in an editable state or you attempt to edit an uneditable field, you will receive a 400 Bad Request error.
+Updating Form Status
+Form status can be changed from PUBLISHED to ARCHIVED. This can be done using a partial update request. Note that the status change only affects whether the form and the associated creative gets served or not. Including the entire form body is not required to change status.
+Note
+When you perform an update, the header X-RestLi-Method must be included in the request and set to PARTIAL_UPDATE.
+Sample Request
+		http
+		curl
+POST https://api.linkedin.com/rest/leadForms/656
+{
+    "patch": {
+        "$set": {
+            "state": "ARCHIVED"
+        }
+    }
+}
+Get Lead Form responses
+The Lead Form Responses API returns the response data for leads that filled out a Lead Form. Collecting Lead Form responses requires the viewer is the owner of the Lead Form.
+Lead Form Response Schema
+Field
+Type
+Description
+Returned by Default
+id
+string
+Unique id to identify the Lead Form Response.
+Yes
+leadType
+LeadType
+Type of the lead representing the origination of the lead.
+Yes
+form
+VersionedLeadGenFormUrn
+URN identifying which form this FormResponse belongs to.
+No
+owner
+LeadGenFormResponseOwner
+Owner of this Lead Form Response. It is a Union of sponsoredAccount and organization. sponsoredAccount is an URN of SponsoredAccountUrn that indicates the ad account of the advertiser. organization is an URN of OrganizationUrn that indicates the company page of the advertiser.
+Yes
+ownerInfo
+(optional) LeadGenFormResponseOwnerInfo
+Record containing entity info that owns this Lead Form Response. It's an optional Union of sponsoredAccountInfo and organizationInfo.
+No
+leadMetadata
+(optional) Union of SponsoredLeadMetadata
+Metadata of a lead. This field is optional for test leads and other use cases where sponsored lead metadata (e.g. campaign) may not be relevant.
+Yes
+leadMetadataInfo
+(optional) Union of SponsoredLeadMetadataInfo
+Record containing a subset of fields resolved on demand from the lead metadata references (e.g. campaign name , campaign type). Can be empty for test leads and cases where no lead metadata is relevant.
+No
+associatedEntity
+Union of SponsoredCreativeUrn , OrganizationUrn , EventUrn , StandardizedProductUrn, OrganizationLandingPageUrn
+URN identifying which entity the lead is associated with. This field is optional for test leads and other use cases where leads don't have any associatedEntity. If there is no value, the field is not returned.
+Yes
+associatedEntityInfo
+(optional) Union of SponsoredCreativeInfo, OrganizationInfo, EventInfo, StandardizedProductInfo, OrganizationLandingPageInfo
+Record containing useful fields (creative status, ugc reference etc.) resolved on demand from the associated entity object.
+No
+submitter
+URN
+From version 202408 onwards, Guest Leads (when a user submits a form without being logged in) submitted to lead forms, submitter field is treated as a null field and omitted from the JSON response. For non-guest leads, the submitter field will still be included in the response and will provide the person's URN. Ex: "submitter": "urn:li:person:MpGcnvaU_p".
+Yes
+submittedAt
+Time
+An epoch timestamp that recording when the form response was submitted.
+Yes
+responseId
+TrackingId
+The unique identifier for the form response generated in the front-end when a submitter submits the response.
+Yes
+formResponse
+FormResponse
+Answers provided by the form submitter.
+Yes
+testLead
+Boolean
+Whether this is a test lead created for testing purposes.
+Yes
+LeadType Sub-Object
+LeadType is a sub-object in the Lead Form Response that indicates the type of the response.
+Enum
+Symbol
+Description
+SPONSORED
+The lead is collected from sponsored content.
+COMPANY
+The lead is collected from the company page.
+EVENT
+The lead is collected from the event page.
+ORGANIZATION_PRODUCT
+The lead is collected from an organization product page.
+FormResponse Sub-Object
+FormResponse is a sub-object in the Lead Form Response representing the form response from submitter, which contains a set of answers and consentResponses.
+Field
+Type
+Description
+Returned by Default
+answers
+Answer[]
+Answers provided by the submitter.
+Yes
+consentResponses
+ConsentResponse[]
+Responses to the consents that are provided by the submitter.
+Yes
+Answer Sub-Object
+Answer is a sub-object in FormResponse, structured as an element in the array named answers. It represents the submitter's response to the questions in the Lead Form.
+Field
+Type
+Description
+Returned by Default
+questionId
+long
+The id of the question.
+Yes
+name
+string
+Name of the question.
+Yes
+accepted
+Union of TextQuestionAnswer, MultipleChoiceAnswer
+Answer provided by a submitter.
+Yes
+TextQuestionAnswer Sub-Object
+TextQuestionAnswer is a sub-object in the Answer representing the response to a TextQuestion of form in text format.
+Field
+Type
+Description
+Returned by Default
+answer
+string
+The answer to a single text-entry question.
+Yes
+MultipleChoiceAnswer Sub-Object
+MultipleChoiceAnswer is a sub-object in the Answer representing a form response to a particular Lead Form, which contains a set of answers provided by the submitter.
+Field
+Type
+Description
+Returned by Default
+options
+int[]
+The array of the chosen option ids for a MultipleChoiceQuestion by the submitter. Default as empty array if No choice answered by submitter.
+Yes
+ConsentResponse Sub-Object
+ConsentResponse is a sub-object in FormResponse, structured as an element in the array named consentResponses. It represents the submitter's response to the consents in the legal info in the Lead Form.
+Field
+Type
+Description
+Returned by Default
+consentId
+int
+The id of the consent, unique within LeadgenFormLegalInfo object.
+Yes
+consent
+string
+The custom text that appears next to the checkbox, informing the member of what use of data they are consenting to.
+Yes
+accepted
+boolean
+Consent answer provided by a submitter. True if the submitter chooses to opt-in.
+Yes
+Find Lead Form responses by Owner
+Response can be retrieved for a specified owner. This endpoint takes in 2 required parameters: owner={OrganizationUrn or SponsoredAccountUrn} & leadType. This API requires Restli 2.0 header and URL encoding URNs in URL.
+Parameters
+Parameter
+Type
+Description
+Required
+q
+String
+You must always set this to string owner. It indicates that you're querying based via the Owner finder.
+Yes
+owner
+LeadGenFormOwner
+Urn indicating the owner of the form which generated the lead, e.g. OrganizationUrn or SponsoredAccountUrn.
+Yes
+leadType
+LeadType
+Indicates LeadType used to filter Lead Form responses.
+Yes
+versionedLeadGenFormUrn
+(optional) VersionedLeadGenFormUrn
+Optional field indicating the specific form and version to retrieve the Lead Form Response. If specified, return the corresponding Lead Form responses for the versionedLeadGenFormUrn, otherwise return all results not applying this filter.
+No
+associatedEntity
+(optional) Urn
+Optional urn indicating which entity the lead is associated with, e.g. SponsoredCreativeUrn or OrganizationUrn. If specified, return the corresponding Lead Form responses associated with the associatedEntity, otherwise return all results not applying this filter.
+No
+submittedAtTimeRange
+(optional) TimeRange
+Optional field indicating the lead submitted time range filter. If specified, return the corresponding Lead Form responses for the time range, otherwise return all results not applying this filter. The submittedAtTimeRange field accepts Epoch format only.
+No
+limitedToTestLeads
+boolean(default=false)
+If true, only return the test leads matching the filtering criteria. Clients could use this filter to only retrieve test leads for the purpose of testing the functionality of Lead Forms. By default the value is false and will return all the leads matching the filtering criteria.
+No
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadFormResponses?owner=(sponsoredAccount:urn%3Ali%3AsponsoredAccount%3A522529623)&leadType=(leadType:SPONSORED)&limitedToTestLeads=false&versionedLeadGenFormUrn=urn%3Ali%3AversionedLeadGenForm%3A%28urn%3Ali%3AleadGenForm%3A3162%2C1%29&q=owner
+Sample Response
+{
+    "elements": [
+        {
+            "owner": {
+                "sponsoredAccount": "urn:li:sponsoredAccount:522529623"
+            },
+            "submitter": "urn:li:person:MpGcnvaU_p",
+            "versionedLeadGenFormUrn": "urn:li:versionedLeadGenForm:(urn:li:leadGenForm:3162,1)",
+            "leadMetadata": {
+                "sponsoredLeadMetadata": {
+                    "campaign": "urn:li:sponsoredCampaign:367378525"
+                }
+            },
+            "ownerInfo": {
+                "sponsoredAccountInfo": {
+                    "name": "Angela Test"
+                }
+            },
+            "testLead": false,
+            "associatedEntity": {
+                "associatedCreative": "urn:li:sponsoredCreative:121608865"
+            },
+            "leadType": "SPONSORED",
+            "leadMetadataInfo": {
+                "sponsoredLeadMetadataInfo": {
+                    "campaign": {
+                        "name": "Brand awareness - May 3, 2022",
+                        "type": "SPONSORED_UPDATES",
+                        "id": "urn:li:sponsoredCampaign:367378525"
+                    }
+                }
+            },
+            "associatedEntityInfo": {
+                "associatedCreative": {
+                    "intendedStatus": "ACTIVE",
+                    "content": {
+                        "reference": "urn:li:ugcPost:6927151919538794496"
+                    },
+                    "id": "urn:li:sponsoredCreative:121608865"
+                }
+            },
+            "id": "691c02e7-f7f0-430a-ae16-4fc7d76f61a6-5",
+            "submittedAt": 1686182358881,
+            "formResponse": {
+                "answers": [
+                    {
+                        "answerDetails": {
+                            "textQuestionAnswer": {
+                                "answer": "Hello World-testing purpose"
+                            }
+                        },
+                        "questionId": 1
+                    },
+                    {
+                        "answerDetails": {
+                            "multipleChoiceAnswer": {
+                                "options": [
+                                    1,
+                                    3
+                                ]
+                            }
+                        },
+                        "questionId": 2
+                    }
+                ],
+                "consentResponses": [
+                    {
+                        "accepted": true,
+                        "consentId": 4
+                    }
+                ]
+            }
+        }
+    ],
+    "paging": {
+        "count": 10,
+        "start": 0,
+        "total": 1,
+        "links": []
+    }
+}
+
+Get a single Lead Form Response
+You can use the lead id to fetch the corresponding response by making a GET call to the API.
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadFormResponses/691c02e7-f7f0-430a-ae16-4fc7d76f61a6-5
+Sample Response
+{
+	"owner": {
+		"sponsoredAccount": "urn:li:sponsoredAccount:522529623"
+	},
+	"submitter": "urn:li:person:MpGcnvaU_p",
+	"versionedLeadGenFormUrn": "urn:li:versionedLeadGenForm:(urn:li:leadGenForm:3162,1)",
+	"leadMetadata": {
+		"sponsoredLeadMetadata": {
+			"campaign": "urn:li:sponsoredCampaign:367378525"
+		}
+	},
+	"ownerInfo": {
+		"sponsoredAccountInfo": {
+			"name": "Angela Test"
+		}
+	},
+	"testLead": false,
+	"associatedEntity": {
+		"associatedCreative": "urn:li:sponsoredCreative:121608865"
+	},
+	"leadType": "SPONSORED",
+	"leadMetadataInfo": {
+		"sponsoredLeadMetadataInfo": {
+			"campaign": {
+				"name": "Brand awareness - May 3, 2022",
+				"type": "SPONSORED_UPDATES",
+				"id": "urn:li:sponsoredCampaign:367378525"
+			}
+		}
+	},
+	"associatedEntityInfo": {
+		"associatedCreative": {
+			"intendedStatus": "ACTIVE",
+			"content": {
+				"reference": "urn:li:ugcPost:6927151919538794496"
+			},
+			"id": "urn:li:sponsoredCreative:121608865"
+		}
+	},
+	"id": "691c02e7-f7f0-430a-ae16-4fc7d76f61a6-5",
+	"submittedAt": 1686182358881,
+	"formResponse": {
+		"answers": [{
+				"answerDetails": {
+					"textQuestionAnswer": {
+						"answer": "Hello World-testing purpose"
+					}
+				},
+				"questionId": 1
+			},
+			{
+				"answerDetails": {
+					"multipleChoiceAnswer": {
+						"options": [
+							1,
+							3
+						]
+					}
+				},
+				"questionId": 2
+			}
+		],
+		"consentResponses": [{
+			"accepted": true,
+			"consentId": 4
+		}]
+	}
+}
+Get Multiple Lead Form responses
+If you already know the IDs of multiple Lead Forms you wish to fetch response, you can fetch the response by using ids parameter. The API requires Restli 2.0 header.
+The maximum number of permitted ids is 1000.
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadFormResponses?ids=List("691c02e7-f7f0-430a-ae16-4fc7d76f61a6-5")&owner=(sponsoredAccount:urn%3Ali%3AsponsoredAccount%3A522529623)&leadType=(leadType:SPONSORED)
+Sample Response
+{
+	"results": {
+		"691c02e7-f7f0-430a-ae16-4fc7d76f61a6-5": {
+			"owner": {
+				"sponsoredAccount": "urn:li:sponsoredAccount:522529623"
+			},
+			"submitter": "urn:li:person:MpGcnvaU_p",
+			"versionedLeadGenFormUrn": "urn:li:versionedLeadGenForm:(urn:li:leadGenForm:3162,1)",
+			"leadMetadata": {
+				"sponsoredLeadMetadata": {
+					"campaign": "urn:li:sponsoredCampaign:367378525"
+				}
+			},
+			"ownerInfo": {
+				"sponsoredAccountInfo": {
+					"name": "Angela Test"
+				}
+			},
+			"testLead": false,
+			"associatedEntity": {
+				"associatedCreative": "urn:li:sponsoredCreative:121608865"
+			},
+			"leadType": "SPONSORED",
+			"leadMetadataInfo": {
+				"sponsoredLeadMetadataInfo": {
+					"campaign": {
+						"name": "Brand awareness - May 3, 2022",
+						"type": "SPONSORED_UPDATES",
+						"id": "urn:li:sponsoredCampaign:367378525"
+					}
+				}
+			},
+			"associatedEntityInfo": {
+				"associatedCreative": {
+					"intendedStatus": "ACTIVE",
+					"content": {
+						"reference": "urn:li:ugcPost:6927151919538794496"
+					},
+					"id": "urn:li:sponsoredCreative:121608865"
+				}
+			},
+			"id": "691c02e7-f7f0-430a-ae16-4fc7d76f61a6-5",
+			"submittedAt": 1686182358881,
+			"formResponse": {
+				"answers": [{
+						"answerDetails": {
+							"textQuestionAnswer": {
+								"answer": "Hello World-testing purpose"
+							}
+						},
+						"questionId": 1
+					},
+					{
+						"answerDetails": {
+							"multipleChoiceAnswer": {
+								"options": [
+									1,
+									3
+								]
+							}
+						},
+						"questionId": 2
+					}
+				],
+				"consentResponses": [{
+					"accepted": true,
+					"consentId": 4
+				}]
+			}
+		},
+		"statuses": {},
+		"errors": {}
+	}
+}
+Test Leads
+Test leads can be generated from the Campaign Manager UI. These leads can then be downloaded via the Lead Form Response API or UI. The testLead field on a response will be equal to true for test leads.
+Note
+Test leads currently cannot be generated for InMail campaigns with lead forms.
+Deleting draft campaigns associated with test leads is not recommended. Test leads linked to a deleted campaign will still be downloadable, but the associated campaign will no longer be retrievable which may cause problems in some integrations.
+More information on generating test leads is available in Sending a Test Lead in Campaign Manager.
+Lead Notification Subscriptions
+You can register URLs to receive webhook notifications of new leads. Only HTTPS URLs are supported.
+Schema
+Field
+Type
+Description
+Read Only
+Required in Write
+id
+Long
+Unique identifier of the subscription.
+Yes
+No
+webhook
+URL
+URL designating where the notification payloads are delivered.
+No
+Yes
+owner
+Union of SponsoredAccountUrn,OrganizationUrn
+URN identifying the owner of a Lead Form. Indicates that all forms under the owner are subject to triggering notifications. This can be the advertiser account or organization.
+No
+Yes
+leadType
+Enum
+Lead type for which the subscription is created. LeadType can be sponsored or organic.
+No
+Yes
+versionedFormUrn
+(optional) VersionedLeadGenFormUrn
+URN identifying the versioned Lead Form for which the subscription is created, e.g. urn:li:versionedLeadGenForm:(urn:li:leadGenForm:123,1). This is an optional field and will only be present if the subscription is made for a Lead Form, i.e. only actions such as lead submissions made on this particular form should trigger notifications. If a separate subscription containing only an owner exists, the same trigger will send payloads to both subscriptions if the webhooks are different. Otherwise, this will be null.
+No
+No
+associatedEntity
+(optional) Union of SponsoredCampaignUrn , SponsoredCreativeUrn , OrganizationUrn , EventUrn
+URN identifying the entity to which the Lead Form is attached. Leads are collected via the Lead Form attached to this entity, e.g. this could be a sponsored creative/ad (e.g. urn:li:sponsoredCreative:123456) with an attached Lead Form.This is an optional field and should only be included if the subscription is made for an associated entity to which the Lead Form is attached, only actions such as lead submissions made on this particular form should trigger notifications. If a separate subscription containing only an owner or an owner and form exists, the same trigger will send payloads to both subscriptions if webhooks are different. Otherwise, this will be null. 
+Note : SponsoredCampaignUrn type is only supported from 202403 and above versions.
+No
+No
+Fetch Lead Notification Subscriptions
+Existing Lead notification URLs can be requested individually through the following endpoint.
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadNotifications?q=criteria&owner=(value:(sponsoredAccount:urn%3Ali%3AsponsoredAccount%3A511849581))&leadType=(leadType:SPONSORED) 
+Sample Response
+{
+  "results": {
+            "owner": {
+                "organization": "urn:li:organization:5622087"
+            },
+            "id": 7012,
+            "leadType": "SPONSORED",
+            "versionedForm": "urn:li:versionedLeadGenForm:(urn:li:leadGenForm:6851219773716516864,1)",
+            "associatedEntity": {
+                "event": "urn:li:event:123"
+            }
+  }
+}
+
+Fetch a single Lead Notification Subscription
+Sample Request
+		http
+		curl
+GET https://api.linkedin.com/rest/leadNotifications/107708
+Sample Response
+{
+    "owner": {
+        "sponsoredAccount": "urn:li:sponsoredAccount:520866471"
+    },
+    "webhook": "https://eogi5ry4pv6izmq.m.pipedream.net",
+    "id": 107708,
+    "leadType": "SPONSORED"
+}
+Create a Lead Notification Subscription - Owner Level
+Use the following endpoint to create a new leadNotificationSubcription against an owner entity.
+Note
+Only HTTPS URLs are supported.
+The provided URL should be publicly accessible and accept POST bodies without any additional requirements such as authorization tokens.
+		http
+		curl
+POST https://api.linkedin.com/rest/leadNotifications --data '{"webhook": "https://eogi5ry4pv6izmq.m.pipedream.net","owner": {"sponsoredAccount": "urn:li:sponsoredAccount:520866471"}, "leadType": "SPONSORED"}'
+A successful response returns a 201 Created HTTP status code.
+Create a Lead Notification Subscription - Associated Entity Level
+Use the following endpoint to create a new leadNotificationSubscription against an associated entity.
+Only HTTPS URLs are supported.
+The provided URL should be publicly accessible and accept POST bodies without any additional requirements such as authorization tokens.
+		http
+		curl
+POST https://api.linkedin.com/rest/leadNotifications” --data ‘{“webhook”: “https://linkedin.com”,"owner": {"organization": "urn:li:organization:1"},"associatedEntity":{"event":"urn:li:event:123"}, "leadType": "SPONSORED"}’
+A successful response returns a 201 Created HTTP status code.
+Create a Lead Gen Notification Subscription - Form Level
+Use the following endpoint to create a new leadNotificationSubscription against a Lead Gen Form.
+Note
+Only HTTPS URLs are supported.
+The provided URL should be publicly accessible and accept POST bodies without any additional requirements such as authorization tokens.
+		http
+		curl
+POST https://api.linkedin.com/rest/leadNotifications” --data ‘{“webhook”: “https://linkedin.com”,"owner": {"organization": "urn:li:organization:1"},"versionedForm": "urn:li:versionedLeadGenForm:(urn:li:leadGenForm:818,1)", "leadType": "SPONSORED"}’
+A successful response returns a 201 Created HTTP status code.
+Security
+To verify that the notification is originated from LinkedIn, you can configure your service to only accept notifications that include a verification parameter that you explicitly set during the creation. For example, https://mywebservice.example.com/notificationHandler?secret=some-generated-token
+Note
+All notifications are sent via HTTPS, so your payload and parameters on the URL will be encrypted with SSL.
+Delete Lead notification URL
+You can remove a Lead notification URL when you No longer want to receive notifications.
+Sample Request
+		http
+		curl
+DELETE https://api.linkedin.com/rest/leadNotifications/107708
+FAQ
+Q: What happens if I have multiple subscriptions under an owner?
+A: We honor all subscriptions and will send push notifications for each valid subscription matching the context in which a lead was submitted/deleted.
+Q: Why is my webhook invalid or why was it invalidated?
+A: In most cases a webhook fails validation because it does not correctly return the HMAC-SHA256 encoding of the sent challenge code using the correct client secret. Please review the webhook documentation to ensure all steps are completed properly. Also, note that validation is ongoing and the webhook is challenged in a regular interval (~2 hours) so ensure no limitations are in place to prevent our service from calling the webhook.
+Q: Which subscription flow should I implement?
+A: While each option is serviceable, unless there is an explicit need to have unique webhook URLs on a per form or associated entity basis, we recommend creating subscriptions at the owner level. This simplifies subscription management in that only a single subscription needs to exist per owner.
+Q: What happens if I create a subscription with both a form and an associated entity?
+A: For a single subscription containing both a form and an associated entity, the behavior of our system is such that a notification is sent only when a lead is submitted that matches both the provided form and associated entity values.
+Q: What content can I expect to be included in the notification payloads?
+A: Please refer to the schema below:
+Field
+Description
+type
+Will always be set to "LEAD_ACTION".
+leadGenFormResponse
+Urn of the lead.
+owner
+Owner of the lead. For the SPONSORED lead type the owner is a sponsored account urn. For all other lead types the owner is an organization urn.
+associatedEntity
+URN identifying which entity the lead is associated with.
+leadGenForm
+Urn of the Lead Gen Form.
+leadType
+Type of the lead, will be set to "SPONSORED" for sponsored leads.
+leadAction
+Action performed on the lead, will be either "CREATED" or "DELETED".
+occuredAt
+Unix timestamp for when the action occurred.
+Example payload for when a member registers for an event
+{
+    type: “LEAD_ACTION”,
+    leadGenFormResponse: “urn:li:leadGenFormResponse:1a2b3c-4”,
+    leadGenForm: “urn:li:versionedLeadGenForm:(urn:li:leadGenForm:1, 1)”,
+    owner: {“organization”: “urn:li:organization:123”},
+    associatedEntity:  {“event”: “urn:li:event:123”},
+    leadType: "EVENT",
+    leadAction: “CREATED”,
+    occurredAt: 123456789
+}
+Example payload for when a member unregisters from an event
+{
+    type: “LEAD_ACTION”,
+    leadGenFormResponse: “urn:li:leadGenFormResponse:1a2b3c-4”,
+    leadGenForm: “urn:li:versionedLeadGenForm:(urn:li:leadGenForm:1, 1)”,
+    owner: {“organization”: “urn:li:organization:123”},
+    associatedEntity:  {“event”: “urn:li:event:123”},
+    leadType: "EVENT"
+    leadAction: “DELETED”
+    occurredAt: 1233589
+}
+
+API Error Details
+The following are the possible error codes and their resolutions:
+HTTP STATUS CODE
+ERROR MESSAGE
+DESCRIPTION
+RESOLUTION
+401
+Member is not authorized to create LeadGenForm
+Member does not have enough permissions under the sponsoredAccount to create a Lead Form
+Check whether the right Permissions are present to manage forms.
+401
+Member is not authorized to BatchGet LeadGenForms
+Member does not have enough permissions under the sponsoredAccount/Organization to get a Lead Form
+Check whether the right Permissions are present to manage forms.
+401
+Member is not authorized to fetch LeadGenForms under a SponsoredAccount/Organization
+Member does not have enough permissions under the sponsoredAccount/organization to fetch Lead Forms using criteria finder
+Check whether the right Permissions are present to manage forms.
+401
+The member does not have lead access permission.
+Member does not have enough permissions to access the collected leads.
+Check whether the right Permissions are present to fetch leads.
+400
+Failed to generate Lead Form identifier.
+Create request for Lead Form is not correct
+Please make sure the request payload is as per the schema
+400
+Please specify a concrete LeadType and Owner for your request.
+Batch get request is missing leadType or owner param in the request.
+Make sure both the params are present when making the batch get request.
+400
+Malformed subscription creation request that does not meet validation checks. Owner of Lead Form does not match that of the subscription.
+The subscription being accessed is not under the same sponsoredAccount/Organization as the Lead Form.
+Make sure owners for both Lead Form and the subscription are same.
+403
+Unauthorized! the member does not have permission to take this action on a subscription for the owner.
+not enough permissions to take actions on the lead notification subscription
+Check whether the right Permissions are present to manage lead notification subscriptions.
+409
+The Lead Form has duplicate {field}.
+The Form being created has duplicate fields which is not allowed
+Fix the fields in the error message to be have unique values.
+
+
+
+
+
+Was this page helpful?

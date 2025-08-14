@@ -1,0 +1,80 @@
+# Cloudflare Workers Configuration for BrainSAIT Store
+name = "brainsait-store-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-15"
+compatibility_flags = ["nodejs_compat"]
+
+# Worker Configuration
+[build]
+command = "npm run build"
+
+# Environment Variables
+[env.production]
+name = "brainsait-store-api-prod"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+APP_NAME = "BrainSAIT Store API"
+API_V1_PREFIX = "/api/v1"
+DEBUG = false
+
+# Database Configuration (use Cloudflare D1)
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "brainsait-store-db"
+database_id = "your-d1-database-id"
+
+# KV Storage for Sessions/Cache
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"
+
+# R2 Storage for File Uploads
+[[env.production.r2_buckets]]
+binding = "STORAGE"
+bucket_name = "brainsait-store-uploads"
+
+# Queue for Background Jobs
+[[env.production.queues]]
+binding = "JOBS"
+queue = "brainsait-jobs"
+
+# Analytics Engine
+[[env.production.analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "brainsait_analytics"
+
+# Custom Domain
+[env.production.routes]
+pattern = "api.store.brainsait.io/*"
+zone_name = "brainsait.io"
+
+# Security Headers
+[env.production.vars]
+CORS_ORIGINS = "https://store.brainsait.io,https://brainsait.io"
+TRUSTED_HOSTS = "store.brainsait.io,api.store.brainsait.io"
+
+# Payment Gateway Configuration (use Cloudflare secrets)
+# Set these via: wrangler secret put STRIPE_SECRET_KEY
+# STRIPE_SECRET_KEY = "sk_live_..."
+# PAYPAL_SECRET = "..."
+# APP_STORE_SHARED_SECRET = "59b266ddcfed4db4ae2bf3bcc72909d6"
+
+# Development Environment
+[env.development]
+name = "brainsait-store-api-dev"
+
+[env.development.vars]
+ENVIRONMENT = "development"
+DEBUG = true
+
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "brainsait-store-db-dev"
+database_id = "your-dev-d1-database-id"
+
+# Miniflare configuration for local development
+[miniflare]
+kv_persist = true
+d1_persist = true
+cache_persist = true

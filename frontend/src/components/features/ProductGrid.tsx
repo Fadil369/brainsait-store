@@ -1,0 +1,105 @@
+'use client';
+
+import React from 'react';
+import { useTranslation } from '@/hooks/useTranslation';
+import { ProductCard } from './ProductCard';
+import { Product } from '@/types';
+import { cn } from '@/lib/utils';
+
+interface ProductGridProps {
+  products: Product[];
+  onAddToCart: (product: Product) => void;
+  onShowDemo: (product: Product) => void;
+  loading?: boolean;
+  className?: string;
+}
+
+export const ProductGrid: React.FC<ProductGridProps> = ({
+  products,
+  onAddToCart,
+  onShowDemo,
+  loading = false,
+  className,
+}) => {
+  const { t } = useTranslation('common');
+
+  // Loading skeleton component
+  const LoadingSkeleton = () => (
+    <div className="glass rounded-2xl p-6 animate-pulse">
+      <div className="flex items-start gap-4 mb-4">
+        <div className="w-16 h-16 bg-gray/20 rounded-2xl" />
+        <div className="flex-1">
+          <div className="h-6 bg-gray/20 rounded mb-2" />
+          <div className="h-4 bg-gray/20 rounded w-24" />
+        </div>
+      </div>
+      <div className="space-y-2 mb-4">
+        <div className="h-4 bg-gray/20 rounded" />
+        <div className="h-4 bg-gray/20 rounded w-3/4" />
+      </div>
+      <div className="space-y-3 mb-6">
+        <div className="h-3 bg-gray/20 rounded w-32" />
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className="w-3 h-3 bg-gray/20 rounded-full" />
+            <div className="h-3 bg-gray/20 rounded flex-1" />
+          </div>
+        ))}
+      </div>
+      <div className="pt-4 border-t border-gray/20">
+        <div className="h-8 bg-gray/20 rounded mb-4" />
+        <div className="flex gap-3">
+          <div className="h-10 bg-gray/20 rounded flex-1" />
+          <div className="h-10 bg-gray/20 rounded flex-1" />
+        </div>
+      </div>
+    </div>
+  );
+
+  // Empty state component
+  const EmptyState = () => (
+    <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
+      <div className="text-6xl mb-6 opacity-50">🔍</div>
+      <h3 className="text-xl font-bold text-text-primary mb-2">
+        {t('filters.noResults')}
+      </h3>
+      <p className="text-text-secondary text-center max-w-md">
+        {t('filters.tryAdjusting')}
+      </p>
+    </div>
+  );
+
+  return (
+    <div className={cn('w-full', className)}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {loading ? (
+          // Show loading skeletons
+          [...Array(8)].map((_, index) => (
+            <LoadingSkeleton key={index} />
+          ))
+        ) : products.length === 0 ? (
+          // Show empty state
+          <EmptyState />
+        ) : (
+          // Show actual products with staggered animation
+          products.map((product, index) => (
+            <div
+              key={product.id}
+              className="animate-fade-in-up"
+              style={{
+                animationDelay: `${index * 100}ms`,
+                animationFillMode: 'both'
+              }}
+            >
+              <ProductCard
+                product={product}
+                onAddToCart={onAddToCart}
+                onShowDemo={onShowDemo}
+              />
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};

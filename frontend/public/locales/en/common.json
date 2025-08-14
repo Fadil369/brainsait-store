@@ -1,0 +1,97 @@
+{
+  "navigation": {
+    "logo": "BrainSAIT",
+    "products": "Products",
+    "solutions": "Solutions",
+    "pricing": "Pricing",
+    "about": "About",
+    "cart": "Cart"
+  },
+  "hero": {
+    "badge": "🇸🇦 Supporting Saudi Vision 2030",
+    "title": "Digital Innovation Marketplace",
+    "subtitle": "Transform Your Business with Premium Digital Solutions",
+    "searchPlaceholder": "Search products..."
+  },
+  "categories": {
+    "all": "All Products",
+    "ai": "🤖 AI Solutions",
+    "apps": "📱 Applications",
+    "websites": "🌐 Websites",
+    "templates": "📄 Templates",
+    "ebooks": "📚 eBooks",
+    "courses": "🎓 Courses",
+    "tools": "🛠️ Tools"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "tryDemo": "Try Demo",
+    "includingVAT": "Including 15% VAT",
+    "features": "Features",
+    "newBadge": "NEW",
+    "hotBadge": "HOT",
+    "proBadge": "PRO",
+    "vision2030Badge": "VISION 2030"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "vat": "VAT (15%)",
+    "total": "Total",
+    "remove": "Remove",
+    "checkout": "Proceed to Checkout",
+    "itemAdded": "Added to cart!",
+    "itemRemoved": "Removed from cart"
+  },
+  "demo": {
+    "title": "Product Demo",
+    "features": "Key Features",
+    "close": "Close"
+  },
+  "filters": {
+    "showingResults": "Showing {{count}} products",
+    "noResults": "No products found",
+    "tryAdjusting": "Try adjusting your search or filters"
+  },
+  "footer": {
+    "description": "Empowering digital transformation with innovative solutions aligned with Saudi Vision 2030.",
+    "products": "Products",
+    "support": "Support",
+    "company": "Company",
+    "bookConsultation": "Book Consultation",
+    "supportPatreon": "Support on Patreon",
+    "contactSupport": "Contact Support",
+    "documentation": "Documentation",
+    "aboutUs": "About Us",
+    "vision2030": "Vision 2030",
+    "partners": "Partners",
+    "careers": "Careers",
+    "copyright": "© 2025 BrainSAIT. All rights reserved",
+    "location": "Dr. Fadil - Riyadh, Saudi Arabia"
+  },
+  "language": {
+    "english": "English",
+    "arabic": "العربية",
+    "switchTo": "Switch to {{language}}"
+  },
+  "accessibility": {
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "openCart": "Open shopping cart",
+    "closeCart": "Close shopping cart",
+    "openDemo": "Open product demo",
+    "closeDemo": "Close product demo"
+  },
+  "loading": {
+    "products": "Loading products...",
+    "cart": "Loading cart...",
+    "general": "Loading..."
+  },
+  "error": {
+    "general": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "notFound": "Page not found.",
+    "retry": "Retry"
+  }
+}

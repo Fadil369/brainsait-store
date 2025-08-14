@@ -1,0 +1,190 @@
+[
+  {
+    "id": "cf_worker_brainsait-api-gateway",
+    "category": "tools",
+    "title": "Brainsait API Gateway",
+    "arabicTitle": "خدمة Brainsait API Gateway",
+    "description": "Serverless API Gateway deployed on Cloudflare Workers - Multi-tenant routing with rate limiting",
+    "price": 1999,
+    "badge": "LIVE API",
+    "badgeType": "hot",
+    "icon": "⚡",
+    "features": [
+      "⚡ Global Edge Deployment",
+      "🚀 Sub-millisecond Response",
+      "📈 Auto-scaling Infrastructure",
+      "🔒 Enterprise Security"
+    ],
+    "live_url": "https://brainsait-api-gateway.fadil.workers.dev",
+    "cloudflare_type": "worker",
+    "demo": {
+      "title": "Brainsait API Gateway - Live Demo",
+      "arabicTitle": "عرض مباشر - Brainsait API Gateway",
+      "preview": "🔗 Access Brainsait API Gateway live at https://brainsait-api-gateway.fadil.workers.dev. Serverless API with enterprise-grade performance deployed on Cloudflare's global network.",
+      "liveUrl": "https://brainsait-api-gateway.fadil.workers.dev",
+      "features": [
+        {
+          "icon": "🔗",
+          "title": "Live Access",
+          "desc": "Access the live API directly - try /health endpoint"
+        },
+        {
+          "icon": "⚡",
+          "title": "Global Performance", 
+          "desc": "Served from 200+ locations worldwide for optimal speed"
+        },
+        {
+          "icon": "🔒",
+          "title": "Enterprise Security",
+          "desc": "Protected by Cloudflare's enterprise security suite"
+        },
+        {
+          "icon": "📊",
+          "title": "Real-time Analytics",
+          "desc": "Monitor API performance with detailed analytics"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cf_worker_givc-healthcare-api",
+    "category": "ai",
+    "title": "GIVC Healthcare API",
+    "arabicTitle": "خدمة GIVC Healthcare API",
+    "description": "AI-powered healthcare API for medical data processing and NPHIES integration",
+    "price": 3499,
+    "badge": "LIVE API",
+    "badgeType": "hot",
+    "icon": "🤖",
+    "features": [
+      "🤖 AI-Powered Processing",
+      "🏥 Healthcare Integration",
+      "📊 Real-time Analytics", 
+      "🔐 HIPAA Compliant"
+    ],
+    "live_url": "https://givc-healthcare-api.fadil.workers.dev",
+    "cloudflare_type": "worker",
+    "demo": {
+      "title": "GIVC Healthcare API - Live Demo",
+      "arabicTitle": "عرض مباشر - GIVC Healthcare API",
+      "preview": "🏥 Advanced healthcare AI processing API with NPHIES integration for Saudi healthcare providers.",
+      "liveUrl": "https://givc-healthcare-api.fadil.workers.dev",
+      "features": [
+        {
+          "icon": "🏥",
+          "title": "Healthcare Focus",
+          "desc": "Specialized for medical data and healthcare workflows"
+        },
+        {
+          "icon": "🤖",
+          "title": "AI Processing",
+          "desc": "Machine learning models for medical data analysis"
+        },
+        {
+          "icon": "🇸🇦",
+          "title": "Saudi Integration",
+          "desc": "Full NPHIES compatibility for Saudi healthcare system"
+        },
+        {
+          "icon": "🔐",
+          "title": "Secure Processing",
+          "desc": "HIPAA-compliant data handling and encryption"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cf_worker_healthlinc-logs",
+    "category": "tools",
+    "title": "HealthLinc Logs",
+    "arabicTitle": "خدمة HealthLinc Logs",
+    "description": "Real-time logging and monitoring service for healthcare applications",
+    "price": 1699,
+    "badge": "LIVE API",
+    "badgeType": "new",
+    "icon": "⚡",
+    "features": [
+      "📊 Real-time Monitoring",
+      "🔍 Advanced Search",
+      "📈 Performance Analytics",
+      "🚨 Smart Alerting"
+    ],
+    "live_url": "https://healthlinc-logs.fadil.workers.dev",
+    "cloudflare_type": "worker",
+    "demo": {
+      "title": "HealthLinc Logs - Live Demo",
+      "arabicTitle": "عرض مباشر - HealthLinc Logs",
+      "preview": "📊 Comprehensive logging solution for healthcare applications with real-time monitoring.",
+      "liveUrl": "https://healthlinc-logs.fadil.workers.dev",
+      "features": [
+        {
+          "icon": "📊",
+          "title": "Real-time Logs",
+          "desc": "Live log streaming with instant search capabilities"
+        },
+        {
+          "icon": "🔍",
+          "title": "Advanced Search",
+          "desc": "Powerful query engine for log analysis"
+        },
+        {
+          "icon": "📈",
+          "title": "Analytics Dashboard", 
+          "desc": "Visual insights into application performance"
+        },
+        {
+          "icon": "🚨",
+          "title": "Smart Alerts",
+          "desc": "Intelligent alerting based on log patterns"
+        }
+      ]
+    }
+  },
+  {
+    "id": "cf_worker_mcp-serverlinc",
+    "category": "ai",
+    "title": "MCP ServerLinc",
+    "arabicTitle": "خدمة MCP ServerLinc",
+    "description": "Model Context Protocol server for AI model integration and management",
+    "price": 2999,
+    "badge": "LIVE API",
+    "badgeType": "hot",
+    "icon": "🤖",
+    "features": [
+      "🤖 AI Model Management",
+      "🔗 Protocol Integration",
+      "⚡ High Performance",
+      "🛡️ Secure Processing"
+    ],
+    "live_url": "https://mcp-serverlinc.fadil.workers.dev",
+    "cloudflare_type": "worker",
+    "demo": {
+      "title": "MCP ServerLinc - Live Demo",
+      "arabicTitle": "عرض مباشر - MCP ServerLinc",
+      "preview": "🔗 Advanced Model Context Protocol server for seamless AI model integration.",
+      "liveUrl": "https://mcp-serverlinc.fadil.workers.dev",
+      "features": [
+        {
+          "icon": "🤖",
+          "title": "AI Model Hub",
+          "desc": "Centralized management for multiple AI models"
+        },
+        {
+          "icon": "🔗",
+          "title": "Protocol Support",
+          "desc": "Full MCP specification compliance"
+        },
+        {
+          "icon": "⚡",
+          "title": "Edge Processing",
+          "desc": "AI inference at the edge for minimal latency"
+        },
+        {
+          "icon": "🛡️",
+          "title": "Secure API",
+          "desc": "Enterprise-grade security for AI workloads"
+        }
+      ]
+    }
+  }
+]

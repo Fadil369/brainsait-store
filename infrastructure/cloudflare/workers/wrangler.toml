@@ -1,0 +1,41 @@
+name = "brainsait-api-gateway"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "d55c590990d14c8f97c1d8c917afbe2f"
+
+# [[r2_buckets]]
+# binding = "DOCUMENTS"
+# bucket_name = "brainsait-documents"
+# Note: Requires Workers Paid plan
+
+# [[queues.producers]]
+# queue = "brainsait-webhooks"
+# binding = "WEBHOOK_QUEUE"
+# Note: Requires Workers Paid plan
+
+[vars]
+ENVIRONMENT = "staging"
+BACKEND_BASE_URL = "http://localhost:8000"
+# Set in dashboard or with wrangler secret put
+# LINKEDIN_WEBHOOK_SECRET = "..."
+# LINKEDIN_CLIENT_SECRET = "..."
+
+[env.production]
+vars = { ENVIRONMENT = "production", BACKEND_BASE_URL = "https://api-internal.brainsait.com" }
+routes = [
+  { pattern = "api.brainsait.com/*", zone_name = "brainsait.com" },
+  { pattern = "api-sa.brainsait.com/*", zone_name = "brainsait.com" }
+]
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "9b32ccc42b2d4b3aba515a400e96a740"
+
+[env.staging]
+vars = { ENVIRONMENT = "staging", BACKEND_BASE_URL = "https://staging-api-internal.brainsait.com" }
+routes = [
+  { pattern = "staging-api.brainsait.com/*", zone_name = "brainsait.com" }
+]

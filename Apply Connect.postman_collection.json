@@ -1,0 +1,532 @@
+{
+	"info": {
+		"_postman_id": "1fd81f8b-f488-462b-88e1-a12d8bafe73d",
+		"name": "Apply Connect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Customer Configuration",
+			"item": [
+				{
+					"name": "Provision Customer Application",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{parent_app_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"uniqueForeignId\": \"child-0001\",\n  \"name\": \"Child App\",\n  \"description\": \"Child App\",\n  \"validJsSdkDomains\": [\"http://localhost:5000\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/provisionedApplications/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"provisionedApplications",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sync Customer Integrations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"type": "text",
+								"value": "batch_partial_update"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{parent_app_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"entities\": {\n        \"integrationContext=urn:li:organization:{{org_id}}&integrationType=APPLY_CONNECT&tenantType=JOBS&dataProvider=ATS\": {\n            \"patch\": {\n                \"$set\": {\n                    \"integrationName\": \"Apply Connect Integration\"\n                }\n            }\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/atsIntegrations?ids[0].integrationContext=urn:li:organization:{{org_id}}&ids[0].integrationType=APPLY_CONNECT&ids[0].tenantType=JOBS&ids[0].dataProvider=ATS",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"atsIntegrations"
+							],
+							"query": [
+								{
+									"key": "ids[0].integrationContext",
+									"value": "urn:li:organization:{{org_id}}"
+								},
+								{
+									"key": "ids[0].integrationType",
+									"value": "APPLY_CONNECT"
+								},
+								{
+									"key": "ids[0].tenantType",
+									"value": "JOBS"
+								},
+								{
+									"key": "ids[0].dataProvider",
+									"value": "ATS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Integrations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{parent_app_access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.linkedin.com/v2/atsIntegrations?ids[0].integrationContext=urn:li:organization:{{org_id}}&ids[0].integrationType=APPLY_CONNECT&ids[0].tenantType=JOBS&ids[0].dataProvider=ATS",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"atsIntegrations"
+							],
+							"query": [
+								{
+									"key": "ids[0].integrationContext",
+									"value": "urn:li:organization:{{org_id}}"
+								},
+								{
+									"key": "ids[0].integrationType",
+									"value": "APPLY_CONNECT"
+								},
+								{
+									"key": "ids[0].tenantType",
+									"value": "JOBS"
+								},
+								{
+									"key": "ids[0].dataProvider",
+									"value": "ATS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Access Token - Parent Application",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"parent_app_access_token\", jsonData.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{parent_app_client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{parent_app_client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://www.linkedin.com/oauth/v2/accessToken",
+							"protocol": "https",
+							"host": [
+								"www",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"oauth",
+								"v2",
+								"accessToken"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create and Manage Jobs",
+			"item": [
+				{
+					"name": "Sync Jobs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"simple_job_posting_id\", jsonData.elements[0].id);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-restli-method",
+								"value": "batch_create"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{child_app_access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"elements\": [\n        {\n            \"externalJobPostingId\": \"jobposting-0001\",\n            \"title\": \"Software Engineer\",\n            \"description\": \"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\",\n            \"integrationContext\": \"urn:li:organization:{{integration_context}}\",\n            \"state\": \"LISTED\",\n            \"listingType\": \"BASIC\",\n            \"listedAt\": {{$timestamp}}000,\n            \"location\": \"San Francisco, CA\",\n            \"companyApplyUrl\": \"http://localhost:5000\",\n            \"onsiteApplyConfiguration\": {\n                \"jobApplicationWebhookUrl\": \"{{customer_webhook_url}}\",\n                \"questions\": {\n                    \"resumeQuestions\": {\n                        \"resumeQuestionRequirement\": \"REQUIRED\"\n                    },\n                    \"coverLetterQuestions\": {\n                        \"coverLetterQuestionRequirement\": \"REQUIRED\"\n                    },\n                    \"voluntarySelfIdentificationQuestions\": {},\n                    \"educationQuestions\": {\n                        \"educationExperienceQuestionSet\": {}\n                    },\n                    \"workQuestions\": {\n                        \"workExperienceQuestionSet\": {}\n                    },\n                    \"additionalQuestions\": {\n                        \"customQuestionSets\": [\n                            {\n                                \"questions\": [\n                                    {\n                                        \"partnerQuestionIdentifier\": \"question-0001\",\n                                        \"questionDetails\": {\n                                            \"multipleChoiceQuestionDetails\": {\n                                                \"choices\": [\n                                                    {\n                                                        \"symbolicName\": \"yes\",\n                                                        \"displayValue\": \"Yes\"\n                                                    },\n                                                    {\n                                                        \"symbolicName\": \"no\",\n                                                        \"displayValue\": \"No\"\n                                                    }\n                                                ],\n                                                \"preferredFormComponent\": \"RADIO_BUTTONS\",\n                                                \"selectMultiple\": false\n                                            }\n                                        },\n                                        \"required\": false,\n                                        \"questionText\": \"Do you want to work here?\"\n                                    }\n                                ]\n                            }\n                        ]\n                    }\n                }\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/simpleJobPostings",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"simpleJobPostings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sync Jobs - Creation Task Status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{child_app_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.linkedin.com/v2/simpleJobPostingTasks?ids={{simple_job_posting_id}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"simpleJobPostingTasks"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "{{simple_job_posting_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Receive Applications",
+			"item": [
+				{
+					"name": "Get Resume/Cover Letter",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer  {{child_app_access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://www.linkedin.com/ambry/?x-li-ambry-ep=",
+							"protocol": "https",
+							"host": [
+								"www",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"ambry",
+								""
+							],
+							"query": [
+								{
+									"key": "x-li-ambry-ep",
+									"value": ""
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sync Application Feedback Signals",
+			"item": [
+				{
+					"name": "Sync Hearing Back Signals",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{child_app_access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "X-RestLi-Method",
+								"value": "create",
+								"type": "text"
+							},
+							{
+								"key": "X-RestLi-Protocol-Version",
+								"value": "2.0.0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"jobApplicationId\": \"urn:li:jobApplication:{{job_application_id}}\",\n    \"action\": \"APPLICATION_VIEWED\",\n    \"performedAt\": {{$timestamp}}000,\n    \"integrationContext\": \"{{integration_context}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.linkedin.com/v2/jobApplicationLifecycleActions",
+							"protocol": "https",
+							"host": [
+								"api",
+								"linkedin",
+								"com"
+							],
+							"path": [
+								"v2",
+								"jobApplicationLifecycleActions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Access Token - Child Application",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"child_app_access_token\", jsonData.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{customer_app_client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{customer_app_client_secret}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://www.linkedin.com/oauth/v2/accessToken",
+					"protocol": "https",
+					"host": [
+						"www",
+						"linkedin",
+						"com"
+					],
+					"path": [
+						"oauth",
+						"v2",
+						"accessToken"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "customer_app_client_id",
+			"value": ""
+		},
+		{
+			"key": "customer_app_client_secret",
+			"value": ""
+		},
+		{
+			"key": "integration_context",
+			"value": ""
+		},
+		{
+			"key": "parent_app_client_id",
+			"value": ""
+		},
+		{
+			"key": "parent_app_client_secret",
+			"value": ""
+		},
+		{
+			"key": "customer_webhook_url",
+			"value": ""
+		},
+		{
+			"key": "job_application_id",
+			"value": ""
+		}
+	]
+}
