@@ -523,16 +523,16 @@ async def authenticate_ldap(ad_config: TenantSSO, username: str, password: str) 
     
     try:
         import ldap3
-        
+        from ldap3.utils.conv import escape_filter_chars
         # Create LDAP connection
         server = ldap3.Server(ad_config.ldap_server, get_info=ldap3.ALL)
         
         # Bind with user credentials
         user_dn = f"{username}@{ad_config.domain}" if "@" not in username else username
-        
+        safe_user_dn = escape_filter_chars(user_dn)
         with ldap3.Connection(server, user=user_dn, password=password, auto_bind=True) as conn:
             # Search for user attributes
-            search_filter = f"(userPrincipalName={user_dn})"
+            search_filter = f"(userPrincipalName={safe_user_dn})"
             conn.search(
                 ad_config.base_dn,
                 search_filter,
