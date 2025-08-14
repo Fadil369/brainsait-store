@@ -61,7 +61,7 @@ apiClient.interceptors.response.use(
     if (process.env.NODE_ENV === 'development') {
       const endTime = Date.now();
       const startTime = response.config.metadata?.startTime || endTime;
-      console.log(`API Request: ${response.config.method?.toUpperCase()} ${response.config.url} - ${endTime - startTime}ms`);
+      // API Request logged: ${response.config.method?.toUpperCase()} ${response.config.url} - ${endTime - startTime}ms
     }
 
     return response;
@@ -78,7 +78,7 @@ apiClient.interceptors.response.use(
 
     if (error.response?.status >= 500) {
       // Server error - you might want to show a notification
-      console.error('Server error:', error.response.data);
+      // Server error occurred
     }
 
     return Promise.reject(error);

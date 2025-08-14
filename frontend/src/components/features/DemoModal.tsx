@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
@@ -127,9 +128,11 @@ export const DemoModal: React.FC<DemoModalProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {product.demo.images.map((image, index) => (
               <div key={index} className="glass rounded-xl overflow-hidden">
-                <img 
+                <Image 
                   src={image} 
                   alt={`${product.title} demo ${index + 1}`}
+                  width={400}
+                  height={192}
                   className="w-full h-48 object-cover"
                 />
               </div>

@@ -277,7 +277,7 @@ export class AnalyticsService {
         const data = await this.getRealTimeMetrics();
         callback(data);
       } catch (error) {
-        console.error('Failed to fetch real-time metrics:', error);
+        // Failed to fetch real-time metrics
       }
     }, 30000); // Update every 30 seconds
 

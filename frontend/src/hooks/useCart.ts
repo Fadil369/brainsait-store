@@ -128,15 +128,10 @@ export const useCart = () => {
 
   // Calculate savings (if any original prices exist)
   const getSavings = useCallback(() => {
-    let totalSavings = 0;
-    let originalTotal = 0;
-
-    items.forEach(item => {
-      // If we had originalPrice data in cart items, we could calculate savings
-      // For now, this is a placeholder for future enhancement
-      const itemTotal = item.price * item.quantity;
-      originalTotal += itemTotal;
-    });
+    const totalSavings = 0;
+    
+    // Calculate current total from cart items
+    const originalTotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
 
     return {
       amount: totalSavings,

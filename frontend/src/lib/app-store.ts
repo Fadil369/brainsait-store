@@ -48,25 +48,20 @@ export class AppStoreService {
    * Get available App Store products
    */
   async getProducts(): Promise<AppStoreProduct[]> {
-    try {
-      const response = await fetch(`${this.baseUrl}/api/v1/app-store/products`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`,
-        },
-      });
+    const response = await fetch(`${this.baseUrl}/api/v1/app-store/products`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+      },
+    });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch products: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      return result.data || [];
-    } catch (error) {
-      console.error('Error fetching App Store products:', error);
-      throw error;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.statusText}`);
     }
+
+    const result = await response.json();
+    return result.data || [];
   }
 
   /**
@@ -90,7 +85,6 @@ export class AppStoreService {
       const result = await response.json();
       return result.data;
     } catch (error) {
-      console.error('Error validating receipt:', error);
       throw error;
     }
   }
@@ -116,7 +110,7 @@ export class AppStoreService {
       const result = await response.json();
       return result.data;
     } catch (error) {
-      console.error('Error completing purchase:', error);
+      // Error completing purchase
       throw error;
     }
   }
@@ -142,7 +136,7 @@ export class AppStoreService {
       const result = await response.json();
       return result.data;
     } catch (error) {
-      console.error('Error fetching transaction info:', error);
+      // Error fetching transaction info
       throw error;
     }
   }
@@ -168,7 +162,7 @@ export class AppStoreService {
       const result = await response.json();
       return result.data;
     } catch (error) {
-      console.error('Error fetching subscription status:', error);
+      // Error fetching subscription status
       throw error;
     }
   }
@@ -189,7 +183,7 @@ export class AppStoreService {
         });
       }
     } catch (error) {
-      console.warn('StoreKit not available or failed to initialize:', error);
+      // StoreKit not available or failed to initialize
     }
   }
 
@@ -204,7 +198,7 @@ export class AppStoreService {
         await (window as any).StoreKit.requestReview();
       }
     } catch (error) {
-      console.warn('Failed to request review:', error);
+      // Failed to request review
     }
   }
 
@@ -225,7 +219,7 @@ export class AppStoreService {
         window.open(appStoreUrl, '_blank');
       }
     } catch (error) {
-      console.warn('Failed to show product page:', error);
+      // Failed to show product page
     }
   }
 
@@ -268,7 +262,7 @@ export class AppStoreService {
 
       return completion;
     } catch (error) {
-      console.error('Error handling purchase result:', error);
+      // Error handling purchase result
       throw error;
     }
   }

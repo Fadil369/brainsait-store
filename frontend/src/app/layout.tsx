@@ -88,13 +88,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#00d4aa" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         
-        {/* Preload critical resources */}
-        <link
-          rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&display=swap"
-          as="style"
-          crossOrigin="anonymous"
-        />
+        {/* Preload critical resources - moved to _document.js for proper Next.js font optimization */}
         
         {/* JSON-LD structured data */}
         <script

@@ -5,7 +5,6 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { SearchBar } from '@/components/features/SearchBar';
 import { LanguageToggle } from '@/components/features/LanguageToggle';
 import { Badge } from '@/components/ui/Badge';
-import { useProductStore } from '@/stores';
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;

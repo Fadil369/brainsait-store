@@ -22,6 +22,7 @@ interface SSOLoginProps {
 export const SSOLogin: React.FC<SSOLoginProps> = ({
   tenantId,
   onSuccess,
+  onError,
   className
 }) => {
   const [providers, setProviders] = useState<SSOProvider[]>([]);
@@ -42,7 +43,9 @@ export const SSOLogin: React.FC<SSOLoginProps> = ({
           setProviders(data);
         }
       } catch (error) {
-        // Error handling could be improved with user feedback
+        if (onError) {
+          onError(error instanceof Error ? error.message : 'Failed to fetch SSO providers');
+        }
       }
     };
 

@@ -58,6 +58,11 @@ export class OIDSystemService {
   }
 
   private async makeRequest(endpoint: string, options?: RequestInit): Promise<any> {
+    // Check if API key is available
+    if (!this.apiKey) {
+      throw new Error('OID API key is not configured. Please set NEXT_PUBLIC_OID_API_KEY environment variable.');
+    }
+
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         headers: {
@@ -69,12 +74,16 @@ export class OIDSystemService {
       });
 
       if (!response.ok) {
-        throw new Error(`OID API Error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`OID API Error ${response.status}: ${response.statusText}. Details: ${errorText}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      return data;
     } catch (error) {
-      console.error('OID System API Error:', error);
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('OID System is currently unavailable. Please try again later.');
+      }
       throw error;
     }
   }
@@ -184,15 +193,28 @@ export class OIDSystemService {
         limit: 50,
       });
 
-      return this.mapOIDToStoreProducts(oidNodes).map(product => ({
+      const solutions = this.mapOIDToStoreProducts(oidNodes).map(product => ({
         ...product,
         is_b2b: true,
         pricing_model: 'enterprise',
         includes_source_code: product.complexity_level === 'enterprise',
         support_level: product.complexity_level === 'enterprise' ? 'premium' : 'standard',
       }));
+
+      if (solutions.length === 0) {
+        return this.getFallbackB2BSolutions();
+      }
+
+      return solutions;
     } catch (error) {
-      console.error('Failed to fetch B2B solutions from OID:', error);
+      // Log error but don't expose API details to user
+      if (error instanceof Error) {
+        if (error.message.includes('API key')) {
+          throw error; // Re-throw API key errors as they need user attention
+        }
+      }
+      
+      // For other errors, fallback gracefully
       return this.getFallbackB2BSolutions();
     }
   }
@@ -283,7 +305,7 @@ export class OIDSystemService {
   /**
    * Sync OID data with store inventory
    */
-  async syncWithStore(): Promise<void> {
+  async syncWithStore(): Promise<{success: boolean, count: number, error?: string}> {
     try {
       const b2bSolutions = await this.getB2BSolutions();
       
@@ -292,11 +314,26 @@ export class OIDSystemService {
       if (typeof window !== 'undefined') {
         localStorage.setItem('oid_synced_products', JSON.stringify(b2bSolutions));
         localStorage.setItem('oid_last_sync', new Date().toISOString());
+        localStorage.setItem('oid_sync_status', 'success');
       }
       
-      console.log(`Synced ${b2bSolutions.length} B2B solutions from OID system`);
+      return {
+        success: true,
+        count: b2bSolutions.length
+      };
     } catch (error) {
-      console.error('Failed to sync OID data with store:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown sync error';
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('oid_sync_status', 'failed');
+        localStorage.setItem('oid_last_error', errorMessage);
+      }
+      
+      return {
+        success: false,
+        count: 0,
+        error: errorMessage
+      };
     }
   }
 
@@ -306,8 +343,15 @@ export class OIDSystemService {
   getSyncedProducts(): any[] {
     if (typeof window === 'undefined') return [];
     
-    const stored = localStorage.getItem('oid_synced_products');
-    return stored ? JSON.parse(stored) : [];
+    try {
+      const stored = localStorage.getItem('oid_synced_products');
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      // If stored data is corrupted, return empty array and clear storage
+      localStorage.removeItem('oid_synced_products');
+      localStorage.removeItem('oid_last_sync');
+      return [];
+    }
   }
 
   /**
@@ -317,8 +361,15 @@ export class OIDSystemService {
     if (typeof window === 'undefined') return true;
     
     const lastSync = localStorage.getItem('oid_last_sync');
+    const syncStatus = localStorage.getItem('oid_sync_status');
+    
+    // Force sync if previous sync failed
+    if (syncStatus === 'failed') return true;
+    
+    // Force sync if no previous sync
     if (!lastSync) return true;
     
+    // Sync every hour for successful syncs
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     return new Date(lastSync) < oneHourAgo;
   }
@@ -326,10 +377,12 @@ export class OIDSystemService {
   /**
    * Auto-sync if needed
    */
-  async autoSync(): Promise<void> {
+  async autoSync(): Promise<{synced: boolean, result?: any}> {
     if (this.isSyncNeeded()) {
-      await this.syncWithStore();
+      const result = await this.syncWithStore();
+      return { synced: true, result };
     }
+    return { synced: false };
   }
 }
 

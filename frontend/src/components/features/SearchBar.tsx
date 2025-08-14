@@ -22,13 +22,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const { t } = useTranslation('common');
   const [value, setValue] = useState(defaultValue);
 
-  // Debounced search function to avoid too many API calls
-  const debouncedSearch = useCallback(
-    debounce((query: string) => {
-      onSearch(query);
-    }, 300),
-    [onSearch]
-  );
+  // Debounced search function to avoid too many API calls  
+  const debouncedSearch = useCallback((query: string) => {
+    const debouncedFn = debounce((q: string) => {
+      onSearch(q);
+    }, 300);
+    debouncedFn(query);
+  }, [onSearch]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;

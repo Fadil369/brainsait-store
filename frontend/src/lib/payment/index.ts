@@ -118,7 +118,6 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to fetch payment methods');
       return await response.json();
     } catch (error) {
-      // console.error('Error fetching payment methods:', error);
       // Return default methods if API fails
       return this.getDefaultPaymentMethods();
     }
@@ -203,7 +202,6 @@ export class PaymentService {
       if (!response.ok) throw new Error('Failed to create Stripe payment');
       return await response.json();
     } catch (error) {
-      // console.error('Stripe payment creation failed:', error);
       throw error;
     }
   }
@@ -211,42 +209,32 @@ export class PaymentService {
   async confirmStripePayment(clientSecret: string, paymentMethod?: any): Promise<any> {
     if (!this.stripe) throw new Error('Stripe not initialized');
 
-    try {
-      const result = await this.stripe.confirmPayment({
-        clientSecret,
-        confirmParams: {
-          return_url: `${window.location.origin}/payment/success`,
-        },
-        ...(paymentMethod && { payment_method: paymentMethod }),
-      });
+    const result = await this.stripe.confirmPayment({
+      clientSecret,
+      confirmParams: {
+        return_url: `${window.location.origin}/payment/success`,
+      },
+      ...(paymentMethod && { payment_method: paymentMethod }),
+    });
 
-      return result;
-    } catch (error) {
-      // console.error('Stripe payment confirmation failed:', error);
-      throw error;
-    }
+    return result;
   }
 
   // PayPal Payment Processing
   async createPayPalOrder(orderId: string): Promise<PaymentIntent> {
-    try {
-      const response = await fetch(`${config.api.baseUrl}/payments/paypal/order`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-        }),
-      });
+    const response = await fetch(`${config.api.baseUrl}/payments/paypal/order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({
+        order_id: orderId,
+      }),
+    });
 
-      if (!response.ok) throw new Error('Failed to create PayPal order');
-      return await response.json();
-    } catch (error) {
-      // console.error('PayPal order creation failed:', error);
-      throw error;
-    }
+    if (!response.ok) throw new Error('Failed to create PayPal order');
+    return await response.json();
   }
 
   async renderPayPalButtons(containerId: string, orderId: string): Promise<void> {
@@ -284,17 +272,14 @@ export class PaymentService {
               throw new Error('Payment capture failed');
             }
           } catch (error) {
-            // console.error('PayPal capture error:', error);
             window.location.href = `/payment/error?error=${encodeURIComponent('Payment processing failed')}`;
           }
         },
-        onError: (err: any) => {
-          // console.error('PayPal error:', err);
+        onError: () => {
           window.location.href = `/payment/error?error=${encodeURIComponent('PayPal payment failed')}`;
         },
       }).render(`#${containerId}`);
     } catch (error) {
-      // console.error('PayPal button rendering failed:', error);
       throw error;
     }
   }
@@ -306,8 +291,7 @@ export class PaymentService {
       if (!(window as any).ApplePaySession) return false;
 
       return await (window as any).ApplePaySession.canMakePaymentsWithActiveCard(config.applePay.merchantId);
-    } catch (error) {
-      // console.error('Apple Pay availability check failed:', error);
+    } catch {
       return false;
     }
   }
@@ -369,103 +353,81 @@ export class PaymentService {
             session.completePayment((window as any).ApplePaySession.STATUS_FAILURE);
           }
         } catch (error) {
-          // console.error('Apple Pay processing error:', error);
           session.completePayment((window as any).ApplePaySession.STATUS_FAILURE);
         }
       };
 
       session.begin();
     } catch (error) {
-      // console.error('Apple Pay initialization failed:', error);
       throw error;
     }
   }
 
   // Saudi Local Payment Methods
   async createMadaPayment(orderId: string, customerData: any): Promise<PaymentIntent> {
-    try {
-      const response = await fetch(`${config.api.baseUrl}/payments/mada/intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-          customer_name: customerData.name,
-          customer_phone: customerData.phone,
-          return_url: `${window.location.origin}/payment/success`,
-        }),
-      });
+    const response = await fetch(`${config.api.baseUrl}/payments/mada/intent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({
+        order_id: orderId,
+        customer_name: customerData.name,
+        customer_phone: customerData.phone,
+        return_url: `${window.location.origin}/payment/success`,
+      }),
+    });
 
-      if (!response.ok) throw new Error('Failed to create Mada payment');
-      return await response.json();
-    } catch (error) {
-      // console.error('Mada payment creation failed:', error);
-      throw error;
-    }
+    if (!response.ok) throw new Error('Failed to create Mada payment');
+    return await response.json();
   }
 
   async createSTCPayPayment(orderId: string, mobileNumber: string): Promise<PaymentIntent> {
-    try {
-      const response = await fetch(`${config.api.baseUrl}/payments/stc-pay/intent`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-          mobile_number: mobileNumber,
-        }),
-      });
+    const response = await fetch(`${config.api.baseUrl}/payments/stc-pay/intent`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({
+        order_id: orderId,
+        mobile_number: mobileNumber,
+      }),
+    });
 
-      if (!response.ok) throw new Error('Failed to create STC Pay payment');
-      return await response.json();
-    } catch (error) {
-      // console.error('STC Pay payment creation failed:', error);
-      throw error;
-    }
+    if (!response.ok) throw new Error('Failed to create STC Pay payment');
+    return await response.json();
   }
 
   // Stripe Product Management
   async syncProductsToStripe(): Promise<any> {
-    try {
-      const response = await fetch(`${config.api.baseUrl}/payments/stripe/products/sync`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
+    const response = await fetch(`${config.api.baseUrl}/payments/stripe/products/sync`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+    });
 
-      if (!response.ok) throw new Error('Failed to sync products to Stripe');
-      return await response.json();
-    } catch (error) {
-      // console.error('Stripe product sync failed:', error);
-      throw error;
-    }
+    if (!response.ok) throw new Error('Failed to sync products to Stripe');
+    return await response.json();
   }
 
   async createStripePaymentLink(productIds: number[], metadata?: any): Promise<any> {
-    try {
-      const response = await fetch(`${config.api.baseUrl}/payments/stripe/payment-link`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-        body: JSON.stringify({
-          product_ids: productIds,
-          metadata: metadata || {},
-        }),
-      });
+    const response = await fetch(`${config.api.baseUrl}/payments/stripe/payment-link`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+      },
+      body: JSON.stringify({
+        product_ids: productIds,
+        metadata: metadata || {},
+      }),
+    });
 
-      if (!response.ok) throw new Error('Failed to create payment link');
-      return await response.json();
-    } catch (error) {
-      // console.error('Payment link creation failed:', error);
-      throw error;
-    }
+    if (!response.ok) throw new Error('Failed to create payment link');
+    return await response.json();
   }
 
   // Utility Methods

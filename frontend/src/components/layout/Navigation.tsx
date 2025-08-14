@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Bars3Icon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { useAppStore, useCartStore } from '@/stores';
@@ -17,9 +17,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
   const { 
     isMobileMenuOpen, 
     toggleMobileMenu, 
-    closeMobileMenu,
-    language,
-    isRTL 
+    closeMobileMenu 
   } = useAppStore();
   const { totals, toggleCart } = useCartStore();
 

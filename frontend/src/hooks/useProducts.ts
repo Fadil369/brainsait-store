@@ -1,6 +1,6 @@
-import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { productsApi } from '@/lib/api';
-import { Product, ProductCategory, ProductFilters } from '@/types';
+import { ProductCategory, ProductFilters } from '@/types';
 
 // Query keys
 export const PRODUCTS_QUERY_KEYS = {

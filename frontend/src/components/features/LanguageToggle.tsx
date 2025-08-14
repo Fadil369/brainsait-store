@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/Button';
 import { useAppStore } from '@/stores';
 import { Language } from '@/types';
@@ -16,7 +15,6 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   variant = 'default',
   className,
 }) => {
-  const { t } = useTranslation('common');
   const { language, setLanguage } = useAppStore();
 
   const languages: Array<{

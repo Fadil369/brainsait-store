@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -17,7 +17,7 @@ import {
   ExternalLink,
   RotateCw as Sync  // Use RotateCw instead of Sync
 } from 'lucide-react';
-import { oidSystemService, OIDUtils } from '@/lib/oid-integration';
+import { oidSystemService } from '@/lib/oid-integration';
 
 interface OIDNode {
   id: string;
@@ -148,6 +148,23 @@ export default function OIDTreeViewer() {
   const [filteredNodes, setFilteredNodes] = useState<OIDNode[]>([]);
   const [lastSync, setLastSync] = useState<string>('');
 
+  const filterNodes = useCallback(() => {
+    if (!searchTerm.trim()) {
+      setFilteredNodes(nodes);
+      return;
+    }
+
+    const filtered = nodes.filter(node =>
+      node.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      node.metadata.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      node.metadata.technologies?.some(tech => 
+        tech.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+
+    setFilteredNodes(filtered);
+  }, [nodes, searchTerm]);
+
   useEffect(() => {
     loadOIDTree();
     checkLastSync();
@@ -155,7 +172,7 @@ export default function OIDTreeViewer() {
 
   useEffect(() => {
     filterNodes();
-  }, [nodes, searchTerm]);
+  }, [filterNodes]);
 
   const loadOIDTree = async () => {
     setLoading(true);
@@ -166,7 +183,7 @@ export default function OIDTreeViewer() {
       try {
         oidNodes = await oidSystemService.getOIDTree({ include_children: true });
       } catch (error) {
-        console.warn('OID system unavailable, using fallback data:', error);
+        // OID system unavailable, using fallback data
         // Use fallback B2B solutions as OID nodes
         const b2bSolutions = await oidSystemService.getB2BSolutions();
         oidNodes = b2bSolutions.map(solution => ({
@@ -200,7 +217,7 @@ export default function OIDTreeViewer() {
       setExpandedNodes(new Set(rootNodes.map(node => node.id)));
       
     } catch (error) {
-      console.error('Failed to load OID tree:', error);
+      // Failed to load OID tree
     } finally {
       setLoading(false);
     }
@@ -213,23 +230,6 @@ export default function OIDTreeViewer() {
         setLastSync(new Date(lastSyncTime).toLocaleString());
       }
     }
-  };
-
-  const filterNodes = () => {
-    if (!searchTerm.trim()) {
-      setFilteredNodes(nodes);
-      return;
-    }
-
-    const filtered = nodes.filter(node =>
-      node.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      node.metadata.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      node.metadata.technologies?.some(tech => 
-        tech.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-
-    setFilteredNodes(filtered);
   };
 
   const toggleNode = (nodeId: string) => {
@@ -249,7 +249,7 @@ export default function OIDTreeViewer() {
       await loadOIDTree();
       checkLastSync();
     } catch (error) {
-      console.error('Failed to sync with OID system:', error);
+      // Failed to sync with OID system
     } finally {
       setLoading(false);
     }

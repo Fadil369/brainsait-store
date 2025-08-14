@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Modal } from '@/components/ui/Modal';
 import { useAppStore } from '@/stores';
-import { paymentService, PaymentMethod, PaymentIntent } from '@/lib/payment';
+import { paymentService, PaymentMethod } from '@/lib/payment';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
@@ -37,28 +36,28 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   });
   const { language } = useAppStore();
 
-  useEffect(() => {
-    initializePaymentMethods();
-    checkApplePayAvailability();
-  }, []);
-
-  const initializePaymentMethods = async () => {
+  const initializePaymentMethods = useCallback(async () => {
     try {
       await paymentService.initialize();
       const methods = await paymentService.getPaymentMethods();
       setPaymentMethods(methods);
     } catch (error) {
-      console.error('Failed to initialize payment methods:', error);
+      // Failed to initialize payment methods
       onPaymentError('Failed to load payment methods');
     }
-  };
+  }, [onPaymentError]);
+
+  useEffect(() => {
+    initializePaymentMethods();
+    checkApplePayAvailability();
+  }, [initializePaymentMethods]);
 
   const checkApplePayAvailability = async () => {
     try {
       const available = await paymentService.isApplePayAvailable();
       setShowApplePay(available);
     } catch (error) {
-      console.error('Apple Pay check failed:', error);
+      // Apple Pay check failed
     }
   };
 
@@ -95,7 +94,7 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
           throw new Error('Unsupported payment method');
       }
     } catch (error) {
-      console.error('Payment processing failed:', error);
+      // Payment processing failed
       onPaymentError(error instanceof Error ? error.message : 'Payment failed');
     } finally {
       setLoading(false);
@@ -415,7 +414,7 @@ const StripePaymentForm: React.FC<{
         onError('Payment failed - no payment intent');
       }
     } catch (error) {
-      console.error('Stripe payment error:', error);
+      // Stripe payment error
       onError(error instanceof Error ? error.message : 'Payment failed');
     } finally {
       setLoading(false);

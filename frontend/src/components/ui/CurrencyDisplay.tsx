@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SaudiRiyalIcon, SARSymbol } from './SaudiRiyalIcon';
+import { SaudiRiyalIcon } from './SaudiRiyalIcon';
 import { formatSAR } from '@/lib/currency';
 
 interface CurrencyDisplayProps {

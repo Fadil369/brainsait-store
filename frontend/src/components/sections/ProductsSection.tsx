@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useTranslation } from '@/hooks/useTranslation';
 import { FilterTabs } from '@/components/features/FilterTabs';
 import { ProductGrid } from '@/components/features/ProductGrid';
 import { Button } from '@/components/ui/Button';
@@ -35,7 +34,6 @@ export const ProductsSection: React.FC<ProductsSectionProps> = ({
   productCounts,
   className,
 }) => {
-  const { t } = useTranslation('common');
 
   return (
     <section 
