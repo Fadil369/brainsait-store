@@ -1,0 +1,65 @@
+# Advanced CodeQL workflow tailored for BrainSAIT standards
+
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '43 2 * * 2'  # Weekly scan on Tuesdays
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+      packages: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: python
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # If you use specific frameworks, add setup steps here (e.g., for FastAPI, Node)
+      # - name: Setup Python
+      #   uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.10'
+
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '18'
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # Use custom queries for healthcare/insurance compliance, if present
+          # queries: +security-extended,security-and-quality,./.github/codeql/insurance-queries
+
+      # Manual build step (if needed for compiled languages):
+      - if: matrix.build-mode == 'manual'
+        shell: bash
+        run: |
+          echo 'Replace with build commands if you switch to manual mode.'
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
