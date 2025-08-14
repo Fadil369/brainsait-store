@@ -4,6 +4,7 @@ Handles receipt validation, subscription management, and notifications
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status, Request
+import logging
 from sqlalchemy.orm import Session
 from typing import Dict, Any
 from pydantic import BaseModel
@@ -141,10 +142,10 @@ async def handle_server_notifications(
         
     except Exception as e:
         # Log the error but return 200 to prevent retries
-        print(f"Notification processing error: {str(e)}")
+        logging.error(f"Notification processing error: {str(e)}", exc_info=True)
         return {
             "success": False,
-            "error": str(e),
+            "error": "Internal server error",
             "message": "Notification processing failed"
         }
 
