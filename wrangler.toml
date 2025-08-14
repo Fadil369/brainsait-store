@@ -51,6 +51,9 @@ dataset = "brainsait_analytics"
 pattern = "api.store.brainsait.io/*"
 zone_name = "brainsait.io"
 
+# Security Headers - moved to production vars
+# CORS_ORIGINS and TRUSTED_HOSTS are already defined above
+
 # Payment Gateway Configuration (use Cloudflare secrets)
 # Set these via: wrangler secret put STRIPE_SECRET_KEY
 # STRIPE_SECRET_KEY = "sk_live_..."

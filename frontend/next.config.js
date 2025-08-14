@@ -36,7 +36,7 @@ const nextConfig = {
   reactStrictMode: true,
   
   // Configure for Arabic RTL support and bundle optimization
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config, { dev, isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -169,9 +169,9 @@ const nextConfig = {
   
   // Remove default i18n for static export - use runtime i18n instead
   // i18n is handled by next-i18next and react-i18next
-
-  // Trailing slash
-  trailingSlash: false,
+  
+  // Compression
+  compress: true
 };
 
 module.exports = nextConfig;
