@@ -17,6 +17,8 @@ ENVIRONMENT = "production"
 APP_NAME = "BrainSAIT Store API"
 API_V1_PREFIX = "/api/v1"
 DEBUG = false
+CORS_ORIGINS = "https://store.brainsait.io,https://brainsait.io"
+TRUSTED_HOSTS = "store.brainsait.io,api.store.brainsait.io"
 
 # Database Configuration (use Cloudflare D1)
 [[env.production.d1_databases]]
@@ -48,11 +50,6 @@ dataset = "brainsait_analytics"
 [env.production.routes]
 pattern = "api.store.brainsait.io/*"
 zone_name = "brainsait.io"
-
-# Security Headers
-[env.production.vars]
-CORS_ORIGINS = "https://store.brainsait.io,https://brainsait.io"
-TRUSTED_HOSTS = "store.brainsait.io,api.store.brainsait.io"
 
 # Payment Gateway Configuration (use Cloudflare secrets)
 # Set these via: wrangler secret put STRIPE_SECRET_KEY

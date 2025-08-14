@@ -9,6 +9,20 @@ This guide provides step-by-step instructions for deploying the BrainSAIT Store 
 - Cloudflare account
 - Wrangler CLI: `npm install -g wrangler`
 
+## Configuration Validation
+
+Before deployment, always validate your wrangler.toml configuration:
+
+```bash
+# Validate wrangler.toml syntax
+node scripts/validate-wrangler.js
+
+# Or use wrangler directly (will show build errors but validates TOML)
+npx wrangler deploy --dry-run
+```
+
+**Important**: The wrangler.toml file must not have duplicate table definitions. If you see "Can't redefine existing key" errors, merge duplicate `[env.production.vars]` or other table sections into single blocks.
+
 ## Architecture Overview
 
 The BrainSAIT Store uses a modern serverless architecture:
@@ -87,15 +101,29 @@ cd backend/workers
 
 # Set production secrets
 wrangler secret put STRIPE_SECRET_KEY --env production
-wrangler secret put PAYPAL_SECRET --env production
+# Enter: sk_live_51NU4x3HNiG2Z9ziC...
+
+wrangler secret put PAYPAL_SECRET --env production  
+# Enter: ARux8wrYw6CXD_A88cgV_aVYHjXG1fFNCnyXmIX2T6_BNKUTwr12lbisklroHjs67nNJLzHHpCcuRPzp
+
 wrangler secret put DATABASE_URL --env production
+# Enter: your D1 database connection string
+
 wrangler secret put SECRET_KEY --env production
+# Enter: a strong random secret for JWT signing
+
 wrangler secret put APP_STORE_SHARED_SECRET --env production
+# Enter: 59b266ddcfed4db4ae2bf3bcc72909d6
 
 # Set staging secrets (optional)
 wrangler secret put STRIPE_SECRET_KEY --env staging
 # ... repeat for other secrets
+
+# List all secrets to verify
+wrangler secret list --env production
 ```
+
+**Note**: Secrets are encrypted and stored securely in Cloudflare. Use `wrangler secret delete <KEY>` to remove secrets if needed.
 
 ### 5. Deploy Frontend to Cloudflare Pages
 
@@ -229,10 +257,13 @@ wrangler rollback --env production
 - Check Node.js version compatibility
 - Verify environment variables are set
 
-#### Deployment Errors
-- Check Wrangler authentication: `wrangler whoami`
-- Verify resource IDs in wrangler.toml
-- Ensure sufficient Cloudflare plan limits
+#### wrangler.toml Parse Errors
+- **"Can't redefine existing key"**: This means you have duplicate table definitions in wrangler.toml
+  - Solution: Merge duplicate `[env.production.vars]` or other table sections
+  - Run `node scripts/validate-wrangler.js` to validate the fix
+- **Invalid TOML syntax**: Check for missing quotes, brackets, or commas
+  - Use an online TOML validator if needed
+  - Ensure arrays-of-tables use `[[...]]` format for bindings
 
 #### Runtime Errors
 - Check Workers logs: `wrangler tail`

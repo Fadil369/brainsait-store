@@ -63,7 +63,13 @@ cd frontend && npm install
 cd ../backend && pip install -r requirements.txt
 ```
 
-3. **Deploy**
+3. **Validate configuration**
+```bash
+# Validate wrangler.toml before deployment
+node scripts/validate-wrangler.js
+```
+
+4. **Deploy**
 ```bash
 ./deploy.sh
 ```
