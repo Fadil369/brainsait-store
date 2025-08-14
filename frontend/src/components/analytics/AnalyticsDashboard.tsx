@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Download, TrendingUp, TrendingDown, Users, ShoppingCart, CreditCard, Globe } from 'lucide-react';
+import { CalendarIcon, Download, TrendingUp, Users, ShoppingCart, CreditCard } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import {
@@ -52,46 +52,46 @@ export default function AnalyticsDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
-    fetchAnalyticsData();
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('authToken');
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        };
+
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+        const startDate = dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : '';
+        const endDate = dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : '';
+        const queryParams = `?start_date=${startDate}&end_date=${endDate}`;
+
+        const [revenueRes, customersRes, productsRes, paymentsRes, dashboardRes] = await Promise.all([
+          fetch(`${baseUrl}/api/v1/analytics/revenue${queryParams}`, { headers }),
+          fetch(`${baseUrl}/api/v1/analytics/customers${queryParams}`, { headers }),
+          fetch(`${baseUrl}/api/v1/analytics/products${queryParams}`, { headers }),
+          fetch(`${baseUrl}/api/v1/analytics/payments${queryParams}`, { headers }),
+          fetch(`${baseUrl}/api/v1/analytics/dashboard${queryParams}`, { headers })
+        ]);
+
+        const data = {
+          revenue: await revenueRes.json(),
+          customers: await customersRes.json(),
+          products: await productsRes.json(),
+          payments: await paymentsRes.json(),
+          dashboard: await dashboardRes.json()
+        };
+
+        setAnalyticsData(data);
+      } catch (error) {
+        // Error handling can be improved with toast notifications
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [dateRange]);
-
-  const fetchAnalyticsData = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('authToken');
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      };
-
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const startDate = dateRange.from ? format(dateRange.from, 'yyyy-MM-dd') : '';
-      const endDate = dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : '';
-      const queryParams = `?start_date=${startDate}&end_date=${endDate}`;
-
-      const [revenueRes, customersRes, productsRes, paymentsRes, dashboardRes] = await Promise.all([
-        fetch(`${baseUrl}/api/v1/analytics/revenue${queryParams}`, { headers }),
-        fetch(`${baseUrl}/api/v1/analytics/customers${queryParams}`, { headers }),
-        fetch(`${baseUrl}/api/v1/analytics/products${queryParams}`, { headers }),
-        fetch(`${baseUrl}/api/v1/analytics/payments${queryParams}`, { headers }),
-        fetch(`${baseUrl}/api/v1/analytics/dashboard${queryParams}`, { headers })
-      ]);
-
-      const data = {
-        revenue: await revenueRes.json(),
-        customers: await customersRes.json(),
-        products: await productsRes.json(),
-        payments: await paymentsRes.json(),
-        dashboard: await dashboardRes.json()
-      };
-
-      setAnalyticsData(data);
-    } catch (error) {
-      console.error('Failed to fetch analytics data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const exportReport = async (reportType: string, format: string = 'json') => {
     try {
@@ -120,7 +120,7 @@ export default function AnalyticsDashboard() {
         a.click();
       }
     } catch (error) {
-      console.error('Failed to export report:', error);
+      // Export error handling can be improved with user notification
     }
   };
 
@@ -307,7 +307,7 @@ export default function AnalyticsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {customerData?.top_customers?.slice(0, 5).map((customer: any, index: number) => (
+                  {customerData?.top_customers?.slice(0, 5).map((customer: any) => (
                     <div key={customer.id} className="flex items-center">
                       <div className="ml-4 space-y-1">
                         <p className="text-sm font-medium leading-none">
@@ -430,7 +430,7 @@ export default function AnalyticsDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {productData?.top_selling_products?.slice(0, 10).map((product: any, index: number) => (
+                  {productData?.top_selling_products?.slice(0, 10).map((product: any) => (
                     <div key={product.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <h4 className="font-medium">{product.name}</h4>

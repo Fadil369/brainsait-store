@@ -21,7 +21,6 @@ export default function HomePage() {
     setCategoryFilter,
     setSearchQuery,
     openDemo,
-    applyFilters,
   } = useProductStore();
   
   const { addItem } = useCartStore();
@@ -57,7 +56,6 @@ export default function HomePage() {
   const handleLoadMore = useCallback(async () => {
     // In a real application, this would load more products from the API
     // For now, it's just a placeholder
-    console.log('Load more products...');
   }, []);
 
   // Get product counts for filter tabs

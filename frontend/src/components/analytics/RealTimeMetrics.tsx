@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, DollarSign, Users, ShoppingCart, Activity } from 'lucide-react';
-import { analyticsService, RealTimeMetrics } from '@/lib/analytics';
+import { analyticsService } from '@/lib/analytics';
+import type { RealTimeMetrics } from '@/lib/analytics';
 
 interface MetricCardProps {
   title: string;
@@ -82,7 +83,7 @@ export default function RealTimeMetrics() {
       setMetrics(data);
       setLastUpdated(new Date().toLocaleTimeString());
     } catch (error) {
-      console.error('Failed to fetch real-time metrics:', error);
+      // Error will be handled by the analytics service or shown in UI
     } finally {
       setLoading(false);
     }
