@@ -1,0 +1,65 @@
+name: Validate Wrangler Configuration
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'wrangler.toml'
+      - 'frontend/wrangler.toml'
+      - '.github/workflows/validate-wrangler.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'wrangler.toml'
+      - 'frontend/wrangler.toml'
+      - '.github/workflows/validate-wrangler.yml'
+
+jobs:
+  validate-wrangler:
+    name: Validate Wrangler Configuration
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+        
+    - name: Install dependencies (Frontend)
+      run: |
+        cd frontend
+        npm ci
+        
+    - name: Validate root wrangler.toml
+      run: |
+        echo "Validating root wrangler.toml..."
+        node scripts/validate-wrangler.js
+        
+    - name: Validate frontend wrangler.toml
+      run: |
+        echo "Validating frontend/wrangler.toml..."
+        cd frontend
+        npx wrangler deploy --dry-run 2>&1 | grep -E "(ERROR|ParseError|Can't redefine)" && exit 1 || echo "✅ Frontend wrangler.toml is valid"
+        
+    - name: Check for duplicate TOML keys
+      run: |
+        echo "Checking for duplicate TOML table definitions..."
+        
+        # Check root wrangler.toml for duplicate single tables (not arrays-of-tables)
+        if [ -f "wrangler.toml" ]; then
+          echo "Checking root wrangler.toml for duplicate keys..."
+          awk '/^\[env\..*\]/ && !/^\[\[.*\]\]/ { if (seen[$0]++) { print "ERROR: Duplicate table definition: " $0 " in wrangler.toml"; exit 1 } }' wrangler.toml
+          echo "✅ No duplicate table definitions found in root wrangler.toml"
+        fi
+        
+        # Check frontend wrangler.toml for duplicate single tables (not arrays-of-tables)
+        if [ -f "frontend/wrangler.toml" ]; then
+          echo "Checking frontend/wrangler.toml for duplicate keys..."
+          awk '/^\[env\..*\]/ && !/^\[\[.*\]\]/ { if (seen[$0]++) { print "ERROR: Duplicate table definition: " $0 " in frontend/wrangler.toml"; exit 1 } }' frontend/wrangler.toml
+          echo "✅ No duplicate table definitions found in frontend/wrangler.toml"
+        fi
