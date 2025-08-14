@@ -2,12 +2,13 @@
 Order and cart API schemas for validation and serialization
 """
 
-from pydantic import BaseModel, Field, validator
-from typing import Optional, List, Dict, Any
 from datetime import datetime
-from enum import Enum
-from uuid import UUID
 from decimal import Decimal
+from enum import Enum
+from typing import Any, Dict, List, Optional
+from uuid import UUID
+
+from pydantic import BaseModel, Field, validator
 
 from app.models.orders import OrderStatus, PaymentStatus, ShippingStatus
 
@@ -87,18 +88,18 @@ class CartItemResponse(BaseModel):
     total_price: float
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     # Product information
     product_name: str
     product_name_ar: Optional[str] = None
     product_sku: str
     product_image: Optional[str] = None
     product_slug: str
-    
+
     # Variant information (if applicable)
     variant_name: Optional[str] = None
     variant_options: Optional[Dict[str, str]] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -140,7 +141,7 @@ class OrderItemResponse(BaseModel):
     tax_amount: float
     product_image: Optional[str] = None
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -202,10 +203,10 @@ class OrderResponse(BaseModel):
     shipped_at: Optional[datetime] = None
     delivered_at: Optional[datetime] = None
     cancelled_at: Optional[datetime] = None
-    
+
     # Related data
     items: List[OrderItemResponse] = []
-    
+
     class Config:
         from_attributes = True
 
@@ -221,7 +222,7 @@ class OrderListResponse(BaseModel):
     currency: str
     item_count: int
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -233,7 +234,7 @@ class OrderStatusHistoryResponse(BaseModel):
     to_status: str
     comment: Optional[str] = None
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -285,7 +286,7 @@ class CouponResponse(CouponBase):
     usage_count: int
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -323,7 +324,7 @@ class CheckoutResponse(BaseModel):
     payment_intent_id: Optional[str] = None  # For Stripe
     payment_url: Optional[str] = None  # For other gateways
     client_secret: Optional[str] = None  # For Stripe
-    
+
     class Config:
         from_attributes = True
 

@@ -2,11 +2,12 @@
 Payment API schemas for validation and serialization
 """
 
-from pydantic import BaseModel, Field, validator
-from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 from uuid import UUID
+
+from pydantic import BaseModel, Field, validator
 
 from app.models.payments import PaymentMethod, PaymentStatus, RefundStatus
 
@@ -53,7 +54,7 @@ class PaymentIntentResponse(BaseModel):
     amount: float
     currency: str
     metadata: Optional[Dict[str, Any]] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -141,7 +142,7 @@ class PaymentResponse(PaymentBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
     processed_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -164,7 +165,7 @@ class PaymentRefundResponse(BaseModel):
     created_at: datetime
     updated_at: Optional[datetime] = None
     processed_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -178,16 +179,16 @@ class UserPaymentMethodBase(BaseModel):
 class UserPaymentMethodCreate(UserPaymentMethodBase):
     # Stripe
     stripe_payment_method_id: Optional[str] = None
-    
+
     # Card info (for display)
     card_last4: Optional[str] = Field(None, regex=r"^\d{4}$")
     card_brand: Optional[str] = Field(None, max_length=20)
     card_exp_month: Optional[int] = Field(None, ge=1, le=12)
     card_exp_year: Optional[int] = Field(None, ge=2023)
-    
+
     # STC Pay
     stc_pay_phone: Optional[str] = Field(None, regex=r"^(05|5)\d{8}$")
-    
+
     # Bank Transfer
     bank_account_info: Optional[Dict[str, Any]] = None
 
@@ -203,7 +204,7 @@ class UserPaymentMethodResponse(UserPaymentMethodBase):
     is_active: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -227,7 +228,7 @@ class PaymentWebhookResponse(BaseModel):
     processing_error: Optional[str] = None
     retry_count: int
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 

@@ -2,16 +2,19 @@
 Authentication and SSO Pydantic schemas
 """
 
-from pydantic import BaseModel, EmailStr, Field, validator
-from typing import Optional, Dict, Any, List
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, EmailStr, Field, validator
+
 
 class SSOType(str, Enum):
     oauth = "oauth"
     saml = "saml"
     ldap = "ldap"
     oidc = "oidc"
+
 
 class SSOProvider(str, Enum):
     azure_ad = "azure_ad"
@@ -22,13 +25,16 @@ class SSOProvider(str, Enum):
     ping_identity = "ping_identity"
     custom = "custom"
 
+
 # ==================== BASIC AUTH SCHEMAS ====================
+
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
     remember_me: bool = False
     tenant_subdomain: Optional[str] = None
+
 
 class UserRegister(BaseModel):
     email: EmailStr
@@ -37,18 +43,19 @@ class UserRegister(BaseModel):
     company: Optional[str] = None
     phone: Optional[str] = None
     terms_accepted: bool = True
-    
-    @validator('password')
+
+    @validator("password")
     def validate_password(cls, v):
         if len(v) < 8:
-            raise ValueError('Password must be at least 8 characters long')
+            raise ValueError("Password must be at least 8 characters long")
         if not any(c.isupper() for c in v):
-            raise ValueError('Password must contain at least one uppercase letter')
+            raise ValueError("Password must contain at least one uppercase letter")
         if not any(c.islower() for c in v):
-            raise ValueError('Password must contain at least one lowercase letter')
+            raise ValueError("Password must contain at least one lowercase letter")
         if not any(c.isdigit() for c in v):
-            raise ValueError('Password must contain at least one digit')
+            raise ValueError("Password must contain at least one digit")
         return v
+
 
 class UserResponse(BaseModel):
     id: int
@@ -60,9 +67,10 @@ class UserResponse(BaseModel):
     sso_provider: Optional[str] = None
     last_login: Optional[datetime] = None
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
+
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -71,7 +79,9 @@ class TokenResponse(BaseModel):
     expires_in: int
     user: UserResponse
 
+
 # ==================== OAUTH 2.0 SCHEMAS ====================
+
 
 class OAuthAuthorizationRequest(BaseModel):
     provider: SSOProvider
@@ -79,11 +89,13 @@ class OAuthAuthorizationRequest(BaseModel):
     scopes: Optional[List[str]] = None
     state: Optional[str] = None
 
+
 class OAuthTokenRequest(BaseModel):
     provider: SSOProvider
     code: str
     state: str
     redirect_uri: Optional[str] = None
+
 
 class OAuthUserInfo(BaseModel):
     external_id: str
@@ -94,7 +106,9 @@ class OAuthUserInfo(BaseModel):
     profile_picture: Optional[str] = None
     attributes: Optional[Dict[str, Any]] = None
 
+
 # ==================== SAML 2.0 SCHEMAS ====================
+
 
 class SAMLRequest(BaseModel):
     provider: SSOProvider
@@ -102,10 +116,12 @@ class SAMLRequest(BaseModel):
     force_auth: bool = False
     is_passive: bool = False
 
+
 class SAMLResponse(BaseModel):
     saml_response: str
     relay_state: Optional[str] = None
     signature: Optional[str] = None
+
 
 class SAMLUserAttributes(BaseModel):
     name_id: str
@@ -118,7 +134,9 @@ class SAMLUserAttributes(BaseModel):
     groups: Optional[List[str]] = None
     attributes: Optional[Dict[str, Any]] = None
 
+
 # ==================== ACTIVE DIRECTORY SCHEMAS ====================
+
 
 class ActiveDirectoryConfig(BaseModel):
     server: str
@@ -131,6 +149,7 @@ class ActiveDirectoryConfig(BaseModel):
     use_ssl: bool = True
     use_tls: bool = False
 
+
 class LDAPUserInfo(BaseModel):
     username: str
     email: EmailStr
@@ -140,14 +159,16 @@ class LDAPUserInfo(BaseModel):
     groups: Optional[List[str]] = None
     attributes: Optional[Dict[str, Any]] = None
 
+
 # ==================== SSO CONFIGURATION SCHEMAS ====================
+
 
 class TenantSSOCreate(BaseModel):
     provider: SSOProvider
     sso_type: SSOType
     display_name: str
     description: Optional[str] = None
-    
+
     # OAuth Configuration
     client_id: Optional[str] = None
     client_secret: Optional[str] = None
@@ -156,7 +177,7 @@ class TenantSSOCreate(BaseModel):
     user_info_url: Optional[str] = None
     scopes: Optional[str] = None
     redirect_uri: Optional[str] = None
-    
+
     # SAML Configuration
     entity_id: Optional[str] = None
     sso_url: Optional[str] = None
@@ -164,7 +185,7 @@ class TenantSSOCreate(BaseModel):
     x509_certificate: Optional[str] = None
     private_key: Optional[str] = None
     metadata_url: Optional[str] = None
-    
+
     # LDAP Configuration
     ldap_server: Optional[str] = None
     base_dn: Optional[str] = None
@@ -173,15 +194,16 @@ class TenantSSOCreate(BaseModel):
     bind_password: Optional[str] = None
     user_search_filter: Optional[str] = None
     group_search_filter: Optional[str] = None
-    
+
     # Attribute Mapping
     attribute_mapping: Optional[Dict[str, str]] = None
-    
+
     # Settings
     auto_create_users: bool = True
     enforce_sso: bool = False
     require_group_membership: bool = False
     allowed_groups: Optional[List[str]] = None
+
 
 class TenantSSOUpdate(BaseModel):
     display_name: Optional[str] = None
@@ -197,6 +219,7 @@ class TenantSSOUpdate(BaseModel):
     allowed_groups: Optional[List[str]] = None
     is_active: Optional[bool] = None
 
+
 class TenantSSOResponse(BaseModel):
     id: int
     provider: SSOProvider
@@ -211,7 +234,7 @@ class TenantSSOResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     last_sync: Optional[datetime] = None
-    
+
     # Public configuration (no secrets)
     authorization_url: Optional[str] = None
     token_url: Optional[str] = None
@@ -224,11 +247,13 @@ class TenantSSOResponse(BaseModel):
     metadata_url: Optional[str] = None
     ldap_server: Optional[str] = None
     domain: Optional[str] = None
-    
+
     class Config:
         from_attributes = True
 
+
 # ==================== SSO SESSION SCHEMAS ====================
+
 
 class SSOSessionCreate(BaseModel):
     sso_config_id: int
@@ -240,6 +265,7 @@ class SSOSessionCreate(BaseModel):
     expires_at: Optional[datetime] = None
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
+
 
 class SSOSessionResponse(BaseModel):
     id: str
@@ -253,11 +279,13 @@ class SSOSessionResponse(BaseModel):
     authenticated_at: Optional[datetime] = None
     expires_at: Optional[datetime] = None
     is_active: bool
-    
+
     class Config:
         from_attributes = True
 
+
 # ==================== GROUP MAPPING SCHEMAS ====================
+
 
 class SSOGroupMappingCreate(BaseModel):
     external_group_name: str
@@ -265,6 +293,7 @@ class SSOGroupMappingCreate(BaseModel):
     internal_role: str
     permissions: Optional[Dict[str, Any]] = None
     auto_assign: bool = True
+
 
 class SSOGroupMappingResponse(BaseModel):
     id: int
@@ -276,11 +305,13 @@ class SSOGroupMappingResponse(BaseModel):
     auto_assign: bool
     created_at: datetime
     updated_at: datetime
-    
+
     class Config:
         from_attributes = True
 
+
 # ==================== AUDIT SCHEMAS ====================
+
 
 class SSOAuditLogResponse(BaseModel):
     id: int
@@ -293,11 +324,13 @@ class SSOAuditLogResponse(BaseModel):
     ip_address: Optional[str] = None
     timestamp: datetime
     metadata: Optional[Dict[str, Any]] = None
-    
+
     class Config:
         from_attributes = True
 
+
 # ==================== PROVIDER TEMPLATES ====================
+
 
 class SSOProviderTemplate(BaseModel):
     provider: SSOProvider
@@ -309,13 +342,16 @@ class SSOProviderTemplate(BaseModel):
     optional_fields: List[str]
     documentation_url: Optional[str] = None
 
+
 # ==================== ERROR SCHEMAS ====================
+
 
 class SSOError(BaseModel):
     error: str
     error_description: Optional[str] = None
     error_uri: Optional[str] = None
     state: Optional[str] = None
+
 
 class AuthenticationError(BaseModel):
     error: str

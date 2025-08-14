@@ -3,27 +3,42 @@ BrainSAIT B2B Platform - Main FastAPI Application
 Multi-tenant SaaS with Arabic/English support
 """
 
-from fastapi import FastAPI, Request, Depends
+import logging
+from contextlib import asynccontextmanager
+
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse
+from prometheus_client import make_asgi_app
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
-from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
-import logging
-from prometheus_client import make_asgi_app
 
-from app.core.config import settings
-from app.core.database import init_db, close_db
-from app.api.v1 import auth, tenants, users, workflows, billing, integrations, store, payments, app_store, analytics
+from app.api.v1 import (
+    analytics,
+    app_store,
+    auth,
+    billing,
+    integrations,
+)
 from app.api.v1 import integrations_linkedin as linkedin
-from app.core.tenant import TenantMiddleware
+from app.api.v1 import (
+    payments,
+    store,
+    tenants,
+    users,
+    workflows,
+)
+from app.core.config import settings
+from app.core.database import close_db, init_db
 from app.core.localization import LocalizationMiddleware
+from app.core.tenant import TenantMiddleware
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -40,6 +55,7 @@ async def lifespan(app: FastAPI):
     await close_db()
     logger.info("👋 Goodbye!")
 
+
 # Create FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
@@ -48,7 +64,7 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url="/api/docs",
     redoc_url="/api/redoc",
-    openapi_url="/api/openapi.json"
+    openapi_url="/api/openapi.json",
 )
 
 # Add CORS middleware with security restrictions
@@ -66,26 +82,31 @@ app.add_middleware(
         "X-Tenant-ID",
         "X-Request-ID",
         "X-Forwarded-For",
-        "User-Agent"
+        "User-Agent",
     ],
     expose_headers=["X-Total-Count", "X-Rate-Limit-Remaining"],
 )
+
 
 # Security Headers Middleware
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
-        
+
         # Add security headers
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
-        
+        response.headers["Permissions-Policy"] = (
+            "geolocation=(), camera=(), microphone=()"
+        )
+
         # Content Security Policy
         if not settings.DEBUG:
-            response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
             response.headers["Content-Security-Policy"] = (
                 "default-src 'self'; "
                 "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
@@ -94,15 +115,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 "img-src 'self' data: https:; "
                 "connect-src 'self' https:;"
             )
-        
+
         return response
+
 
 app.add_middleware(SecurityHeadersMiddleware)
 
 # Add Trusted Host middleware for security
 app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=["*.brainsait.com", "localhost"]
+    TrustedHostMiddleware, allowed_hosts=["*.brainsait.com", "localhost"]
 )
 
 # Add Tenant Context middleware
@@ -117,70 +138,55 @@ app.mount("/metrics", metrics_app)
 
 # Include API routers
 app.include_router(
-    auth.router,
-    prefix=f"{settings.API_V1_PREFIX}/auth",
-    tags=["Authentication"]
+    auth.router, prefix=f"{settings.API_V1_PREFIX}/auth", tags=["Authentication"]
 )
 
 app.include_router(
-    tenants.router,
-    prefix=f"{settings.API_V1_PREFIX}/tenants",
-    tags=["Tenants"]
+    tenants.router, prefix=f"{settings.API_V1_PREFIX}/tenants", tags=["Tenants"]
 )
 
 app.include_router(
-    users.router,
-    prefix=f"{settings.API_V1_PREFIX}/users",
-    tags=["Users"]
+    users.router, prefix=f"{settings.API_V1_PREFIX}/users", tags=["Users"]
 )
 
 app.include_router(
-    workflows.router,
-    prefix=f"{settings.API_V1_PREFIX}/workflows",
-    tags=["Workflows"]
+    workflows.router, prefix=f"{settings.API_V1_PREFIX}/workflows", tags=["Workflows"]
 )
 
 app.include_router(
-    billing.router,
-    prefix=f"{settings.API_V1_PREFIX}/billing",
-    tags=["Billing"]
+    billing.router, prefix=f"{settings.API_V1_PREFIX}/billing", tags=["Billing"]
 )
 
 app.include_router(
     integrations.router,
     prefix=f"{settings.API_V1_PREFIX}/integrations",
-    tags=["Integrations"]
+    tags=["Integrations"],
 )
 
 app.include_router(
     linkedin.router,
     prefix=f"{settings.API_V1_PREFIX}/integrations/linkedin",
-    tags=["LinkedIn"]
+    tags=["LinkedIn"],
 )
 
 app.include_router(
-    store.router,
-    prefix=f"{settings.API_V1_PREFIX}/store",
-    tags=["Store"]
+    store.router, prefix=f"{settings.API_V1_PREFIX}/store", tags=["Store"]
 )
 
 app.include_router(
-    payments.router,
-    prefix=f"{settings.API_V1_PREFIX}/payments",
-    tags=["Payments"]
+    payments.router, prefix=f"{settings.API_V1_PREFIX}/payments", tags=["Payments"]
 )
 
 app.include_router(
     app_store.router,
     prefix=f"{settings.API_V1_PREFIX}/app-store",
-    tags=["App Store Connect"]
+    tags=["App Store Connect"],
 )
 
 app.include_router(
-    analytics.router,
-    prefix=f"{settings.API_V1_PREFIX}/analytics",
-    tags=["Analytics"]
+    analytics.router, prefix=f"{settings.API_V1_PREFIX}/analytics", tags=["Analytics"]
 )
+
 
 @app.get("/")
 async def root(request: Request):
@@ -192,15 +198,16 @@ async def root(request: Request):
             "message": "مرحباً بك في منصة BrainSAIT B2B",
             "version": settings.APP_VERSION,
             "docs": "/api/docs",
-            "language": "ar"
+            "language": "ar",
         }
     else:
         return {
             "message": "Welcome to BrainSAIT B2B Platform",
             "version": settings.APP_VERSION,
             "docs": "/api/docs",
-            "language": "en"
+            "language": "en",
         }
+
 
 @app.get("/health")
 async def health_check():
@@ -208,8 +215,9 @@ async def health_check():
     return {
         "status": "healthy",
         "version": settings.APP_VERSION,
-        "environment": settings.ENVIRONMENT
+        "environment": settings.ENVIRONMENT,
     }
+
 
 @app.get("/api/v1/info")
 async def api_info(request: Request):
@@ -224,14 +232,15 @@ async def api_info(request: Request):
             "bilingual": True,
             "languages": settings.SUPPORTED_LANGUAGES,
             "automation": True,
-            "integrations": ["zapier", "n8n", "calendly", "stripe", "mada"]
+            "integrations": ["zapier", "n8n", "calendly", "stripe", "mada"],
         },
         "contact": {
             "support": "support@brainsait.com",
             "sales": "sales@brainsait.com",
-            "website": "https://brainsait.com"
-        }
+            "website": "https://brainsait.com",
+        },
     }
+
 
 # Global exception handler
 @app.exception_handler(Exception)
@@ -245,17 +254,16 @@ async def global_exception_handler(request: Request, exc: Exception):
     else:
         message = "A system error occurred. Please try again."
 
-    return JSONResponse(
-        status_code=500,
-        content={"detail": message}
-    )
+    return JSONResponse(status_code=500, content={"detail": message})
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
         port=8000,
         reload=settings.DEBUG,
-        log_level="info"
+        log_level="info",
     )

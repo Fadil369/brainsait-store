@@ -2,11 +2,13 @@
 Payment schemas for all supported gateways
 """
 
-from pydantic import BaseModel, EmailStr, Field, validator
-from typing import Optional, Dict, Any, List, Union
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
+from typing import Any, Dict, List, Optional, Union
+
+from pydantic import BaseModel, EmailStr, Field, validator
+
 
 class PaymentMethod(str, Enum):
     STRIPE = "stripe"
@@ -17,6 +19,7 @@ class PaymentMethod(str, Enum):
     MADA = "mada"
     STC_PAY = "stc_pay"
 
+
 class PaymentStatus(str, Enum):
     PENDING = "pending"
     PROCESSING = "processing"
@@ -25,13 +28,16 @@ class PaymentStatus(str, Enum):
     CANCELLED = "cancelled"
     REFUNDED = "refunded"
 
+
 class LicenseType(str, Enum):
     APP_ONLY = "app_only"
     APP_WITH_SOURCE = "app_with_source"
     ENTERPRISE = "enterprise"
     CUSTOM = "custom"
 
+
 # ==================== BASIC PAYMENT SCHEMAS ====================
+
 
 class PaymentRequest(BaseModel):
     payment_method: PaymentMethod
@@ -42,12 +48,13 @@ class PaymentRequest(BaseModel):
     customer_name: str
     items: List[Dict[str, Any]]
     metadata: Optional[Dict[str, Any]] = None
-    
-    @validator('amount')
+
+    @validator("amount")
     def validate_amount(cls, v):
         if v <= 0:
-            raise ValueError('Amount must be greater than 0')
+            raise ValueError("Amount must be greater than 0")
         return v
+
 
 class PaymentResponse(BaseModel):
     payment_id: str
@@ -61,7 +68,9 @@ class PaymentResponse(BaseModel):
     expires_at: Optional[datetime] = None
     metadata: Optional[Dict[str, Any]] = None
 
+
 # ==================== STRIPE SCHEMAS ====================
+
 
 class StripeProductCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
@@ -71,12 +80,14 @@ class StripeProductCreate(BaseModel):
     url: Optional[str] = None
     active: bool = True
 
+
 class StripePriceCreate(BaseModel):
     product_id: str
     unit_amount: int = Field(..., gt=0, description="Amount in halalas (cents)")
     currency: str = Field(default="sar")
     recurring: Optional[Dict[str, Any]] = None
     metadata: Optional[Dict[str, str]] = None
+
 
 class StripeCheckoutRequest(BaseModel):
     price_id: Optional[str] = None
@@ -90,11 +101,13 @@ class StripeCheckoutRequest(BaseModel):
     tax_id_collection: Dict[str, bool] = Field(default={"enabled": True})
     metadata: Optional[Dict[str, str]] = None
 
+
 class StripeSubscriptionCreate(BaseModel):
     customer_id: str
     price_id: str
     trial_period_days: Optional[int] = None
     metadata: Optional[Dict[str, str]] = None
+
 
 class StripeWebhookEvent(BaseModel):
     id: str
@@ -103,11 +116,14 @@ class StripeWebhookEvent(BaseModel):
     created: int
     api_version: str
 
+
 # ==================== PAYPAL SCHEMAS ====================
+
 
 class PayPalAmount(BaseModel):
     currency_code: str = "SAR"
     value: str
+
 
 class PayPalItem(BaseModel):
     name: str
@@ -116,6 +132,7 @@ class PayPalItem(BaseModel):
     quantity: str = "1"
     category: str = "DIGITAL_GOODS"
 
+
 class PayPalPurchaseUnit(BaseModel):
     reference_id: str
     amount: PayPalAmount
@@ -123,10 +140,12 @@ class PayPalPurchaseUnit(BaseModel):
     custom_id: Optional[str] = None
     items: Optional[List[PayPalItem]] = None
 
+
 class PayPalPaymentCreate(BaseModel):
     intent: str = "CAPTURE"
     purchase_units: List[PayPalPurchaseUnit]
     application_context: Optional[Dict[str, Any]] = None
+
 
 class PayPalWebhookEvent(BaseModel):
     id: str
@@ -135,11 +154,14 @@ class PayPalWebhookEvent(BaseModel):
     create_time: str
     event_version: str
 
+
 # ==================== APPLE PAY SCHEMAS ====================
+
 
 class ApplePayValidation(BaseModel):
     validation_url: str
     domain_name: str
+
 
 class ApplePayPaymentData(BaseModel):
     version: str
@@ -147,10 +169,12 @@ class ApplePayPaymentData(BaseModel):
     signature: str
     header: Dict[str, Any]
 
+
 class ApplePayPaymentToken(BaseModel):
     payment_data: ApplePayPaymentData
     payment_method: Dict[str, Any]
     transaction_identifier: str
+
 
 class ApplePayPaymentRequest(BaseModel):
     payment_token: ApplePayPaymentToken
@@ -158,7 +182,9 @@ class ApplePayPaymentRequest(BaseModel):
     amount: Decimal
     currency: str = "SAR"
 
+
 # ==================== SAUDI LOCAL GATEWAY SCHEMAS ====================
+
 
 class MoyasarPaymentCreate(BaseModel):
     amount: int = Field(..., gt=0, description="Amount in halalas")
@@ -168,10 +194,12 @@ class MoyasarPaymentCreate(BaseModel):
     callback_url: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
 
+
 class MoyasarWebhookEvent(BaseModel):
     type: str
     data: Dict[str, Any]
     created_at: str
+
 
 class HyperPayCheckoutCreate(BaseModel):
     entity_id: str
@@ -182,10 +210,12 @@ class HyperPayCheckoutCreate(BaseModel):
     customer_email: Optional[EmailStr] = None
     billing_country: str = "SA"
 
+
 class HyperPayWebhookEvent(BaseModel):
     type: str
     data: Dict[str, Any]
     timestamp: str
+
 
 class STCPayRequest(BaseModel):
     amount: Decimal
@@ -193,6 +223,7 @@ class STCPayRequest(BaseModel):
     mobile_number: str = Field(..., regex="^(\\+966|966|0)?5[0-9]{8}$")
     reference_id: str
     description: str
+
 
 class MadaPaymentRequest(BaseModel):
     amount: Decimal
@@ -203,7 +234,9 @@ class MadaPaymentRequest(BaseModel):
     cvv: str = Field(..., min_length=3, max_length=4)
     cardholder_name: str
 
+
 # ==================== ORDER AND INVOICE SCHEMAS ====================
+
 
 class OrderItemCreate(BaseModel):
     product_id: int
@@ -214,6 +247,7 @@ class OrderItemCreate(BaseModel):
     includes_source_code: bool = False
     support_months: int = Field(default=12, ge=0, le=60)
 
+
 class OrderCreate(BaseModel):
     customer_email: EmailStr
     customer_name: str
@@ -223,6 +257,7 @@ class OrderCreate(BaseModel):
     items: List[OrderItemCreate] = Field(..., min_items=1)
     discount_code: Optional[str] = None
     notes: Optional[str] = None
+
 
 class OrderResponse(BaseModel):
     id: int
@@ -241,15 +276,17 @@ class OrderResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     paid_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
+
 
 class InvoiceGenerate(BaseModel):
     order_id: int
     include_vat: bool = True
     language: str = Field(default="en", regex="^(en|ar)$")
     template: str = Field(default="standard")
+
 
 class PaymentLinkCreate(BaseModel):
     product_ids: List[int] = Field(..., min_items=1)
@@ -261,6 +298,7 @@ class PaymentLinkCreate(BaseModel):
     custom_fields: Optional[List[Dict[str, Any]]] = None
     metadata: Optional[Dict[str, str]] = None
 
+
 class PaymentLinkResponse(BaseModel):
     id: str
     url: str
@@ -271,7 +309,9 @@ class PaymentLinkResponse(BaseModel):
     expires_at: Optional[datetime] = None
     created_at: datetime
 
+
 # ==================== WEBHOOK SCHEMAS ====================
+
 
 class WebhookEvent(BaseModel):
     id: str
@@ -282,13 +322,16 @@ class WebhookEvent(BaseModel):
     signature: Optional[str] = None
     verified: bool = False
 
+
 class WebhookResponse(BaseModel):
     status: str
     message: Optional[str] = None
     order_id: Optional[str] = None
     payment_id: Optional[str] = None
 
+
 # ==================== ANALYTICS SCHEMAS ====================
+
 
 class PaymentAnalytics(BaseModel):
     total_revenue: Decimal
@@ -299,11 +342,13 @@ class PaymentAnalytics(BaseModel):
     period_start: datetime
     period_end: datetime
 
+
 class RefundRequest(BaseModel):
     payment_id: str
     amount: Optional[Decimal] = None
     reason: str
     metadata: Optional[Dict[str, str]] = None
+
 
 class RefundResponse(BaseModel):
     refund_id: str
