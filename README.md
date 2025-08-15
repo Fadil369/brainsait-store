@@ -94,10 +94,52 @@ node scripts/validate-wrangler.js
 - **Infrastructure**: Cloudflare Workers/Pages
 - **Payments**: Stripe, PayPal, Apple Pay, Saudi gateways
 
+## 📚 Documentation
+
+### Comprehensive Documentation Hub
+Explore our complete documentation at [`/docs`](./docs/README.md):
+
+#### For Developers
+- 🚀 [Development Setup](./docs/development/README.md) - Get started with local development
+- 🏗️ [System Architecture](./docs/architecture/README.md) - Complete architecture overview
+- 📡 [API Documentation](./docs/api/README.md) - RESTful API reference
+- 🔗 [Integration Guide](./docs/integration/README.md) - Third-party integrations
+- 📦 [SDK Documentation](./docs/sdk/README.md) - Official SDKs and libraries
+
+#### For Administrators
+- 👥 [Admin User Guide](./docs/admin/README.md) - Complete admin interface guide
+- 🏢 [Tenant Management](./docs/admin/README.md#tenant-management) - Multi-tenant administration
+- 📊 [Analytics Dashboard](./docs/admin/README.md#analytics-and-reporting) - Business intelligence
+
+#### For DevOps
+- 🚀 [Deployment Guide](./docs/deployment/README.md) - Production deployment
+- 📈 [Monitoring & Operations](./docs/deployment/README.md#monitoring-and-logging) - System monitoring
+- 🔄 [CI/CD Pipeline](./docs/deployment/README.md#cicd-pipeline) - Automated deployments
+
+### Quick Reference
+- **API Docs**: https://brainsait-api-gateway.fadil.workers.dev/api/docs
+- **Health Check**: https://brainsait-api-gateway.fadil.workers.dev/health
+- **Integration Examples**: [/docs/integration](./docs/integration/README.md)
+- **SDK Samples**: [/docs/sdk](./docs/sdk/README.md)
+
+## 🆘 Support
+
+### Getting Help
+- 📖 **Documentation**: [Complete documentation hub](./docs/README.md)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/Fadil369/brainsait-store/issues)
+- 📧 **Email**: support@brainsait.io
+- 🚨 **Emergency**: 24/7 support for critical issues
+
+### Community Resources
+- 💬 **Discord**: Developer community
+- 📺 **YouTube**: Video tutorials and demos
+- 📱 **LinkedIn**: BrainSAIT Developers Group
+
 ## 📄 License
 
 Proprietary software owned by BrainSAIT. All rights reserved.
 
 ---
 
-🌟 **Ready for Enterprise Deployment at store.brainsait.io**
+🌟 **Ready for Enterprise Deployment at store.brainsait.io**  
+📚 **[Explore Complete Documentation](./docs/README.md)**
