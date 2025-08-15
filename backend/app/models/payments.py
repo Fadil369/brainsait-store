@@ -91,8 +91,8 @@ class Payment(Base):
     failure_reason = Column(Text, nullable=True)
     failure_code = Column(String(50), nullable=True)
 
-    # Metadata
-    metadata = Column(JSON, nullable=True)
+    # Additional metadata
+    extra_data = Column(JSON, nullable=True)
 
     # Timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())

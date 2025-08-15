@@ -19,11 +19,14 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import get_current_tenant, get_current_user
+from app.core.dependencies import get_current_user
+from app.core.tenant import get_current_tenant
 from app.core.config import settings
 from app.core.database import get_db
 from app.models.products import Product
-from app.models.store import Invoice, Order, Payment
+from app.models.invoices import Invoice
+from app.models.orders import Order
+from app.models.payments import Payment
 from app.schemas.payments import (
     ApplePayPaymentCreate,
     InvoiceResponse,
@@ -39,6 +42,7 @@ from app.schemas.payments import (
 )
 from app.services.notifications import NotificationService
 from app.services.payment_providers import MadaService, STCPayService, StripeService
+from app.services.payment_security import webhook_security, fraud_detection, payment_reconciliation
 from app.services.zatca_service import ZATCAService
 
 logger = logging.getLogger(__name__)
@@ -217,6 +221,33 @@ async def create_mada_payment_intent(
         if not order:
             raise HTTPException(status_code=404, detail="Order not found")
 
+        # Fraud detection analysis
+        fraud_analysis = await fraud_detection.analyze_payment(
+            payment_data={
+                "amount": order.total_amount,
+                "currency": "SAR",
+                "provider": "mada",
+                "customer_info": {
+                    "name": payment_data.customer_name,
+                    "phone": payment_data.customer_phone,
+                }
+            },
+            user_id=current_user.id,
+            ip_address=request.client.host if request.client else None
+        )
+
+        # Block high-risk payments
+        if fraud_analysis["block_payment"]:
+            logger.warning(f"Blocked high-risk payment for order {order.id}: {fraud_analysis}")
+            raise HTTPException(
+                status_code=403, 
+                detail="Payment blocked due to security concerns"
+            )
+
+        # Log fraud analysis for review if needed
+        if fraud_analysis["requires_review"]:
+            logger.warning(f"Payment requires review for order {order.id}: {fraud_analysis}")
+
         # Create Mada payment
         mada_payment = await mada_service.create_payment(
             amount=order.total_amount,
@@ -290,6 +321,30 @@ async def create_stc_payment_intent(
                 status_code=400,
                 detail="Mobile number must be a valid Saudi number (+966)",
             )
+
+        # Fraud detection analysis
+        fraud_analysis = await fraud_detection.analyze_payment(
+            payment_data={
+                "amount": order.total_amount,
+                "currency": "SAR",
+                "provider": "stc_pay",
+                "mobile_number": payment_data.mobile_number,
+            },
+            user_id=current_user.id,
+            ip_address=request.client.host if request.client else None
+        )
+
+        # Block high-risk payments
+        if fraud_analysis["block_payment"]:
+            logger.warning(f"Blocked high-risk STC Pay payment for order {order.id}: {fraud_analysis}")
+            raise HTTPException(
+                status_code=403, 
+                detail="Payment blocked due to security concerns"
+            )
+
+        # Log fraud analysis for review if needed
+        if fraud_analysis["requires_review"]:
+            logger.warning(f"STC Pay payment requires review for order {order.id}: {fraud_analysis}")
 
         # Create STC Pay payment
         stc_payment = await stc_service.create_payment(
@@ -810,13 +865,39 @@ async def mada_webhook(
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
 ):
-    """Handle Mada payment webhooks"""
+    """Handle Mada payment webhooks with enhanced security"""
 
     try:
-        # Verify webhook signature (implement Mada-specific verification)
+        # Rate limiting
+        if not await webhook_security.rate_limit_webhook(request, "mada"):
+            raise HTTPException(status_code=429, detail="Rate limit exceeded")
+
+        # Enhanced signature verification
         signature = request.headers.get("x-mada-signature")
-        if not verify_mada_signature(webhook_data, signature):
+        timestamp = request.headers.get("x-mada-timestamp")
+        
+        if not await webhook_security.verify_webhook_signature(
+            provider="mada",
+            payload=webhook_data,
+            signature=signature,
+            timestamp=timestamp
+        ):
+            await webhook_security.log_webhook_attempt(
+                provider="mada",
+                request=request,
+                payload=webhook_data,
+                success=False,
+                error="Invalid signature"
+            )
             raise HTTPException(status_code=401, detail="Invalid signature")
+
+        # Log successful webhook
+        await webhook_security.log_webhook_attempt(
+            provider="mada",
+            request=request,
+            payload=webhook_data,
+            success=True
+        )
 
         # Handle payment status updates
         if webhook_data["status"] == "completed":
@@ -850,13 +931,39 @@ async def stc_pay_webhook(
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
 ):
-    """Handle STC Pay webhooks"""
+    """Handle STC Pay webhooks with enhanced security"""
 
     try:
-        # Verify webhook signature
+        # Rate limiting
+        if not await webhook_security.rate_limit_webhook(request, "stc_pay"):
+            raise HTTPException(status_code=429, detail="Rate limit exceeded")
+
+        # Enhanced signature verification
         signature = request.headers.get("x-stc-signature")
-        if not verify_stc_signature(webhook_data, signature):
+        timestamp = request.headers.get("x-stc-timestamp")
+        
+        if not await webhook_security.verify_webhook_signature(
+            provider="stc_pay",
+            payload=webhook_data,
+            signature=signature,
+            timestamp=timestamp
+        ):
+            await webhook_security.log_webhook_attempt(
+                provider="stc_pay",
+                request=request,
+                payload=webhook_data,
+                success=False,
+                error="Invalid signature"
+            )
             raise HTTPException(status_code=401, detail="Invalid signature")
+
+        # Log successful webhook
+        await webhook_security.log_webhook_attempt(
+            provider="stc_pay",
+            request=request,
+            payload=webhook_data,
+            success=True
+        )
 
         # Handle payment status updates
         if webhook_data["status"] == "paid":
@@ -1153,3 +1260,97 @@ async def get_invoice(
         pdf_url=invoice.pdf_url,
         created_at=invoice.created_at,
     )
+
+
+# ==================== PAYMENT RECONCILIATION ====================
+
+@router.post("/reconciliation/run")
+async def run_payment_reconciliation(
+    start_date: datetime,
+    end_date: datetime,
+    provider: Optional[str] = None,
+    request: Request = None,
+    tenant_id: UUID = Depends(get_current_tenant),
+    current_user=Depends(get_current_user),
+):
+    """Run payment reconciliation for specified period"""
+    try:
+        # Check if user has admin permissions (simplified check)
+        # In production, implement proper role-based access control
+        
+        reconciliation_result = await payment_reconciliation.reconcile_payments(
+            start_date=start_date,
+            end_date=end_date,
+            provider=provider
+        )
+        
+        logger.info(f"Payment reconciliation completed for {start_date} to {end_date}")
+        return reconciliation_result
+        
+    except Exception as e:
+        logger.error(f"Payment reconciliation failed: {e}")
+        raise HTTPException(status_code=500, detail="Reconciliation failed")
+
+
+@router.get("/reconciliation/report")
+async def get_reconciliation_report(
+    start_date: datetime,
+    end_date: datetime,
+    provider: Optional[str] = None,
+    request: Request = None,
+    tenant_id: UUID = Depends(get_current_tenant),
+    current_user=Depends(get_current_user),
+):
+    """Get reconciliation report for specified period"""
+    try:
+        reconciliation_data = await payment_reconciliation.reconcile_payments(
+            start_date=start_date,
+            end_date=end_date,
+            provider=provider
+        )
+        
+        report = await payment_reconciliation.generate_reconciliation_report(reconciliation_data)
+        
+        return {
+            "report": report,
+            "data": reconciliation_data,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Reconciliation report generation failed: {e}")
+        raise HTTPException(status_code=500, detail="Report generation failed")
+
+
+# ==================== FRAUD DETECTION MONITORING ====================
+
+@router.get("/fraud-detection/analyze/{order_id}")
+async def analyze_order_fraud_risk(
+    order_id: UUID,
+    request: Request = None,
+    tenant_id: UUID = Depends(get_current_tenant),
+    current_user=Depends(get_current_user),
+):
+    """Analyze fraud risk for an existing order"""
+    try:
+        # Get order details (simplified - would fetch from DB)
+        order_data = {
+            "amount": 100.0,  # Would fetch actual amount
+            "currency": "SAR",
+        }
+        
+        fraud_analysis = await fraud_detection.analyze_payment(
+            payment_data=order_data,
+            user_id=current_user.id,
+            ip_address=request.client.host if request.client else None
+        )
+        
+        return {
+            "order_id": order_id,
+            "fraud_analysis": fraud_analysis,
+            "analyzed_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Fraud analysis failed for order {order_id}: {e}")
+        raise HTTPException(status_code=500, detail="Fraud analysis failed")

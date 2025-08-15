@@ -126,3 +126,16 @@ def get_tenant_config(tenant_id: str) -> dict:
     }
 
     return tenant_configs.get(tenant_id, tenant_configs["brainsait"])
+
+
+from fastapi import Depends, Request
+from uuid import UUID
+
+
+def get_current_tenant(request: Request) -> UUID:
+    """Get current tenant from request"""
+    tenant_id = get_tenant_from_request(request)
+    # For now, return a default UUID - in production this would lookup the actual tenant
+    # This is a simplified implementation for the payment services to work
+    from uuid import uuid5, NAMESPACE_DNS
+    return uuid5(NAMESPACE_DNS, tenant_id)

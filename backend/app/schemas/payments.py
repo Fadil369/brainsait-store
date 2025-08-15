@@ -81,10 +81,10 @@ class StripeWebhookPayload(BaseModel):
 
 # Mada Payment Schemas
 class MadaPaymentCreate(BaseModel):
-    card_number: str = Field(..., regex=r"^\d{16}$")
+    card_number: str = Field(..., pattern=r"^\d{16}$")
     expiry_month: int = Field(..., ge=1, le=12)
     expiry_year: int = Field(..., ge=2023)
-    cvv: str = Field(..., regex=r"^\d{3,4}$")
+    cvv: str = Field(..., pattern=r"^\d{3,4}$")
     cardholder_name: str = Field(..., min_length=1, max_length=100)
 
 
@@ -99,8 +99,8 @@ class MadaPaymentResponse(BaseModel):
 
 # STC Pay Schemas
 class STCPaymentCreate(BaseModel):
-    phone_number: str = Field(..., regex=r"^(05|5)\d{8}$")  # Saudi mobile format
-    otp: Optional[str] = Field(None, regex=r"^\d{4,6}$")
+    phone_number: str = Field(..., pattern=r"^(05|5)\d{8}$")  # Saudi mobile format
+    otp: Optional[str] = Field(None, pattern=r"^\d{4,6}$")
 
 
 class STCPaymentResponse(BaseModel):
@@ -181,13 +181,13 @@ class UserPaymentMethodCreate(UserPaymentMethodBase):
     stripe_payment_method_id: Optional[str] = None
 
     # Card info (for display)
-    card_last4: Optional[str] = Field(None, regex=r"^\d{4}$")
+    card_last4: Optional[str] = Field(None, pattern=r"^\d{4}$")
     card_brand: Optional[str] = Field(None, max_length=20)
     card_exp_month: Optional[int] = Field(None, ge=1, le=12)
     card_exp_year: Optional[int] = Field(None, ge=2023)
 
     # STC Pay
-    stc_pay_phone: Optional[str] = Field(None, regex=r"^(05|5)\d{8}$")
+    stc_pay_phone: Optional[str] = Field(None, pattern=r"^(05|5)\d{8}$")
 
     # Bank Transfer
     bank_account_info: Optional[Dict[str, Any]] = None
@@ -265,3 +265,65 @@ class PaymentAnalytics(BaseModel):
     period: str  # "daily", "weekly", "monthly"
     transactions: List[Dict[str, Any]]
     summary: TransactionSummary
+
+
+# Additional schemas needed by the payments API
+class ApplePayPaymentCreate(BaseModel):
+    order_id: UUID
+    payment_method_id: str
+    return_url: Optional[str] = None
+
+
+class PayPalPaymentCreate(BaseModel):
+    order_id: UUID
+    return_url: Optional[str] = None
+    cancel_url: Optional[str] = None
+
+
+class PaymentLinkCreate(BaseModel):
+    product_ids: List[int]
+    metadata: Optional[Dict[str, Any]] = None
+    return_url: Optional[str] = None
+
+
+class PaymentMethodResponse(BaseModel):
+    id: str
+    name: str
+    name_ar: Optional[str] = None
+    description: str
+    description_ar: Optional[str] = None
+    enabled: bool
+    logo_url: Optional[str] = None
+    supported_currencies: List[str]
+    fees: Dict[str, float]
+
+
+class InvoiceResponse(BaseModel):
+    id: UUID
+    order_id: UUID
+    invoice_number: str
+    zatca_uuid: Optional[str] = None
+    qr_code: Optional[str] = None
+    total_amount: float
+    tax_amount: float
+    status: str
+    pdf_url: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PaymentWebhook(BaseModel):
+    provider: str
+    event_type: str
+    data: Dict[str, Any]
+    signature: Optional[str] = None
+
+
+class StripeProductCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    currency: str = "SAR"
+    metadata: Optional[Dict[str, Any]] = None
