@@ -35,7 +35,19 @@ class DataMigrationManager:
             if limit:
                 query += f" LIMIT {limit}"
             
-            result = await session.execute(query)
+        # Validate table_name against known tables
+        from app.core.database import Base
+        valid_tables = set(Base.metadata.tables.keys())
+        if table_name not in valid_tables:
+            raise ValueError(f"Invalid table name: {table_name}")
+        async with get_db_session() as session:
+            # Use parameterized query for LIMIT, and validated table name
+            if limit is not None:
+                query = text(f"SELECT * FROM {table_name} LIMIT :limit")
+                result = await session.execute(query, {"limit": limit})
+            else:
+                query = text(f"SELECT * FROM {table_name}")
+                result = await session.execute(query)
             rows = result.fetchall()
             
             # Convert rows to dictionaries
