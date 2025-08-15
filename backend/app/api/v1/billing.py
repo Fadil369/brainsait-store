@@ -25,7 +25,20 @@ class SubscriptionPlan(BaseModel):
     description: Optional[str] = None
     price: float
     currency: str = "SAR"
-    billing_interval: str = "monthly"  # monthly, yearly
+from enum import Enum
+
+# Request/Response Models
+class BillingInterval(str, Enum):
+    monthly = "monthly"
+    yearly = "yearly"
+
+class SubscriptionPlan(BaseModel):
+    id: str
+    name: str
+    description: Optional[str] = None
+    price: float
+    currency: str = "SAR"
+    billing_interval: BillingInterval = BillingInterval.monthly
     features: List[str] = []
 
 
