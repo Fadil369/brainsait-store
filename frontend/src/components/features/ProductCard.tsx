@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo, useMemo, useCallback } from 'react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -16,7 +16,7 @@ interface ProductCardProps {
   className?: string;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({
+const ProductCardComponent: React.FC<ProductCardProps> = ({
   product,
   onAddToCart,
   onShowDemo,
@@ -25,32 +25,52 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const { t } = useTranslation('common');
   const { language, isRTL } = useAppStore();
 
-  const getBadgeVariant = (badgeType?: string) => {
-    switch (badgeType) {
+  // Memoize badge variant calculation
+  const badgeVariant = useMemo(() => {
+    switch (product.badgeType) {
       case 'new': return 'new';
       case 'hot': return 'hot';
       case 'pro': return 'pro';
       default: return 'default';
     }
-  };
+  }, [product.badgeType]);
 
-  const getLocalizedTitle = () => {
-    return language === 'ar' && product.arabicTitle 
-      ? product.arabicTitle 
-      : product.title;
-  };
+  // Memoize localized content
+  const localizedContent = useMemo(() => {
+    return {
+      title: language === 'ar' && product.arabicTitle 
+        ? product.arabicTitle 
+        : product.title,
+      description: language === 'ar' && product.arabicDescription 
+        ? product.arabicDescription 
+        : product.description,
+      features: language === 'ar' && product.arabicFeatures 
+        ? product.arabicFeatures 
+        : product.features,
+    };
+  }, [language, product.arabicTitle, product.title, product.arabicDescription, product.description, product.arabicFeatures, product.features]);
 
-  const getLocalizedDescription = () => {
-    return language === 'ar' && product.arabicDescription 
-      ? product.arabicDescription 
-      : product.description;
-  };
+  // Memoize badge text
+  const badgeText = useMemo(() => {
+    if (!product.badge) return null;
+    
+    switch (product.badge) {
+      case 'VISION 2030': return t('product.vision2030Badge');
+      case 'NEW': return t('product.newBadge');
+      case 'HOT': return t('product.hotBadge');
+      case 'PRO': return t('product.proBadge');
+      default: return product.badge;
+    }
+  }, [product.badge, t]);
 
-  const getLocalizedFeatures = () => {
-    return language === 'ar' && product.arabicFeatures 
-      ? product.arabicFeatures 
-      : product.features;
-  };
+  // Memoize callback functions to prevent unnecessary re-renders
+  const handleAddToCart = useCallback(() => {
+    onAddToCart(product);
+  }, [onAddToCart, product]);
+
+  const handleShowDemo = useCallback(() => {
+    onShowDemo(product);
+  }, [onShowDemo, product]);
 
   return (
     <div className={cn(
@@ -63,12 +83,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           'absolute top-6 z-10',
           isRTL ? 'left-6' : 'right-6'
         )}>
-          <Badge variant={getBadgeVariant(product.badgeType)}>
-            {product.badge === 'VISION 2030' ? t('product.vision2030Badge') : 
-             product.badge === 'NEW' ? t('product.newBadge') :
-             product.badge === 'HOT' ? t('product.hotBadge') :
-             product.badge === 'PRO' ? t('product.proBadge') :
-             product.badge}
+          <Badge variant={badgeVariant}>
+            {badgeText}
           </Badge>
         </div>
       )}
@@ -81,7 +97,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         
         <div className="flex-1 min-w-0">
           <h3 className="text-xl font-bold text-text-primary mb-1 line-clamp-2 group-hover:text-vision-green transition-colors">
-            {getLocalizedTitle()}
+            {localizedContent.title}
           </h3>
           <p className="text-vision-green text-sm font-semibold uppercase tracking-wider">
             {product.category.toUpperCase()}
@@ -91,7 +107,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       {/* Description */}
       <p className="text-text-secondary mb-4 text-sm leading-relaxed line-clamp-3">
-        {getLocalizedDescription()}
+        {localizedContent.description}
       </p>
 
       {/* Features */}
@@ -100,7 +116,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {t('product.features')}
         </h4>
         <ul className="space-y-2">
-          {getLocalizedFeatures().slice(0, 4).map((feature, index) => (
+          {localizedContent.features.slice(0, 4).map((feature, index) => (
             <li 
               key={index}
               className="flex items-center gap-3 text-sm text-text-secondary"
@@ -132,7 +148,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Button
             variant="primary"
             size="md"
-            onClick={() => onAddToCart(product)}
+            onClick={handleAddToCart}
             className="flex-1"
           >
             {t('product.addToCart')}
@@ -141,7 +157,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Button
             variant="outline"
             size="md"
-            onClick={() => onShowDemo(product)}
+            onClick={handleShowDemo}
             className="flex-1"
           >
             {t('product.tryDemo')}
@@ -154,3 +170,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     </div>
   );
 };
+
+// Memoize the component to prevent unnecessary re-renders
+export const ProductCard = memo(ProductCardComponent);
