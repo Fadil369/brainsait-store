@@ -22,6 +22,7 @@ from app.core.dependencies import (
     set_cache,
     verify_rate_limit,
 )
+from app.core.cache import cache_manager, cache_result, cache_invalidate
 from app.core.localization import get_localized_field, get_localized_message
 from app.models.products import Brand, Category, Product, ProductReview, ProductVariant
 from app.models.users import User
@@ -117,6 +118,7 @@ async def list_categories(
 
 
 @router.post("/categories", response_model=CategoryResponse)
+@cache_invalidate("categories:*")  # Invalidate categories cache
 async def create_category(
     category_data: CategoryCreate,
     request: Request,

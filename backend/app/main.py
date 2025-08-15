@@ -21,6 +21,7 @@ from app.api.v1 import (
     auth,
     billing,
     integrations,
+    performance,
 )
 from app.api.v1 import integrations_linkedin as linkedin
 from app.api.v1 import (
@@ -121,6 +122,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(SecurityHeadersMiddleware)
 
+# Add Performance middlewares
+app.add_middleware(PerformanceMonitoringMiddleware)
+app.add_middleware(CacheHeadersMiddleware)
+app.add_middleware(CompressionMiddleware, minimum_size=1000)
+
 # Add Trusted Host middleware for security
 app.add_middleware(
     TrustedHostMiddleware, allowed_hosts=["*.brainsait.com", "localhost"]
@@ -187,6 +193,10 @@ app.include_router(
     analytics.router, prefix=f"{settings.API_V1_PREFIX}/analytics", tags=["Analytics"]
 )
 
+app.include_router(
+    performance.router, prefix=f"{settings.API_V1_PREFIX}/performance", tags=["Performance"]
+)
+
 
 @app.get("/")
 async def root(request: Request):
@@ -212,10 +222,15 @@ async def root(request: Request):
 @app.get("/health")
 async def health_check():
     """Health check endpoint for monitoring"""
+    from app.core.cache import get_cache_health
+    
+    cache_health = await get_cache_health()
+    
     return {
         "status": "healthy",
         "version": settings.APP_VERSION,
         "environment": settings.ENVIRONMENT,
+        "cache": cache_health,
     }
 
 

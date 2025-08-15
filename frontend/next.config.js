@@ -1,3 +1,7 @@
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -54,27 +58,67 @@ const nextConfig = {
     if (!dev && !isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             priority: 10,
             chunks: 'all',
+            enforce: true,
           },
           analytics: {
             test: /[\\/]components[\\/]analytics[\\/]/,
             name: 'analytics',
-            priority: 5,
-            chunks: 'all',
+            priority: 8,
+            chunks: 'async',
+            enforce: true,
           },
           payment: {
             test: /[\\/]components[\\/]payment[\\/]/,
             name: 'payment',
-            priority: 5,
+            priority: 8,
+            chunks: 'async',
+            enforce: true,
+          },
+          recharts: {
+            test: /[\\/]node_modules[\\/]recharts[\\/]/,
+            name: 'recharts',
+            priority: 9,
+            chunks: 'async',
+            enforce: true,
+          },
+          framerMotion: {
+            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+            name: 'framer-motion',
+            priority: 9,
+            chunks: 'async',
+            enforce: true,
+          },
+          tanstackQuery: {
+            test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
+            name: 'tanstack-query',
+            priority: 9,
             chunks: 'all',
+            enforce: true,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            priority: 5,
+            chunks: 'initial',
+            reuseExistingChunk: true,
           },
         },
       };
+
+      // Add module concatenation
+      config.optimization.concatenateModules = true;
+      
+      // Tree shaking optimization
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
     }
 
     return config;
@@ -94,4 +138,4 @@ const nextConfig = {
   compress: true
 };
 
-module.exports = nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);
