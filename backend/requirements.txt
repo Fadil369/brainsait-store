@@ -45,4 +45,11 @@ pytest==7.4.4
 pytest-asyncio==0.23.3
 httpx==0.28.1
 
+# Security & File Processing
+pillow==10.2.0
+python-magic==0.4.27
+cryptography==42.0.2
+pyotp==2.9.0
+qrcode[pil]==7.4.2
+
 # Integrations

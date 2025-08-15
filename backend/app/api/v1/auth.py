@@ -17,6 +17,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
+from app.core.security import create_audit_entry
+from app.services.auth_security import auth_security_service
+from app.services.audit import audit_service
 from app.core.database import get_db
 from app.core.dependencies import get_redis_client
 from app.core.security import create_access_token, hash_password, verify_password

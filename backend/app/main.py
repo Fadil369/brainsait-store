@@ -21,6 +21,8 @@ from app.api.v1 import (
     auth,
     billing,
     integrations,
+    security,
+    upload,
 )
 from app.api.v1 import integrations_linkedin as linkedin
 from app.api.v1 import (
@@ -34,6 +36,7 @@ from app.core.config import settings
 from app.core.database import close_db, init_db
 from app.core.localization import LocalizationMiddleware
 from app.core.tenant import TenantMiddleware
+from app.core.security_middleware import SecurityMiddleware, FileUploadSecurityMiddleware
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -121,6 +124,12 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 app.add_middleware(SecurityHeadersMiddleware)
 
+# Add Security middleware for input validation and audit logging
+app.add_middleware(SecurityMiddleware, enable_audit_logging=True)
+
+# Add File Upload Security middleware
+app.add_middleware(FileUploadSecurityMiddleware)
+
 # Add Trusted Host middleware for security
 app.add_middleware(
     TrustedHostMiddleware, allowed_hosts=["*.brainsait.com", "localhost"]
@@ -185,6 +194,14 @@ app.include_router(
 
 app.include_router(
     analytics.router, prefix=f"{settings.API_V1_PREFIX}/analytics", tags=["Analytics"]
+)
+
+app.include_router(
+    upload.router, prefix=f"{settings.API_V1_PREFIX}", tags=["File Upload"]
+)
+
+app.include_router(
+    security.router, prefix=f"{settings.API_V1_PREFIX}", tags=["Security Management"]
 )
 
 
