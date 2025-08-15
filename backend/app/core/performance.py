@@ -94,7 +94,7 @@ class CacheHeadersMiddleware(BaseHTTPMiddleware):
             and hasattr(response, 'body')
         ):
             import hashlib
-            etag = hashlib.md5(response.body).hexdigest()[:16]
+            etag = hashlib.sha256(response.body).hexdigest()[:32]
             response.headers["ETag"] = f'"{etag}"'
         
         return response
