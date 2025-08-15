@@ -9,7 +9,7 @@ from sqlalchemy import text
 import time
 import psutil
 import json
-
+import logging
 from app.core.database import get_db
 from app.core.dependencies import get_current_admin_user
 from app.core.cache import get_cache_health, cache_stats
@@ -99,9 +99,10 @@ async def get_database_performance(
         }
         
     except Exception as e:
+        logging.exception("Error in get_database_performance")
         return {
             "status": "error",
-            "error": str(e),
+            "error": "An internal error has occurred.",
         }
 
 @router.get("/slow-queries")
