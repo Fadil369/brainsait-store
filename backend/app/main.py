@@ -21,6 +21,7 @@ from app.api.v1 import (
     auth,
     billing,
     integrations,
+    monitoring,
 )
 from app.api.v1 import integrations_linkedin as linkedin
 from app.api.v1 import (
@@ -185,6 +186,10 @@ app.include_router(
 
 app.include_router(
     analytics.router, prefix=f"{settings.API_V1_PREFIX}/analytics", tags=["Analytics"]
+)
+
+app.include_router(
+    monitoring.router, prefix=f"{settings.API_V1_PREFIX}/monitoring", tags=["Monitoring"]
 )
 
 

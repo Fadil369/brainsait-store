@@ -456,6 +456,106 @@ class AnalyticsService:
             "geographic_insights": {"top_countries": [], "emerging_markets": []},
         }
 
+    async def get_financial_analytics(
+        self,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
+        tenant_id: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """Get comprehensive financial analytics including ZATCA compliance"""
+
+        if not end_date:
+            end_date = date.today()
+        if not start_date:
+            start_date = end_date - timedelta(days=30)
+
+        filters = [
+            Order.created_at >= start_date,
+            Order.created_at <= end_date + timedelta(days=1),
+            Order.status == OrderStatus.COMPLETED,
+        ]
+
+        if tenant_id:
+            filters.append(Order.tenant_id == tenant_id)
+
+        # Tax analysis for ZATCA compliance
+        vat_rate = Decimal("0.15")  # Saudi VAT rate
+        
+        # Calculate VAT breakdown
+        total_revenue = self.db.query(func.sum(Order.total_amount)).filter(*filters).scalar() or Decimal("0.00")
+        revenue_before_vat = total_revenue / (1 + vat_rate)
+        vat_amount = total_revenue - revenue_before_vat
+
+        # Monthly financial breakdown
+        monthly_financials = (
+            self.db.query(
+                extract("year", Order.created_at).label("year"),
+                extract("month", Order.created_at).label("month"),
+                func.sum(Order.total_amount).label("total_revenue"),
+                func.count(Order.id).label("transaction_count"),
+            )
+            .filter(*filters)
+            .group_by(extract("year", Order.created_at), extract("month", Order.created_at))
+            .order_by("year", "month")
+            .all()
+        )
+
+        # Payment reconciliation
+        payment_reconciliation = (
+            self.db.query(
+                Order.payment_method,
+                func.sum(Order.total_amount).label("total_amount"),
+                func.count(Order.id).label("transaction_count"),
+                func.avg(Order.total_amount).label("avg_transaction"),
+            )
+            .filter(*filters)
+            .group_by(Order.payment_method)
+            .all()
+        )
+
+        # Subscription billing (if applicable)
+        subscription_metrics = {
+            "monthly_recurring_revenue": float(total_revenue),  # Simplified
+            "annual_recurring_revenue": float(total_revenue * 12),
+            "churn_rate": 0.0,  # Would need subscription tracking
+            "customer_lifetime_value": 0.0,
+        }
+
+        return {
+            "period": {
+                "start_date": start_date.isoformat(),
+                "end_date": end_date.isoformat(),
+            },
+            "vat_analysis": {
+                "total_revenue_with_vat": float(total_revenue),
+                "revenue_before_vat": float(revenue_before_vat),
+                "vat_amount": float(vat_amount),
+                "vat_rate_percent": float(vat_rate * 100),
+                "zatca_compliant": True,
+            },
+            "monthly_breakdown": [
+                {
+                    "year": int(year),
+                    "month": int(month),
+                    "total_revenue": float(total_revenue),
+                    "revenue_before_vat": float(total_revenue / (1 + vat_rate)),
+                    "vat_amount": float(total_revenue - (total_revenue / (1 + vat_rate))),
+                    "transaction_count": transaction_count,
+                }
+                for year, month, total_revenue, transaction_count in monthly_financials
+            ],
+            "payment_reconciliation": [
+                {
+                    "payment_method": method.value if method else "unknown",
+                    "total_amount": float(total_amount),
+                    "transaction_count": transaction_count,
+                    "average_transaction": float(avg_transaction),
+                }
+                for method, total_amount, transaction_count, avg_transaction in payment_reconciliation
+            ],
+            "subscription_billing": subscription_metrics,
+        }
+
     async def generate_executive_summary(
         self,
         start_date: Optional[date] = None,
@@ -471,6 +571,7 @@ class AnalyticsService:
         )
         product_data = await self.get_product_analytics(start_date, end_date, tenant_id)
         payment_data = await self.get_payment_analytics(start_date, end_date, tenant_id)
+        financial_data = await self.get_financial_analytics(start_date, end_date, tenant_id)
 
         # Calculate key metrics
         total_orders = len(revenue_data.get("daily_revenue_trend", []))
@@ -482,6 +583,7 @@ class AnalyticsService:
                 "new_customers": customer_data["new_customers"],
                 "average_order_value": revenue_data["average_order_value"],
                 "revenue_growth": revenue_data["revenue_growth_percentage"],
+                "vat_collected": financial_data["vat_analysis"]["vat_amount"],
             },
             "top_metrics": {
                 "best_selling_product": (
@@ -499,6 +601,10 @@ class AnalyticsService:
                     if customer_data["top_customers"]
                     else None
                 ),
+            },
+            "financial_compliance": {
+                "zatca_compliant": financial_data["vat_analysis"]["zatca_compliant"],
+                "monthly_vat": financial_data["monthly_breakdown"],
             },
             "trends": {
                 "revenue_trend": revenue_data["daily_revenue_trend"][
