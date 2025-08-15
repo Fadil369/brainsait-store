@@ -246,7 +246,7 @@ class CouponBase(BaseModel):
     name_ar: Optional[str] = Field(None, max_length=255)
     description: Optional[str] = None
     description_ar: Optional[str] = None
-    discount_type: str = Field(..., regex="^(percentage|fixed|free_shipping)$")
+    discount_type: str = Field(..., pattern="^(percentage|fixed|free_shipping)$")
     discount_value: float = Field(..., gt=0)
     minimum_amount: Optional[float] = Field(None, gt=0)
     maximum_discount: Optional[float] = Field(None, gt=0)
