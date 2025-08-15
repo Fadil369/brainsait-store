@@ -50,7 +50,9 @@ export const RealTimeMetrics = (
   </LazyWrapper>
 );
 
-export const PaymentMethods = (props: any) => (
+export const PaymentMethods = (
+  props: React.ComponentProps<typeof PaymentMethodsLazy>
+) => (
   <LazyWrapper fallback={
     <div className="glass rounded-2xl p-6 animate-pulse">
       <div className="h-6 bg-gray/20 rounded mb-4 w-40" />
