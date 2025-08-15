@@ -12,7 +12,8 @@ from sqlalchemy import and_, asc, case, desc, extract, func, or_
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.models.orders import Order, OrderItem, OrderStatus, PaymentMethod
+from app.models.orders import Order, OrderItem, OrderStatus
+from app.schemas.payment import PaymentMethod
 from app.models.products import Product
 from app.models.users import User
 

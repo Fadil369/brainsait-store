@@ -92,7 +92,7 @@ class StripePriceCreate(BaseModel):
 class StripeCheckoutRequest(BaseModel):
     price_id: Optional[str] = None
     line_items: Optional[List[Dict[str, Any]]] = None
-    mode: str = Field(default="payment", regex="^(payment|subscription|setup)$")
+    mode: str = Field(default="payment", pattern="^(payment|subscription|setup)$")
     success_url: str
     cancel_url: str
     customer_email: Optional[EmailStr] = None
