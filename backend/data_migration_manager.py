@@ -81,7 +81,7 @@ class DataMigrationManager:
                 for table_name in table_names:
                     try:
                         # Count records in each table
-                        result = await session.execute(f"SELECT COUNT(*) FROM {table_name}")
+                        result = await session.execute(text(f"SELECT COUNT(*) FROM {table_name}"))
                         count = result.scalar()
                         
                         validation_results["tables"][table_name] = {
