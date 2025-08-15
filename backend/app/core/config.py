@@ -80,11 +80,13 @@ class Settings(BaseSettings):
     MADA_MERCHANT_ID: Optional[str] = None
     MADA_API_KEY: Optional[str] = None
     MADA_ENDPOINT: str = "https://api.mada.sa"
+    MADA_WEBHOOK_SECRET: Optional[str] = None
 
     # STC Pay (Saudi Arabia)
     STC_PAY_MERCHANT_ID: Optional[str] = None
     STC_PAY_API_KEY: Optional[str] = None
     STC_PAY_ENDPOINT: str = "https://api.stcpay.com.sa"
+    STC_PAY_WEBHOOK_SECRET: Optional[str] = None
 
     # ZATCA (Saudi Tax Authority)
     ZATCA_ENABLED: bool = False
