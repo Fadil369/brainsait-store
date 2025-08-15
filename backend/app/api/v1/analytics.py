@@ -256,6 +256,34 @@ async def export_analytics_report(
         )
 
 
+@router.get("/financial")
+async def get_financial_analytics(
+    start_date: Optional[date] = Query(None, description="Start date (YYYY-MM-DD)"),
+    end_date: Optional[date] = Query(None, description="End date (YYYY-MM-DD)"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Get comprehensive financial analytics including ZATCA compliance"""
+    analytics_service = AnalyticsService(db)
+
+    try:
+        result = await analytics_service.get_financial_analytics(
+            start_date=start_date, end_date=end_date, tenant_id=current_user.tenant_id
+        )
+
+        return {
+            "success": True,
+            "data": result,
+            "message": "Financial analytics retrieved successfully",
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve financial analytics: {str(e)}",
+        )
+
+
 @router.get("/real-time")
 async def get_real_time_metrics(
     current_user: User = Depends(get_current_user), db: Session = Depends(get_db)

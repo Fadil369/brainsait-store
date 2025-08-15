@@ -32,6 +32,7 @@ interface AnalyticsData {
   customers: any;
   products: any;
   payments: any;
+  financial: any;
   dashboard: any;
 }
 
@@ -66,11 +67,12 @@ export default function AnalyticsDashboard() {
         const endDate = dateRange.to ? format(dateRange.to, 'yyyy-MM-dd') : '';
         const queryParams = `?start_date=${startDate}&end_date=${endDate}`;
 
-        const [revenueRes, customersRes, productsRes, paymentsRes, dashboardRes] = await Promise.all([
+        const [revenueRes, customersRes, productsRes, paymentsRes, financialRes, dashboardRes] = await Promise.all([
           fetch(`${baseUrl}/api/v1/analytics/revenue${queryParams}`, { headers }),
           fetch(`${baseUrl}/api/v1/analytics/customers${queryParams}`, { headers }),
           fetch(`${baseUrl}/api/v1/analytics/products${queryParams}`, { headers }),
           fetch(`${baseUrl}/api/v1/analytics/payments${queryParams}`, { headers }),
+          fetch(`${baseUrl}/api/v1/analytics/financial${queryParams}`, { headers }),
           fetch(`${baseUrl}/api/v1/analytics/dashboard${queryParams}`, { headers })
         ]);
 
@@ -79,6 +81,7 @@ export default function AnalyticsDashboard() {
           customers: await customersRes.json(),
           products: await productsRes.json(),
           payments: await paymentsRes.json(),
+          financial: await financialRes.json(),
           dashboard: await dashboardRes.json()
         };
 
@@ -272,6 +275,7 @@ export default function AnalyticsDashboard() {
           <TabsTrigger value="customers">Customers</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
+          <TabsTrigger value="financial">Financial & VAT</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -501,6 +505,126 @@ export default function AnalyticsDashboard() {
                     </div>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Financial & VAT Tab */}
+        <TabsContent value="financial" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Revenue (with VAT)</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ${analyticsData?.financial?.data?.vat_analysis?.total_revenue_with_vat?.toFixed(2) || '0'}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Revenue (before VAT)</CardTitle>
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ${analyticsData?.financial?.data?.vat_analysis?.revenue_before_vat?.toFixed(2) || '0'}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">VAT Collected</CardTitle>
+                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ${analyticsData?.financial?.data?.vat_analysis?.vat_amount?.toFixed(2) || '0'}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {analyticsData?.financial?.data?.vat_analysis?.vat_rate_percent || 15}% VAT rate
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">ZATCA Status</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center">
+                  {analyticsData?.financial?.data?.vat_analysis?.zatca_compliant ? (
+                    <div className="text-green-600 font-bold">COMPLIANT</div>
+                  ) : (
+                    <div className="text-red-600 font-bold">NON-COMPLIANT</div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>VAT Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { 
+                          name: 'Revenue (before VAT)', 
+                          value: analyticsData?.financial?.data?.vat_analysis?.revenue_before_vat || 0 
+                        },
+                        { 
+                          name: 'VAT Amount', 
+                          value: analyticsData?.financial?.data?.vat_analysis?.vat_amount || 0 
+                        }
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      <Cell fill="#0088FE" />
+                      <Cell fill="#00C49F" />
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Monthly VAT Collection</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={analyticsData?.financial?.data?.monthly_breakdown?.slice(-6) || []}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                      dataKey="month" 
+                      tickFormatter={(value, index) => {
+                        const item = analyticsData?.financial?.data?.monthly_breakdown?.[index];
+                        return item ? `${item.year}-${String(item.month).padStart(2, '0')}` : '';
+                      }}
+                    />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="vat_amount" fill="#8884d8" name="VAT Collected" />
+                  </BarChart>
+                </ResponsiveContainer>
               </CardContent>
             </Card>
           </div>
