@@ -23,6 +23,7 @@ from app.api.v1 import (
     integrations,
     integrations_marketplace,
     recommendations,
+    workflow_automation,
 )
 from app.api.v1 import integrations_linkedin as linkedin
 from app.api.v1 import (
@@ -197,6 +198,10 @@ app.include_router(
 
 app.include_router(
     recommendations.router, prefix=f"{settings.API_V1_PREFIX}/recommendations", tags=["Recommendations"]
+)
+
+app.include_router(
+    workflow_automation.router, prefix=f"{settings.API_V1_PREFIX}/workflows", tags=["Workflow Automation"]
 )
 
 
