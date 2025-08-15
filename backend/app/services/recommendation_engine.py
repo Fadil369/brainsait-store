@@ -463,7 +463,8 @@ class RecommendationEngine:
                             Product.is_active == True,
                             Product.status == "active",
                             func.lower(Product.name).contains(keyword.lower()) |
-                            func.lower(Product.description).contains(keyword.lower()) |
+                            Product.name.ilike(f"%{keyword}%") |
+                            Product.description.ilike(f"%{keyword}%") |
                             Product.tags.contains([keyword]) |
                             Product.tags_ar.contains([keyword])
                         )
