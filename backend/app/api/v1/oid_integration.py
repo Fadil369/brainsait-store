@@ -14,7 +14,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import get_current_tenant, get_current_user
+from app.core.dependencies import get_current_user, get_tenant_id
 from app.core.config import settings
 from app.core.database import get_db
 from app.models.oid import HealthcareProvider, OIDNode
@@ -44,7 +44,7 @@ nphies_service = NPHIESService()
 async def get_oid_tree(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     include_metrics: bool = False,
     lang: str = "en",
 ):
@@ -131,7 +131,7 @@ async def get_oid_node(
     node_id: UUID,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     lang: str = "en",
 ):
     """Get specific OID node details"""
@@ -192,7 +192,7 @@ async def create_oid_node(
     request: Request,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create new OID node"""
@@ -276,7 +276,7 @@ async def link_product_to_oid_node(
     request: Request,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Link a store product to an OID node"""
@@ -349,7 +349,7 @@ async def link_product_to_oid_node(
 async def get_healthcare_providers(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     status: Optional[str] = None,
     lang: str = "en",
 ):
@@ -393,7 +393,7 @@ async def create_healthcare_provider(
     request: Request,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create new healthcare provider with OID node"""
@@ -464,7 +464,7 @@ async def create_healthcare_provider(
 async def get_oid_integration_metrics(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
 ):
     """Get OID system integration metrics"""
 
@@ -551,7 +551,7 @@ async def sync_to_obsidian(
     request: Request,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Manually trigger sync to Obsidian MCP"""

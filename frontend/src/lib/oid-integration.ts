@@ -160,6 +160,116 @@ export class OIDSystemService {
   }
 
   /**
+   * Get personalized product recommendations using the new recommendation engine
+   */
+  async getPersonalizedRecommendations(limit: number = 10): Promise<any[]> {
+    try {
+      const response = await this.makeRequest(`/recommendations/personalized?limit=${limit}`);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to fetch personalized recommendations');
+      }
+
+      return Array.isArray(response.data) ? response.data : [response.data];
+    } catch (error) {
+      console.error('Error fetching personalized recommendations:', error);
+      // Fallback to trending products
+      return this.getTrendingRecommendations(limit);
+    }
+  }
+
+  /**
+   * Get trending product recommendations
+   */
+  async getTrendingRecommendations(limit: number = 10): Promise<any[]> {
+    try {
+      const response = await this.makeRequest(`/recommendations/trending?limit=${limit}`);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to fetch trending recommendations');
+      }
+
+      return Array.isArray(response.data) ? response.data : [response.data];
+    } catch (error) {
+      console.error('Error fetching trending recommendations:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get seasonal product recommendations
+   */
+  async getSeasonalRecommendations(season: string, limit: number = 10): Promise<any[]> {
+    try {
+      const response = await this.makeRequest(`/recommendations/seasonal?season=${season}&limit=${limit}`);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to fetch seasonal recommendations');
+      }
+
+      return Array.isArray(response.data) ? response.data : [response.data];
+    } catch (error) {
+      console.error('Error fetching seasonal recommendations:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get similar products for a specific product
+   */
+  async getSimilarProducts(productId: string, limit: number = 10): Promise<any[]> {
+    try {
+      const response = await this.makeRequest(`/recommendations/similar/${productId}?limit=${limit}`);
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to fetch similar products');
+      }
+
+      return Array.isArray(response.data) ? response.data : [response.data];
+    } catch (error) {
+      console.error('Error fetching similar products:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Track user behavior for improving recommendations
+   */
+  async trackUserBehavior(action: string, productId: string, metadata?: any): Promise<void> {
+    try {
+      await this.makeRequest('/recommendations/track-behavior', {
+        method: 'POST',
+        body: JSON.stringify({
+          action,
+          product_id: productId,
+          metadata
+        })
+      });
+    } catch (error) {
+      console.error('Error tracking user behavior:', error);
+      // Don't throw error as this is for analytics
+    }
+  }
+
+  /**
+   * Get user recommendation analytics
+   */
+  async getUserRecommendationAnalytics(): Promise<any> {
+    try {
+      const response = await this.makeRequest('/recommendations/analytics/user-preferences');
+      
+      if (!response.success) {
+        throw new Error(response.message || 'Failed to fetch user analytics');
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user recommendation analytics:', error);
+      return null;
+    }
+  }
+
+  /**
    * Map OID nodes to store products
    */
   mapOIDToStoreProducts(oidNodes: OIDNode[]): any[] {

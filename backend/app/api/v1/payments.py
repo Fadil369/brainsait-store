@@ -19,7 +19,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import get_current_tenant, get_current_user
+from app.core.dependencies import get_current_user, get_tenant_id
 from app.core.config import settings
 from app.core.database import get_db
 from app.models.products import Product
@@ -54,7 +54,7 @@ notification_service = NotificationService()
 
 @router.get("/methods", response_model=Dict[str, PaymentMethodResponse])
 async def get_payment_methods(
-    request: Request, tenant_id: UUID = Depends(get_current_tenant)
+    request: Request, tenant_id: UUID = Depends(get_tenant_id)
 ):
     """Get available payment methods for tenant"""
 
@@ -124,7 +124,7 @@ async def create_stripe_payment_intent(
     payment_data: PaymentIntentCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create Stripe payment intent"""
@@ -196,7 +196,7 @@ async def create_mada_payment_intent(
     payment_data: MadaPaymentCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create Mada payment intent"""
@@ -263,7 +263,7 @@ async def create_stc_payment_intent(
     payment_data: STCPaymentCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create STC Pay payment intent"""
@@ -335,7 +335,7 @@ async def create_paypal_order(
     payment_data: PayPalPaymentCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create PayPal order for B2B payment"""
@@ -527,7 +527,7 @@ async def process_apple_pay_payment(
     payment_data: ApplePayPaymentCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Process Apple Pay payment through Stripe"""
@@ -598,7 +598,7 @@ async def process_apple_pay_payment(
 @router.post("/stripe/products/sync")
 async def sync_products_to_stripe(
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Sync all products to Stripe catalog for payment links"""
@@ -668,7 +668,7 @@ async def sync_products_to_stripe(
 async def create_stripe_payment_link(
     link_data: PaymentLinkCreate,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create Stripe payment link for products"""
@@ -1112,7 +1112,7 @@ async def get_invoice(
     order_id: UUID,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Get ZATCA invoice for order"""
