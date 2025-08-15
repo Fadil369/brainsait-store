@@ -15,8 +15,8 @@ interface PaymentMethodsProps {
   orderId: string;
   totalAmount: number;
   currency: string;
-  onPaymentSuccess: (paymentId: string) => void;
-  onPaymentError: (error: string) => void;
+  onPaymentSuccess: (_paymentId: string) => void;
+  onPaymentError: (_error: string) => void;
 }
 
 export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
@@ -365,8 +365,8 @@ export const PaymentMethods: React.FC<PaymentMethodsProps> = ({
 export const StripeCheckout: React.FC<{
   clientSecret: string;
   orderId: string;
-  onSuccess: (paymentId: string) => void;
-  onError: (error: string) => void;
+  onSuccess: (_paymentId: string) => void;
+  onError: (_error: string) => void;
 }> = ({ clientSecret, orderId, onSuccess, onError }) => {
   return (
     <Elements stripe={stripePromise}>
@@ -383,9 +383,9 @@ export const StripeCheckout: React.FC<{
 const StripePaymentForm: React.FC<{
   clientSecret: string;
   orderId: string;
-  onSuccess: (paymentId: string) => void;
-  onError: (error: string) => void;
-}> = ({ clientSecret, orderId, onSuccess, onError }) => {
+  onSuccess: (_paymentId: string) => void;
+  onError: (_error: string) => void;
+}> = ({ clientSecret: _clientSecret, orderId, onSuccess, onError }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);

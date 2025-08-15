@@ -7,7 +7,7 @@ import { LanguageToggle } from '@/components/features/LanguageToggle';
 import { Badge } from '@/components/ui/Badge';
 
 interface HeroSectionProps {
-  onSearch: (query: string) => void;
+  onSearch: (_query: string) => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {

@@ -1,16 +1,17 @@
 // Global type definitions for the BrainSAIT Store frontend
+/* eslint-disable no-unused-vars */
 
 declare global {
   // Window object extensions
   interface Window {
     StoreKit?: {
-      initialize: (config: { storefront: string; language: string }) => Promise<void>;
+      initialize: (_config: { storefront: string; language: string }) => Promise<void>;
       requestReview: () => Promise<void>;
-      showProductPage: (config: { productIdentifier: string }) => Promise<void>;
+      showProductPage: (_config: { productIdentifier: string }) => Promise<void>;
     };
     ApplePaySession?: {
-      new (version: number, paymentRequest: any): any;
-      canMakePaymentsWithActiveCard: (merchantId: string) => Promise<boolean>;
+      new (_version: number, _paymentRequest: any): any;
+      canMakePaymentsWithActiveCard: (_merchantId: string) => Promise<boolean>;
       STATUS_SUCCESS: number;
       STATUS_FAILURE: number;
     };

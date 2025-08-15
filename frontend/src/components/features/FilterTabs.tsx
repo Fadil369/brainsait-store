@@ -14,7 +14,7 @@ interface FilterTab {
 
 interface FilterTabsProps {
   activeFilter: ProductCategory | 'all';
-  onFilterChange: (newFilter: ProductCategory | 'all') => void;
+  onFilterChange: (_newFilter: ProductCategory | 'all') => void;
   productCounts?: Record<ProductCategory | 'all', number>;
   className?: string;
 }

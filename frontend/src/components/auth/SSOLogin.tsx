@@ -14,8 +14,8 @@ interface SSOProvider {
 
 interface SSOLoginProps {
   tenantId?: string;
-  onSuccess?: (token: string) => void;
-  onError?: (error: string) => void;
+  onSuccess?: (_token: string) => void;
+  onError?: (_error: string) => void;
   className?: string;
 }
 

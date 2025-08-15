@@ -25,8 +25,8 @@ interface ProductState {
   demoProduct?: Product;
   
   // Actions
-  setProducts: (products: Product[]) => void;
-  addProducts: (products: Product[]) => void;
+  setProducts: (_products: Product[]) => void;
+  addProducts: (_products: Product[]) => void;
   setCurrentProduct: (product: Product) => void;
   clearCurrentProduct: () => void;
   

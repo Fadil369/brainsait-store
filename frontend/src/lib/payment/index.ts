@@ -318,7 +318,7 @@ export class PaymentService {
 
       const session = new (window as any).ApplePaySession(3, paymentRequest);
 
-      session.onvalidatemerchant = async (event: any) => {
+      session.onvalidatemerchant = async (_event: any) => {
         const validationData = await validationResponse.json();
         session.completeMerchantValidation(validationData);
       };

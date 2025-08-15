@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { debounce } from '@/lib/utils';
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  onSearch: (_query: string) => void;
   placeholder?: string;
   className?: string;
   defaultValue?: string;

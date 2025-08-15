@@ -248,8 +248,10 @@ export class AppStoreService {
 export const appStoreService = new AppStoreService();
 
 // Add types to window for StoreKit
+/* eslint-disable no-unused-vars */
 declare global {
   interface Window {
     StoreKit?: any;
   }
 }
+/* eslint-enable no-unused-vars */

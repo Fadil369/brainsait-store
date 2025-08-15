@@ -11,9 +11,9 @@ interface ProductsSectionProps {
   products: Product[];
   filteredProducts: Product[];
   activeFilter: ProductCategory | 'all';
-  onFilterChange: (filter: ProductCategory | 'all') => void;
-  onAddToCart: (product: Product) => void;
-  onShowDemo: (product: Product) => void;
+  onFilterChange: (_filter: ProductCategory | 'all') => void;
+  onAddToCart: (_product: Product) => void;
+  onShowDemo: (_product: Product) => void;
   loading?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;

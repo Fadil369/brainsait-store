@@ -121,7 +121,7 @@ export interface RealTimeMetrics {
 
 export class AnalyticsService {
   private baseUrl: string;
-  private getAuthHeaders: () => HeadersInit;
+  private getAuthHeaders: () => Record<string, string>;
 
   constructor(baseUrl?: string) {
     this.baseUrl = baseUrl || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -134,7 +134,7 @@ export class AnalyticsService {
     };
   }
 
-  private async fetchWithAuth(endpoint: string, options?: RequestInit) {
+  private async fetchWithAuth(endpoint: string, options?: any) {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers: {
@@ -270,7 +270,7 @@ export class AnalyticsService {
   }
 
   // Real-time data subscription (placeholder for WebSocket implementation)
-  subscribeToRealTimeUpdates(callback: (data: RealTimeMetrics) => void): () => void {
+  subscribeToRealTimeUpdates(callback: (_data: RealTimeMetrics) => void): () => void {
     // This would implement WebSocket connection for real-time updates
     const interval = setInterval(async () => {
       try {

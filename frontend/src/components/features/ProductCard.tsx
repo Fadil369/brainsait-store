@@ -11,8 +11,8 @@ import { useAppStore } from '@/stores';
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product) => void;
-  onShowDemo: (product: Product) => void;
+  onAddToCart: (_product: Product) => void;
+  onShowDemo: (_product: Product) => void;
   className?: string;
 }
 

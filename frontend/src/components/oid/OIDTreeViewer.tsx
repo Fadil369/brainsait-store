@@ -48,8 +48,8 @@ interface TreeNodeProps {
   node: OIDNode;
   level: number;
   expandedNodes: Set<string>;
-  onToggle: (nodeId: string) => void;
-  onSelect: (node: OIDNode) => void;
+  onToggle: (_nodeId: string) => void;
+  onSelect: (_node: OIDNode) => void;
   selectedNode?: OIDNode;
 }
 

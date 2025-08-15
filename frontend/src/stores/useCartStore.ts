@@ -13,9 +13,9 @@ interface CartState {
   error?: string;
   
   // Actions
-  addItem: (product: Product, quantity?: number) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  addItem: (product: Product, _quantity?: number) => void;
+  removeItem: (_productId: number) => void;
+  updateQuantity: (_productId: number, _quantity: number) => void;
   clearCart: () => void;
   toggleCart: () => void;
   closeCart: () => void;

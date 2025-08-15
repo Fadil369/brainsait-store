@@ -57,7 +57,7 @@ export class OIDSystemService {
     this.apiKey = process.env.NEXT_PUBLIC_OID_API_KEY || '';
   }
 
-  private async makeRequest(endpoint: string, options?: RequestInit): Promise<any> {
+  private async makeRequest(endpoint: string, options?: any): Promise<any> {
     // Check if API key is available
     if (!this.apiKey) {
       throw new Error('OID API key is not configured. Please set NEXT_PUBLIC_OID_API_KEY environment variable.');

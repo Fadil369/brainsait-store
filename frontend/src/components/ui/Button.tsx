@@ -45,7 +45,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     className, 
     variant, 
     size, 
-    asChild = false, 
+    asChild: _asChild = false, 
     loading = false,
     leftIcon,
     rightIcon,

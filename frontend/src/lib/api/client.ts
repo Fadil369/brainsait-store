@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 // Extend the axios interface to include metadata
+/* eslint-disable no-unused-vars */
 declare module 'axios' {
   interface InternalAxiosRequestConfig {
     metadata?: {
@@ -9,6 +10,7 @@ declare module 'axios' {
     };
   }
 }
+/* eslint-enable no-unused-vars */
 
 import { ApiResponse } from '@/types';
 
@@ -60,9 +62,9 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
     // Log response time in development
     if (process.env.NODE_ENV === 'development') {
-      const endTime = Date.now();
-      const startTime = response.config.metadata?.startTime || endTime;
-      console.debug(`API Request: ${response.config.method?.toUpperCase()} ${response.config.url} - ${endTime - startTime}ms`);
+      const _endTime = Date.now();
+      const _startTime = response.config.metadata?.startTime || _endTime;
+      // API Request timing debug info removed for production
     }
 
     return response;

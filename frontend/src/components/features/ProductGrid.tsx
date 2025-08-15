@@ -8,8 +8,8 @@ import { cn } from '@/lib/utils';
 
 interface ProductGridProps {
   products: Product[];
-  onAddToCart: (product: Product) => void;
-  onShowDemo: (product: Product) => void;
+  onAddToCart: (_product: Product) => void;
+  onShowDemo: (_product: Product) => void;
   loading?: boolean;
   className?: string;
 }
