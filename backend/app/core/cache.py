@@ -251,7 +251,8 @@ async def get_cache_health() -> Dict[str, Any]:
         memory_usage = redis_info.get('used_memory_human', 'unknown')
         
     except Exception as e:
-        redis_status = f"error: {e}"
+        logger.error(f"Redis health check failed: {e}", exc_info=True)
+        redis_status = "error"
         memory_usage = "unknown"
     
     return {
