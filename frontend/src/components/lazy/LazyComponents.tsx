@@ -33,7 +33,9 @@ export const AnalyticsDashboard = (props: any) => (
   </LazyWrapper>
 );
 
-export const RealTimeMetrics = (props: any) => (
+export const RealTimeMetrics = (
+  props: React.ComponentProps<typeof RealTimeMetricsLazy>
+) => (
   <LazyWrapper fallback={
     <div className="glass rounded-2xl p-6 animate-pulse">
       <div className="h-6 bg-gray/20 rounded mb-4 w-32" />
