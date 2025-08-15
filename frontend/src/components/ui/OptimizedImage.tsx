@@ -79,7 +79,6 @@ const OptimizedImageComponent: React.FC<OptimizedImageProps> = ({
       .map(size => `${baseSrc}?w=${size}&q=${quality} ${size}w`)
       .join(', ');
   };
-
   if (hasError) {
     return (
       <div 
