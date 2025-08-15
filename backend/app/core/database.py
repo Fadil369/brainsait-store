@@ -36,9 +36,11 @@ async def init_db():
     try:
         async with engine.begin() as conn:
             # Import all models here to ensure they are registered
-            from app.models import invoices, orders, payments, products, users
+            from app.models import invoices, orders, payments, products, users, sso, analytics
 
-            # Create all tables
+            # NOTE: In production, use Alembic migrations instead of create_all
+            # For development, we'll still create tables directly
+            # Run: alembic upgrade head
             await conn.run_sync(Base.metadata.create_all)
 
         logger.info("Database initialized successfully")
