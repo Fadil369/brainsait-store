@@ -13,14 +13,14 @@ Notes:
     r_marketing_leadgen_automation.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any
 import os
 import re
 import urllib.parse
+from typing import Any, Dict, Optional
 
 import httpx
+from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, Field
 
 AUTH_BASE = "https://www.linkedin.com/oauth/v2/authorization"
 TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken"
@@ -32,18 +32,12 @@ def _first_redirect_uri() -> str:
     if not raw:
         return ""
     # Split on comma, whitespace, or newlines, keep order
-    parts = [
-        p.strip().strip(',')
-        for p in re.split(r"[\s,]+", raw)
-        if p.strip()
-    ]
+    parts = [p.strip().strip(",") for p in re.split(r"[\s,]+", raw) if p.strip()]
     return parts[0] if parts else ""
 
 
 class LinkedInSettings(BaseModel):
-    client_id: str = Field(
-        default_factory=lambda: os.getenv("LINKEDIN_CLIENT_ID", "")
-    )
+    client_id: str = Field(default_factory=lambda: os.getenv("LINKEDIN_CLIENT_ID", ""))
     client_secret: str = Field(
         default_factory=lambda: os.getenv("LINKEDIN_CLIENT_SECRET", "")
     )
@@ -83,7 +77,7 @@ def get_oauth_url(
             status_code=500, detail="LINKEDIN_REDIRECT_URI not configured"
         )
 
-    scope_list = [s.strip() for s in scopes.split(',') if s.strip()]
+    scope_list = [s.strip() for s in scopes.split(",") if s.strip()]
     params = {
         "response_type": "code",
         "client_id": li.client_id,
@@ -118,9 +112,13 @@ def oauth_callback(
     }
     try:
         with httpx.Client(timeout=20.0) as client:
-            r = client.post(TOKEN_URL, data=form, headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            })
+            r = client.post(
+                TOKEN_URL,
+                data=form,
+                headers={
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            )
         r.raise_for_status()
         data = r.json()
     except httpx.HTTPStatusError as e:
@@ -156,9 +154,13 @@ def oauth_refresh(
     }
     try:
         with httpx.Client(timeout=20.0) as client:
-            r = client.post(TOKEN_URL, data=form, headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            })
+            r = client.post(
+                TOKEN_URL,
+                data=form,
+                headers={
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            )
         r.raise_for_status()
         data = r.json()
     except httpx.HTTPStatusError as e:

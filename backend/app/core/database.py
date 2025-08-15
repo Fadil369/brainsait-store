@@ -2,11 +2,12 @@
 Database configuration and session management
 """
 
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+import logging
+from contextlib import asynccontextmanager
+
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
-from contextlib import asynccontextmanager
-import logging
 
 from .config import settings
 
@@ -35,11 +36,11 @@ async def init_db():
     try:
         async with engine.begin() as conn:
             # Import all models here to ensure they are registered
-            from app.models import users, products, orders, payments, invoices
-            
+            from app.models import invoices, orders, payments, products, users
+
             # Create all tables
             await conn.run_sync(Base.metadata.create_all)
-        
+
         logger.info("Database initialized successfully")
     except Exception as e:
         logger.error(f"Database initialization failed: {e}")

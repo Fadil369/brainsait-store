@@ -207,7 +207,7 @@ export function formatCompactSAR(amount: number, isArabic: boolean = false): str
   return formatSAR(amount, { compact: true, isArabic }).formatted;
 }
 
-export default {
+const CurrencyUtils = {
   CURRENCY_CONFIG,
   formatSAR,
   parseSAR,
@@ -222,3 +222,5 @@ export default {
   SAR_NAME,
   SAR_NAME_AR,
 };
+
+export default CurrencyUtils;

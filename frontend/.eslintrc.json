@@ -10,7 +10,12 @@
   },
   "plugins": [],
   "rules": {
-    "no-unused-vars": "warn",
+    "no-unused-vars": ["warn", { 
+      "argsIgnorePattern": "^_",
+      "varsIgnorePattern": "^_",
+      "args": "after-used",
+      "ignoreRestSiblings": true
+    }],
     "no-undef": "warn",
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
@@ -19,8 +24,25 @@
     "no-console": "warn",
     "react-hooks/exhaustive-deps": "warn",
     "@next/next/no-page-custom-font": "warn",
-    "@next/next/no-img-element": "warn"
+    "@next/next/no-img-element": "warn",
+    "no-useless-catch": "error"
   },
+  "overrides": [
+    {
+      "files": ["*.d.ts"],
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["src/stores/*.ts", "src/types/*.ts"],
+      "rules": {
+        "no-unused-vars": ["warn", { 
+          "argsIgnorePattern": "^_|^(product|query|category|sortBy|direction|min|max|paymentId|error|clientSecret|token|language|theme|notification|id|isLoading|message)$"
+        }]
+      }
+    }
+  ],
   "ignorePatterns": [
     "node_modules/",
     ".next/",

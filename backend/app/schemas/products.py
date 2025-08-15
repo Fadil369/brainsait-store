@@ -2,11 +2,12 @@
 Product API schemas for validation and serialization
 """
 
-from pydantic import BaseModel, Field, validator
-from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 from uuid import UUID
+
+from pydantic import BaseModel, Field, validator
 
 from app.models.products import ProductStatus, StockStatus
 
@@ -73,13 +74,13 @@ class CategoryResponse(CategoryBase):
     level: int
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
 
 class CategoryWithChildren(CategoryResponse):
-    children: List['CategoryResponse'] = []
+    children: List["CategoryResponse"] = []
 
 
 # Brand Schemas
@@ -116,7 +117,7 @@ class BrandResponse(BrandBase):
     tenant_id: str
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -162,10 +163,10 @@ class ProductBase(BaseModel):
     is_featured: bool = Field(default=False)
     is_digital: bool = Field(default=False)
 
-    @validator('compare_price')
+    @validator("compare_price")
     def validate_compare_price(cls, v, values):
-        if v is not None and 'price' in values and v <= values['price']:
-            raise ValueError('Compare price must be greater than regular price')
+        if v is not None and "price" in values and v <= values["price"]:
+            raise ValueError("Compare price must be greater than regular price")
         return v
 
 
@@ -226,11 +227,11 @@ class ProductResponse(ProductBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
     published_at: Optional[datetime] = None
-    
+
     # Related objects
     category: Optional[CategoryResponse] = None
     brand: Optional[BrandResponse] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -254,7 +255,7 @@ class ProductListResponse(BaseModel):
     category: Optional[CategoryResponse] = None
     brand: Optional[BrandResponse] = None
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -300,7 +301,7 @@ class ProductVariantResponse(ProductVariantBase):
     tenant_id: str
     created_at: datetime
     updated_at: Optional[datetime] = None
-    
+
     class Config:
         from_attributes = True
 
@@ -336,11 +337,11 @@ class ProductReviewResponse(ProductReviewBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
     approved_at: Optional[datetime] = None
-    
+
     # User information
     user_name: Optional[str] = None
     user_avatar: Optional[str] = None
-    
+
     class Config:
         from_attributes = True
 

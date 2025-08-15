@@ -3,27 +3,36 @@ BrainSAIT Store API - Product and Store Management
 Supporting Arabic/English content and ZATCA compliance
 """
 
-from typing import List, Optional
-from uuid import UUID
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, UploadFile, File
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import and_, or_, func, select
 import json
 from datetime import datetime
+from typing import List, Optional
+from uuid import UUID
 
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
+from sqlalchemy import and_, func, or_, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.auth import get_current_tenant, get_current_user
 from app.core.database import get_db
-from app.core.auth import get_current_user, get_current_tenant
-from app.models.store import Product, Category, Order, OrderItem, Cart, CartItem
+from app.core.localization import LocalizedResponse, get_localized_text
+from app.models.store import Cart, CartItem, Category, Order, OrderItem, Product
 from app.schemas.store import (
-    ProductCreate, ProductUpdate, ProductResponse, ProductSearchResponse,
-    CategoryResponse, OrderCreate, OrderResponse, CartResponse,
-    CartItemCreate, CartItemUpdate
+    CartItemCreate,
+    CartItemUpdate,
+    CartResponse,
+    CategoryResponse,
+    OrderCreate,
+    OrderResponse,
+    ProductCreate,
+    ProductResponse,
+    ProductSearchResponse,
+    ProductUpdate,
 )
-from app.core.localization import get_localized_text, LocalizedResponse
 
 router = APIRouter()
 
 # Product Management Endpoints
+
 
 @router.get("/products", response_model=ProductSearchResponse)
 async def get_products(
@@ -31,71 +40,76 @@ async def get_products(
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
     category: Optional[str] = Query(None, description="Filter by category"),
-    search: Optional[str] = Query(None, description="Search in product name/description"),
+    search: Optional[str] = Query(
+        None, description="Search in product name/description"
+    ),
     min_price: Optional[float] = Query(None, description="Minimum price filter"),
     max_price: Optional[float] = Query(None, description="Maximum price filter"),
     status: Optional[str] = Query("active", description="Product status"),
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(20, ge=1, le=100, description="Items per page"),
-    lang: str = Query("en", regex="^(en|ar)$", description="Language preference")
+    lang: str = Query("en", regex="^(en|ar)$", description="Language preference"),
 ):
     """Get products with filtering, search, and pagination"""
-    
+
     # Build query
     query = select(Product).where(
-        and_(
-            Product.tenant_id == tenant_id,
-            Product.status == status
-        )
+        and_(Product.tenant_id == tenant_id, Product.status == status)
     )
-    
+
     # Apply filters
     if category:
         query = query.where(Product.category == category)
-    
+
     if min_price is not None:
         query = query.where(Product.price_sar >= min_price)
-    
+
     if max_price is not None:
         query = query.where(Product.price_sar <= max_price)
-    
+
     if search:
         search_term = f"%{search}%"
         if lang == "ar":
             query = query.where(
                 or_(
                     Product.name_ar.ilike(search_term),
-                    Product.description_ar.ilike(search_term)
+                    Product.description_ar.ilike(search_term),
                 )
             )
         else:
             query = query.where(
                 or_(
                     Product.name.ilike(search_term),
-                    Product.description.ilike(search_term)
+                    Product.description.ilike(search_term),
                 )
             )
-    
+
     # Get total count
     count_query = select(func.count()).select_from(query.subquery())
     total_result = await db.execute(count_query)
     total = total_result.scalar()
-    
+
     # Apply pagination
     offset = (page - 1) * limit
     query = query.offset(offset).limit(limit)
-    
+
     # Execute query
     result = await db.execute(query)
     products = result.scalars().all()
-    
+
     # Convert to response models with localization
     product_responses = []
     for product in products:
         product_data = {
             "id": product.id,
-            "name": product.name_ar if lang == "ar" and product.name_ar else product.name,
-            "description": product.description_ar if lang == "ar" and product.description_ar else product.description,
+            "name": (
+                product.name_ar if lang == "ar" and product.name_ar else product.name
+            ),
+            "description": (
+                product.description_ar
+                if lang == "ar" and product.description_ar
+                else product.description
+            ),
             "price_sar": product.price_sar,
             "original_price_sar": product.original_price_sar,
             "category": product.category,
@@ -105,18 +119,19 @@ async def get_products(
             "demo_data": product.demo_data or {},
             "metadata": product.metadata or {},
             "created_at": product.created_at,
-            "updated_at": product.updated_at
+            "updated_at": product.updated_at,
         }
         product_responses.append(ProductResponse(**product_data))
-    
+
     return ProductSearchResponse(
         products=product_responses,
         total=total,
         page=page,
         limit=limit,
         has_next=offset + limit < total,
-        has_prev=page > 1
+        has_prev=page > 1,
     )
+
 
 @router.get("/products/{product_id}", response_model=ProductResponse)
 async def get_product(
@@ -124,31 +139,31 @@ async def get_product(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    lang: str = Query("en", regex="^(en|ar)$")
+    lang: str = Query("en", regex="^(en|ar)$"),
 ):
     """Get a specific product by ID"""
-    
+
     query = select(Product).where(
-        and_(
-            Product.id == product_id,
-            Product.tenant_id == tenant_id
-        )
+        and_(Product.id == product_id, Product.tenant_id == tenant_id)
     )
-    
+
     result = await db.execute(query)
     product = result.scalar_first()
-    
+
     if not product:
         raise HTTPException(
-            status_code=404,
-            detail=get_localized_text("product_not_found", lang)
+            status_code=404, detail=get_localized_text("product_not_found", lang)
         )
-    
+
     # Return localized product data
     return ProductResponse(
         id=product.id,
         name=product.name_ar if lang == "ar" and product.name_ar else product.name,
-        description=product.description_ar if lang == "ar" and product.description_ar else product.description,
+        description=(
+            product.description_ar
+            if lang == "ar" and product.description_ar
+            else product.description
+        ),
         price_sar=product.price_sar,
         original_price_sar=product.original_price_sar,
         category=product.category,
@@ -158,8 +173,9 @@ async def get_product(
         demo_data=product.demo_data or {},
         metadata=product.metadata or {},
         created_at=product.created_at,
-        updated_at=product.updated_at
+        updated_at=product.updated_at,
     )
+
 
 @router.post("/products", response_model=ProductResponse)
 async def create_product(
@@ -167,17 +183,14 @@ async def create_product(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """Create a new product (admin only)"""
-    
+
     # Check if user has admin privileges
     if not current_user.is_admin:
-        raise HTTPException(
-            status_code=403,
-            detail="Admin privileges required"
-        )
-    
+        raise HTTPException(status_code=403, detail="Admin privileges required")
+
     # Create new product
     product = Product(
         tenant_id=tenant_id,
@@ -191,13 +204,13 @@ async def create_product(
         type=product_data.type,
         features=product_data.features or [],
         demo_data=product_data.demo_data or {},
-        metadata=product_data.metadata or {}
+        metadata=product_data.metadata or {},
     )
-    
+
     db.add(product)
     await db.commit()
     await db.refresh(product)
-    
+
     return ProductResponse(
         id=product.id,
         name=product.name,
@@ -211,29 +224,29 @@ async def create_product(
         demo_data=product.demo_data,
         metadata=product.metadata,
         created_at=product.created_at,
-        updated_at=product.updated_at
+        updated_at=product.updated_at,
     )
+
 
 @router.get("/categories", response_model=List[CategoryResponse])
 async def get_categories(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    lang: str = Query("en", regex="^(en|ar)$")
+    lang: str = Query("en", regex="^(en|ar)$"),
 ):
     """Get all product categories"""
-    
+
     # Get distinct categories from products
-    query = select(Product.category, func.count(Product.id).label('product_count')).where(
-        and_(
-            Product.tenant_id == tenant_id,
-            Product.status == "active"
-        )
-    ).group_by(Product.category)
-    
+    query = (
+        select(Product.category, func.count(Product.id).label("product_count"))
+        .where(and_(Product.tenant_id == tenant_id, Product.status == "active"))
+        .group_by(Product.category)
+    )
+
     result = await db.execute(query)
     categories = result.all()
-    
+
     category_mapping = {
         "ai": {"en": "AI Solutions", "ar": "حلول الذكاء الاصطناعي"},
         "apps": {"en": "Applications", "ar": "التطبيقات"},
@@ -241,68 +254,62 @@ async def get_categories(
         "templates": {"en": "Templates", "ar": "القوالب"},
         "ebooks": {"en": "eBooks", "ar": "الكتب الإلكترونية"},
         "courses": {"en": "Courses", "ar": "الدورات"},
-        "tools": {"en": "Tools", "ar": "الأدوات"}
+        "tools": {"en": "Tools", "ar": "الأدوات"},
     }
-    
+
     category_responses = []
     for category, count in categories:
         category_name = category_mapping.get(category, {}).get(lang, category.title())
-        category_responses.append(CategoryResponse(
-            id=category,
-            name=category_name,
-            product_count=count
-        ))
-    
+        category_responses.append(
+            CategoryResponse(id=category, name=category_name, product_count=count)
+        )
+
     return category_responses
 
+
 # Cart Management Endpoints
+
 
 @router.get("/cart", response_model=CartResponse)
 async def get_cart(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """Get user's cart contents"""
-    
+
     # Get or create cart for user
     cart_query = select(Cart).where(
         and_(
             Cart.tenant_id == tenant_id,
             Cart.user_id == current_user.id,
-            Cart.status == "active"
+            Cart.status == "active",
         )
     )
-    
+
     cart_result = await db.execute(cart_query)
     cart = cart_result.scalar_first()
-    
+
     if not cart:
         # Create new cart
-        cart = Cart(
-            tenant_id=tenant_id,
-            user_id=current_user.id,
-            status="active"
-        )
+        cart = Cart(tenant_id=tenant_id, user_id=current_user.id, status="active")
         db.add(cart)
         await db.commit()
         await db.refresh(cart)
-    
+
     # Get cart items with product details
-    items_query = select(CartItem).join(Product).where(
-        CartItem.cart_id == cart.id
-    )
-    
+    items_query = select(CartItem).join(Product).where(CartItem.cart_id == cart.id)
+
     items_result = await db.execute(items_query)
     cart_items = items_result.scalars().all()
-    
+
     # Calculate totals
     subtotal = sum(item.quantity * item.product.price_sar for item in cart_items)
     tax_rate = 0.15  # Saudi VAT 15%
     tax_amount = subtotal * tax_rate
     total = subtotal + tax_amount
-    
+
     return CartResponse(
         id=cart.id,
         items=[
@@ -312,15 +319,16 @@ async def get_cart(
                 "product_name": item.product.name,
                 "quantity": item.quantity,
                 "unit_price": item.product.price_sar,
-                "total_price": item.quantity * item.product.price_sar
+                "total_price": item.quantity * item.product.price_sar,
             }
             for item in cart_items
         ],
         subtotal=subtotal,
         tax_amount=tax_amount,
         total=total,
-        item_count=len(cart_items)
+        item_count=len(cart_items),
     )
+
 
 @router.post("/cart/items")
 async def add_to_cart(
@@ -328,61 +336,51 @@ async def add_to_cart(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """Add item to cart"""
-    
+
     # Verify product exists
     product_query = select(Product).where(
         and_(
             Product.id == item_data.product_id,
             Product.tenant_id == tenant_id,
-            Product.status == "active"
+            Product.status == "active",
         )
     )
-    
+
     product_result = await db.execute(product_query)
     product = product_result.scalar_first()
-    
+
     if not product:
-        raise HTTPException(
-            status_code=404,
-            detail="Product not found"
-        )
-    
+        raise HTTPException(status_code=404, detail="Product not found")
+
     # Get or create cart
     cart_query = select(Cart).where(
         and_(
             Cart.tenant_id == tenant_id,
             Cart.user_id == current_user.id,
-            Cart.status == "active"
+            Cart.status == "active",
         )
     )
-    
+
     cart_result = await db.execute(cart_query)
     cart = cart_result.scalar_first()
-    
+
     if not cart:
-        cart = Cart(
-            tenant_id=tenant_id,
-            user_id=current_user.id,
-            status="active"
-        )
+        cart = Cart(tenant_id=tenant_id, user_id=current_user.id, status="active")
         db.add(cart)
         await db.commit()
         await db.refresh(cart)
-    
+
     # Check if item already exists in cart
     existing_item_query = select(CartItem).where(
-        and_(
-            CartItem.cart_id == cart.id,
-            CartItem.product_id == item_data.product_id
-        )
+        and_(CartItem.cart_id == cart.id, CartItem.product_id == item_data.product_id)
     )
-    
+
     existing_result = await db.execute(existing_item_query)
     existing_item = existing_result.scalar_first()
-    
+
     if existing_item:
         # Update quantity
         existing_item.quantity += item_data.quantity
@@ -392,13 +390,14 @@ async def add_to_cart(
         cart_item = CartItem(
             cart_id=cart.id,
             product_id=item_data.product_id,
-            quantity=item_data.quantity
+            quantity=item_data.quantity,
         )
         db.add(cart_item)
-    
+
     await db.commit()
-    
+
     return {"message": "Item added to cart successfully"}
+
 
 @router.delete("/cart/items/{item_id}")
 async def remove_from_cart(
@@ -406,34 +405,37 @@ async def remove_from_cart(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """Remove item from cart"""
-    
+
     # Find cart item
-    item_query = select(CartItem).join(Cart).where(
-        and_(
-            CartItem.id == item_id,
-            Cart.tenant_id == tenant_id,
-            Cart.user_id == current_user.id
+    item_query = (
+        select(CartItem)
+        .join(Cart)
+        .where(
+            and_(
+                CartItem.id == item_id,
+                Cart.tenant_id == tenant_id,
+                Cart.user_id == current_user.id,
+            )
         )
     )
-    
+
     item_result = await db.execute(item_query)
     cart_item = item_result.scalar_first()
-    
+
     if not cart_item:
-        raise HTTPException(
-            status_code=404,
-            detail="Cart item not found"
-        )
-    
+        raise HTTPException(status_code=404, detail="Cart item not found")
+
     await db.delete(cart_item)
     await db.commit()
-    
+
     return {"message": "Item removed from cart successfully"}
 
+
 # Order Management Endpoints
+
 
 @router.post("/orders", response_model=OrderResponse)
 async def create_order(
@@ -441,48 +443,40 @@ async def create_order(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """Create a new order from cart or direct items"""
-    
+
     # Get cart items
     cart_query = select(Cart).where(
         and_(
             Cart.tenant_id == tenant_id,
             Cart.user_id == current_user.id,
-            Cart.status == "active"
+            Cart.status == "active",
         )
     )
-    
+
     cart_result = await db.execute(cart_query)
     cart = cart_result.scalar_first()
-    
+
     if not cart:
-        raise HTTPException(
-            status_code=400,
-            detail="No active cart found"
-        )
-    
+        raise HTTPException(status_code=400, detail="No active cart found")
+
     # Get cart items
-    items_query = select(CartItem).join(Product).where(
-        CartItem.cart_id == cart.id
-    )
-    
+    items_query = select(CartItem).join(Product).where(CartItem.cart_id == cart.id)
+
     items_result = await db.execute(items_query)
     cart_items = items_result.scalars().all()
-    
+
     if not cart_items:
-        raise HTTPException(
-            status_code=400,
-            detail="Cart is empty"
-        )
-    
+        raise HTTPException(status_code=400, detail="Cart is empty")
+
     # Calculate totals
     subtotal = sum(item.quantity * item.product.price_sar for item in cart_items)
     tax_rate = 0.15  # Saudi VAT 15%
     tax_amount = subtotal * tax_rate
     total = subtotal + tax_amount
-    
+
     # Create order
     order = Order(
         tenant_id=tenant_id,
@@ -498,14 +492,14 @@ async def create_order(
                 "product_name": item.product.name,
                 "quantity": item.quantity,
                 "unit_price": float(item.product.price_sar),
-                "total_price": float(item.quantity * item.product.price_sar)
+                "total_price": float(item.quantity * item.product.price_sar),
             }
             for item in cart_items
-        ]
+        ],
     )
-    
+
     db.add(order)
-    
+
     # Create order items
     for cart_item in cart_items:
         order_item = OrderItem(
@@ -513,16 +507,16 @@ async def create_order(
             product_id=cart_item.product_id,
             quantity=cart_item.quantity,
             unit_price=cart_item.product.price_sar,
-            total_price=cart_item.quantity * cart_item.product.price_sar
+            total_price=cart_item.quantity * cart_item.product.price_sar,
         )
         db.add(order_item)
-    
+
     # Clear cart
     cart.status = "completed"
-    
+
     await db.commit()
     await db.refresh(order)
-    
+
     return OrderResponse(
         id=order.id,
         customer_email=order.customer_email,
@@ -531,32 +525,34 @@ async def create_order(
         status=order.status,
         items=order.items,
         billing_address=order.billing_address,
-        created_at=order.created_at
+        created_at=order.created_at,
     )
+
 
 @router.get("/orders", response_model=List[OrderResponse])
 async def get_orders(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    current_user = Depends(get_current_user),
+    current_user=Depends(get_current_user),
     page: int = Query(1, ge=1),
-    limit: int = Query(20, ge=1, le=100)
+    limit: int = Query(20, ge=1, le=100),
 ):
     """Get user's orders"""
-    
+
     offset = (page - 1) * limit
-    
-    query = select(Order).where(
-        and_(
-            Order.tenant_id == tenant_id,
-            Order.user_id == current_user.id
-        )
-    ).order_by(Order.created_at.desc()).offset(offset).limit(limit)
-    
+
+    query = (
+        select(Order)
+        .where(and_(Order.tenant_id == tenant_id, Order.user_id == current_user.id))
+        .order_by(Order.created_at.desc())
+        .offset(offset)
+        .limit(limit)
+    )
+
     result = await db.execute(query)
     orders = result.scalars().all()
-    
+
     return [
         OrderResponse(
             id=order.id,
@@ -566,10 +562,11 @@ async def get_orders(
             status=order.status,
             items=order.items,
             billing_address=order.billing_address,
-            created_at=order.created_at
+            created_at=order.created_at,
         )
         for order in orders
     ]
+
 
 @router.get("/orders/{order_id}", response_model=OrderResponse)
 async def get_order(
@@ -577,27 +574,24 @@ async def get_order(
     request: Request,
     db: AsyncSession = Depends(get_db),
     tenant_id: UUID = Depends(get_current_tenant),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """Get specific order details"""
-    
+
     query = select(Order).where(
         and_(
             Order.id == order_id,
             Order.tenant_id == tenant_id,
-            Order.user_id == current_user.id
+            Order.user_id == current_user.id,
         )
     )
-    
+
     result = await db.execute(query)
     order = result.scalar_first()
-    
+
     if not order:
-        raise HTTPException(
-            status_code=404,
-            detail="Order not found"
-        )
-    
+        raise HTTPException(status_code=404, detail="Order not found")
+
     return OrderResponse(
         id=order.id,
         customer_email=order.customer_email,
@@ -606,5 +600,5 @@ async def get_order(
         status=order.status,
         items=order.items,
         billing_address=order.billing_address,
-        created_at=order.created_at
+        created_at=order.created_at,
     )
