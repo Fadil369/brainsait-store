@@ -92,7 +92,7 @@ class StripePriceCreate(BaseModel):
 class StripeCheckoutRequest(BaseModel):
     price_id: Optional[str] = None
     line_items: Optional[List[Dict[str, Any]]] = None
-    mode: str = Field(default="payment", regex="^(payment|subscription|setup)$")
+    mode: str = Field(default="payment", pattern="^(payment|subscription|setup)$")
     success_url: str
     cancel_url: str
     customer_email: Optional[EmailStr] = None
@@ -220,7 +220,7 @@ class HyperPayWebhookEvent(BaseModel):
 class STCPayRequest(BaseModel):
     amount: Decimal
     currency: str = "SAR"
-    mobile_number: str = Field(..., regex="^(\\+966|966|0)?5[0-9]{8}$")
+    mobile_number: str = Field(..., pattern="^(\\+966|966|0)?5[0-9]{8}$")
     reference_id: str
     description: str
 
@@ -229,8 +229,8 @@ class MadaPaymentRequest(BaseModel):
     amount: Decimal
     currency: str = "SAR"
     card_number: str = Field(..., min_length=16, max_length=19)
-    expiry_month: str = Field(..., regex="^(0[1-9]|1[0-2])$")
-    expiry_year: str = Field(..., regex="^20[2-9][0-9]$")
+    expiry_month: str = Field(..., pattern="^(0[1-9]|1[0-2])$")
+    expiry_year: str = Field(..., pattern="^20[2-9][0-9]$")
     cvv: str = Field(..., min_length=3, max_length=4)
     cardholder_name: str
 
@@ -284,7 +284,7 @@ class OrderResponse(BaseModel):
 class InvoiceGenerate(BaseModel):
     order_id: int
     include_vat: bool = True
-    language: str = Field(default="en", regex="^(en|ar)$")
+    language: str = Field(default="en", pattern="^(en|ar)$")
     template: str = Field(default="standard")
 
 
