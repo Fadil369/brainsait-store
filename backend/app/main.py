@@ -21,6 +21,7 @@ from app.api.v1 import (
     auth,
     billing,
     integrations,
+    integrations_marketplace,
     recommendations,
 )
 from app.api.v1 import integrations_linkedin as linkedin
@@ -162,6 +163,12 @@ app.include_router(
     integrations.router,
     prefix=f"{settings.API_V1_PREFIX}/integrations",
     tags=["Integrations"],
+)
+
+app.include_router(
+    integrations_marketplace.router,
+    prefix=f"{settings.API_V1_PREFIX}/integrations/marketplace",
+    tags=["Integration Marketplace"],
 )
 
 app.include_router(
