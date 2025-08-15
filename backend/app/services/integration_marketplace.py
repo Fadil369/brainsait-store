@@ -603,7 +603,7 @@ class IntegrationMarketplace:
             logger.error(f"Error sending test webhook for {integration_id}: {e}")
             return {
                 "success": False,
-                "error": str(e),
+                "error": "Internal error",
                 "message": "Failed to send test webhook"
             }
 

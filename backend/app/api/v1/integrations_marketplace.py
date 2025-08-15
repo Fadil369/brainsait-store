@@ -320,11 +320,17 @@ async def test_integration_webhook(
             event_type=test_request.event_type
         )
         
-        return {
+        # Remove internal error details from response
+        response = {
             "success": result['success'],
-            "data": result,
             "message": result.get('message', 'Webhook test completed')
         }
+        if result['success']:
+            response["data"] = result
+        else:
+            # Only include generic error message
+            response["error"] = result.get("error", "Internal error")
+        return response
         
     except Exception as e:
         raise HTTPException(
