@@ -255,7 +255,7 @@ class SSOAuditLog(Base):
     error_message = Column(Text)
 
     # Additional data
-    metadata = Column(JSON)
+    audit_metadata = Column(JSON)
 
     # Timing
     timestamp = Column(DateTime, default=datetime.utcnow, index=True)

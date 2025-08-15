@@ -11,6 +11,8 @@ sqlalchemy==2.0.25
 alembic==1.13.1
 # Using psycopg instead of psycopg2-binary for better Python 3.13 compatibility
 psycopg[binary]==3.2.9
+# Backup driver for sync operations (migrations)
+psycopg2-binary==2.9.10
 # Using compatible asyncpg version
 asyncpg==0.29.0
 
