@@ -13,7 +13,7 @@ import stripe
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.config import get_settings
+from app.core.config import settings
 from app.models.orders import Order, OrderItem, OrderStatus, PaymentMethod
 from app.models.products import Product
 from app.models.users import User
@@ -26,7 +26,7 @@ from app.schemas.payment import (
     StripeSubscriptionCreate,
 )
 
-settings = get_settings()
+# Use global settings instance
 
 
 class PaymentGatewayService:

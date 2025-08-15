@@ -12,7 +12,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, Upl
 from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import get_current_tenant, get_current_user
+from app.core.dependencies import get_current_user, get_tenant_id
 from app.core.database import get_db
 from app.core.localization import LocalizedResponse, get_localized_text
 from app.models.store import Cart, CartItem, Category, Order, OrderItem, Product
@@ -38,7 +38,7 @@ router = APIRouter()
 async def get_products(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     category: Optional[str] = Query(None, description="Filter by category"),
     search: Optional[str] = Query(
         None, description="Search in product name/description"
@@ -138,7 +138,7 @@ async def get_product(
     product_id: UUID,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     lang: str = Query("en", regex="^(en|ar)$"),
 ):
     """Get a specific product by ID"""
@@ -182,7 +182,7 @@ async def create_product(
     product_data: ProductCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create a new product (admin only)"""
@@ -232,7 +232,7 @@ async def create_product(
 async def get_categories(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     lang: str = Query("en", regex="^(en|ar)$"),
 ):
     """Get all product categories"""
@@ -274,7 +274,7 @@ async def get_categories(
 async def get_cart(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Get user's cart contents"""
@@ -335,7 +335,7 @@ async def add_to_cart(
     item_data: CartItemCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Add item to cart"""
@@ -404,7 +404,7 @@ async def remove_from_cart(
     item_id: UUID,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Remove item from cart"""
@@ -442,7 +442,7 @@ async def create_order(
     order_data: OrderCreate,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Create a new order from cart or direct items"""
@@ -533,7 +533,7 @@ async def create_order(
 async def get_orders(
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
     page: int = Query(1, ge=1),
     limit: int = Query(20, ge=1, le=100),
@@ -573,7 +573,7 @@ async def get_order(
     order_id: UUID,
     request: Request,
     db: AsyncSession = Depends(get_db),
-    tenant_id: UUID = Depends(get_current_tenant),
+    tenant_id: UUID = Depends(get_tenant_id),
     current_user=Depends(get_current_user),
 ):
     """Get specific order details"""

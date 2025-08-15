@@ -11,9 +11,7 @@ import httpx
 import jwt
 from fastapi import HTTPException, status
 
-from app.core.config import get_settings
-
-settings = get_settings()
+from app.core.config import settings
 
 
 class AppStoreConnectService:

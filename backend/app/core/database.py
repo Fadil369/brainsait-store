@@ -4,7 +4,9 @@ Database configuration and session management
 
 import logging
 from contextlib import asynccontextmanager
+from typing import Optional
 
+import redis.asyncio as redis
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import NullPool
@@ -29,6 +31,27 @@ async_session_factory = async_sessionmaker(
 
 # Create declarative base
 Base = declarative_base()
+
+# Redis connection pool
+_redis_pool: Optional[redis.Redis] = None
+
+
+def get_redis() -> redis.Redis:
+    """Get Redis connection"""
+    global _redis_pool
+    if _redis_pool is None:
+        # For development, use a mock Redis if not available
+        try:
+            _redis_pool = redis.from_url(
+                getattr(settings, 'REDIS_URL', 'redis://localhost:6379'),
+                decode_responses=True
+            )
+        except Exception as e:
+            logger.warning(f"Redis not available, using mock: {e}")
+            # Return a mock Redis for development
+            from unittest.mock import AsyncMock
+            _redis_pool = AsyncMock()
+    return _redis_pool
 
 
 async def init_db():
