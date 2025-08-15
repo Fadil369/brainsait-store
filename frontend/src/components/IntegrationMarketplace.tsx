@@ -382,7 +382,7 @@ const IntegrationMarketplace: React.FC<IntegrationMarketplaceProps> = ({
                         alt={integration.name}
                         className="w-12 h-12 rounded-lg"
                         onError={(e) => {
-                          e.currentTarget.src = '/api/placeholder/48/48';
+                          e.currentTarget.src = 'https://via.placeholder.com/48';
                         }}
                       />
                       <div>
