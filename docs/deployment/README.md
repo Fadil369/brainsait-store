@@ -228,6 +228,107 @@ npm run build
 wrangler pages deploy out --project-name brainsait-store-staging
 ```
 
+### Staging Verification
+
+After deploying to staging, perform comprehensive verification:
+
+#### Backend Verification
+
+```bash
+# 1. Health check
+curl https://brainsait-store-staging.fadil.workers.dev/health
+# Expected: {"status":"healthy","version":"1.0.0"}
+
+# 2. API endpoints
+curl https://brainsait-store-staging.fadil.workers.dev/api/products
+# Should return product list
+
+# 3. Test authentication
+curl -X POST https://brainsait-store-staging.fadil.workers.dev/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"testpass"}'
+
+# 4. Check rate limiting
+for i in {1..150}; do 
+  curl -s https://brainsait-store-staging.fadil.workers.dev/api/products > /dev/null
+done
+# Should see rate limit response after 100 requests
+
+# 5. Verify CORS headers
+curl -I -X OPTIONS https://brainsait-store-staging.fadil.workers.dev/api/products \
+  -H "Origin: https://store.brainsait.io"
+# Should include Access-Control-Allow-Origin header
+```
+
+#### Frontend Verification
+
+```bash
+# 1. Site loads
+curl -I https://brainsait-store-staging.pages.dev
+# Should return 200 OK
+
+# 2. Assets loading
+curl https://brainsait-store-staging.pages.dev/_next/static/css/main.css
+# Should return CSS content
+
+# 3. Check language switching
+curl https://brainsait-store-staging.pages.dev/ar
+# Should return Arabic version
+
+# 4. Verify Apple Pay domain
+curl https://brainsait-store-staging.pages.dev/.well-known/apple-developer-merchantid-domain-association.txt
+# Should return Apple Pay verification file
+
+# 5. Performance check
+curl -w "@curl-format.txt" -o /dev/null -s https://brainsait-store-staging.pages.dev
+# Check response time < 500ms
+```
+
+#### Integration Testing
+
+```bash
+# 1. Full user flow test
+# - Visit staging site
+# - Register new account
+# - Browse products
+# - Add to cart
+# - Checkout (use test payment)
+# - Verify order in dashboard
+
+# 2. Payment gateway tests
+# Test Stripe
+curl -X POST https://brainsait-store-staging.fadil.workers.dev/api/payments/test-stripe
+
+# Test PayPal
+curl -X POST https://brainsait-store-staging.fadil.workers.dev/api/payments/test-paypal
+
+# 3. Webhook delivery test
+curl -X POST https://brainsait-store-staging.fadil.workers.dev/webhooks/test
+
+# 4. Analytics tracking
+# Visit pages and verify events in Cloudflare Analytics
+
+# 5. Error handling
+curl https://brainsait-store-staging.fadil.workers.dev/api/nonexistent
+# Should return proper 404 error
+```
+
+#### Staging Sign-Off Checklist
+
+- [ ] All health checks passing
+- [ ] API endpoints responding correctly
+- [ ] Authentication/authorization working
+- [ ] Payment test transactions successful
+- [ ] Multi-language support verified
+- [ ] Mobile responsive design confirmed
+- [ ] Error handling appropriate
+- [ ] Analytics tracking events
+- [ ] Performance metrics acceptable (< 500ms response)
+- [ ] No console errors in browser
+- [ ] All integration tests passing
+- [ ] Monitoring dashboards showing data
+- [ ] Staging stable for 24+ hours
+
 ## Production Deployment
 
 ### Pre-deployment Checklist
@@ -447,6 +548,217 @@ pytest tests/integration/
 # API tests
 pytest tests/api/
 ```
+
+### CI/CD Pipeline Validation
+
+#### Validate GitHub Actions Workflows
+
+```bash
+# 1. Check workflow syntax
+actionlint .github/workflows/*.yml
+
+# 2. Validate workflow files exist
+ls -la .github/workflows/
+# Should show:
+# - codeql.yml
+# - validate-wrangler.yml
+# (deploy workflows should be created as needed)
+
+# 3. Test workflow locally with act (optional)
+act -l  # List workflows
+act -n  # Dry run
+```
+
+#### Configure Required Secrets
+
+In GitHub repository settings (Settings → Secrets → Actions), configure:
+
+```yaml
+Required Secrets:
+  CLOUDFLARE_API_TOKEN:
+    description: Cloudflare API token with Workers and Pages permissions
+    required: true
+    
+  CLOUDFLARE_ACCOUNT_ID:
+    description: Cloudflare account ID
+    required: true
+    
+  NEXT_PUBLIC_API_URL:
+    description: Production API URL
+    required: true
+    example: https://api.store.brainsait.io
+    
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+    description: Stripe publishable key for production
+    required: true
+    
+  DATABASE_URL:
+    description: Production database connection string
+    required: true
+    
+  REDIS_URL:
+    description: Production Redis connection string
+    required: true
+    
+  SECRET_KEY:
+    description: Application secret key
+    required: true
+```
+
+#### Verify CI/CD Pipeline Status
+
+```bash
+# Check recent workflow runs
+gh run list --limit 10
+
+# View specific run details
+gh run view <run-id>
+
+# Check workflow status
+gh run watch
+
+# Download workflow logs
+gh run download <run-id>
+```
+
+#### CI/CD Pipeline Checklist
+
+**Pre-Deployment:**
+- [ ] All GitHub Actions secrets configured
+- [ ] Workflow files validated with actionlint
+- [ ] CodeQL scanning enabled and passing
+- [ ] Wrangler validation workflow passing
+- [ ] Branch protection rules configured
+- [ ] Required status checks enabled
+
+**Deployment Workflow:**
+- [ ] Automated tests run on every PR
+- [ ] Staging deployment on merge to develop
+- [ ] Production deployment requires approval
+- [ ] Rollback workflow documented
+- [ ] Deployment notifications configured
+
+**Post-Deployment:**
+- [ ] Deployment success verified in logs
+- [ ] Health checks passing
+- [ ] Monitoring dashboards updated
+- [ ] Deployment tagged in git
+- [ ] Team notified of deployment
+
+#### Continuous Integration Best Practices
+
+```yaml
+# Example: Enhanced CI workflow
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint code
+        run: |
+          npm run lint
+          python -m pylint backend/
+  
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: |
+          npm test
+          pytest
+  
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Security scan
+        run: |
+          npm audit
+          pip-audit
+  
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build application
+        run: |
+          npm run build
+          
+  validate-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate configurations
+        run: |
+          node scripts/validate-wrangler.js
+```
+
+#### Monitoring CI/CD Health
+
+```bash
+# Create a dashboard to track:
+1. Build success rate (target: > 95%)
+2. Average build time (target: < 10 minutes)
+3. Deployment frequency (track velocity)
+4. Time to deploy (commit to production)
+5. Failed deployment rate (target: < 5%)
+6. Rollback frequency (target: < 10%)
+
+# Example monitoring query
+gh api /repos/:owner/:repo/actions/workflows \
+  --jq '.workflows[] | {name, path, state}'
+```
+
+#### Troubleshooting CI/CD Issues
+
+**Common Issues:**
+
+1. **Workflow not triggering**
+   ```bash
+   # Check workflow file syntax
+   actionlint .github/workflows/your-workflow.yml
+   
+   # Verify branch protection rules
+   gh api repos/:owner/:repo/branches/main/protection
+   ```
+
+2. **Secrets not available**
+   ```bash
+   # List configured secrets
+   gh secret list
+   
+   # Set missing secret
+   gh secret set SECRET_NAME
+   ```
+
+3. **Build failures**
+   ```bash
+   # View detailed logs
+   gh run view <run-id> --log
+   
+   # Reproduce locally
+   act push -j build
+   ```
+
+4. **Deployment timeouts**
+   ```bash
+   # Check Cloudflare status
+   curl https://www.cloudflarestatus.com/api/v2/status.json
+   
+   # Verify API token permissions
+   wrangler whoami
+   ```
 
 ## Monitoring and Logging
 
