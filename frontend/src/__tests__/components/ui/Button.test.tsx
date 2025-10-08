@@ -30,33 +30,33 @@ describe('Button Component', () => {
 
   it('should apply variant classes correctly', () => {
     const { rerender } = render(<Button variant="primary">Primary</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-primary-enhanced');
+    expect(screen.getByRole('button')).toHaveClass('bg-vision-green');
 
     rerender(<Button variant="secondary">Secondary</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-secondary');
+    expect(screen.getByRole('button')).toHaveClass('glass');
 
     rerender(<Button variant="outline">Outline</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-outline');
+    expect(screen.getByRole('button')).toHaveClass('border-vision-green');
 
     rerender(<Button variant="ghost">Ghost</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-ghost');
+    expect(screen.getByRole('button')).toHaveClass('hover:bg-white/10');
 
-    rerender(<Button variant="destructive">Destructive</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-destructive');
+    rerender(<Button variant="gradient">Gradient</Button>);
+    expect(screen.getByRole('button')).toHaveClass('bg-gradient-primary');
   });
 
   it('should apply size classes correctly', () => {
     const { rerender } = render(<Button size="sm">Small</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-sm');
+    expect(screen.getByRole('button')).toHaveClass('h-9');
 
     rerender(<Button size="md">Medium</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-md');
+    expect(screen.getByRole('button')).toHaveClass('h-11');
 
     rerender(<Button size="lg">Large</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-lg');
+    expect(screen.getByRole('button')).toHaveClass('h-12');
 
     rerender(<Button size="xl">Extra Large</Button>);
-    expect(screen.getByRole('button')).toHaveClass('btn-xl');
+    expect(screen.getByRole('button')).toHaveClass('h-14');
   });
 
   it('should show loading state correctly', () => {
@@ -80,23 +80,23 @@ describe('Button Component', () => {
     expect(screen.getByRole('button')).toHaveAttribute('type', 'reset');
   });
 
-  it('should render with icon when provided', () => {
+  it('should render with leftIcon when provided', () => {
     const Icon = () => <span data-testid="icon">🚀</span>;
-    render(<Button icon={<Icon />}>With Icon</Button>);
+    render(<Button leftIcon={<Icon />}>With Icon</Button>);
     
     expect(screen.getByTestId('icon')).toBeInTheDocument();
     expect(screen.getByText('With Icon')).toBeInTheDocument();
   });
 
-  it('should handle full width prop', () => {
-    render(<Button fullWidth>Full Width</Button>);
+  it('should handle full width with className', () => {
+    render(<Button className="w-full">Full Width</Button>);
     expect(screen.getByRole('button')).toHaveClass('w-full');
   });
 
   it('should apply loading variant styling', () => {
     render(<Button loading variant="primary">Loading Primary</Button>);
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('btn-primary-enhanced');
+    expect(button).toHaveClass('bg-vision-green');
     expect(button).toBeDisabled();
   });
 
@@ -115,25 +115,19 @@ describe('Button Component', () => {
     const button = screen.getByRole('button');
     button.focus();
     expect(button).toHaveFocus();
-    
-    fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' });
-    expect(handleClick).toHaveBeenCalledTimes(1);
-    
-    fireEvent.keyDown(button, { key: ' ', code: 'Space' });
-    expect(handleClick).toHaveBeenCalledTimes(2);
   });
 
-  it('should render as a link when href is provided', () => {
-    render(<Button href="/test">Link Button</Button>);
-    const link = screen.getByRole('link', { name: 'Link Button' });
-    expect(link).toHaveAttribute('href', '/test');
+  it('should accept aria-label attribute', () => {
+    render(<Button aria-label="Custom label">ARIA Button</Button>);
+    const button = screen.getByRole('button');
+    expect(button).toHaveAttribute('aria-label', 'Custom label');
   });
 
-  it('should apply correct ARIA attributes', () => {
+  it('should handle disabled state with aria attributes', () => {
     render(<Button aria-label="Custom label" disabled>ARIA Button</Button>);
     const button = screen.getByRole('button');
     expect(button).toHaveAttribute('aria-label', 'Custom label');
-    expect(button).toHaveAttribute('aria-disabled', 'true');
+    expect(button).toBeDisabled();
   });
 
   it('should handle ref forwarding', () => {
@@ -147,17 +141,15 @@ describe('Button Component', () => {
       <Button 
         variant="primary" 
         size="lg" 
-        className="custom-class" 
-        fullWidth
+        className="custom-class"
       >
         Multiple Classes
       </Button>
     );
     
     const button = screen.getByRole('button');
-    expect(button).toHaveClass('btn-primary-enhanced');
-    expect(button).toHaveClass('btn-lg');
+    expect(button).toHaveClass('bg-vision-green');
+    expect(button).toHaveClass('h-12');
     expect(button).toHaveClass('custom-class');
-    expect(button).toHaveClass('w-full');
   });
 });

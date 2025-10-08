@@ -1,5 +1,15 @@
 import '@testing-library/jest-dom'
 
+// Setup for modal portal container
+beforeEach(() => {
+  // Create a div with id 'root' if it doesn't exist for modal portals
+  if (!document.getElementById('root')) {
+    const div = document.createElement('div');
+    div.setAttribute('id', 'root');
+    document.body.appendChild(div);
+  }
+});
+
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   constructor() {}
