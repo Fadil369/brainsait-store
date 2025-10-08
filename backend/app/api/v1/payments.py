@@ -23,19 +23,23 @@ from app.core.auth import get_current_tenant, get_current_user
 from app.core.config import settings
 from app.core.database import get_db
 from app.models.products import Product
-from app.models.store import Invoice, Order, Payment
+from app.models.invoices import Invoice
+from app.models.orders import Order
+from app.models.payments import Payment
+from app.schemas.payment import (
+    PayPalPaymentCreate,
+    StripeProductCreate,
+    PaymentLinkCreate,
+)
 from app.schemas.payments import (
     ApplePayPaymentCreate,
     InvoiceResponse,
     MadaPaymentCreate,
     PaymentIntentCreate,
     PaymentIntentResponse,
-    PaymentLinkCreate,
     PaymentMethodResponse,
     PaymentWebhook,
-    PayPalPaymentCreate,
     STCPaymentCreate,
-    StripeProductCreate,
 )
 from app.services.notifications import NotificationService
 from app.services.payment_providers import MadaService, STCPayService, StripeService
