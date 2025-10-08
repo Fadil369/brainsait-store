@@ -4,7 +4,7 @@ Provides cultural calendar support for Saudi Arabia
 """
 
 from datetime import datetime, date
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, Any
 from enum import Enum
 
 
@@ -30,17 +30,33 @@ HIJRI_MONTHS_EN = {
 
 
 def gregorian_to_hijri(gregorian_date) -> Tuple[int, int, int]:
-    """Convert Gregorian date to Hijri date (simplified)"""
+    """
+    Convert Gregorian date to Hijri date
+    
+    Note: This is a PLACEHOLDER implementation for demonstration.
+    For production use, install and use the 'hijri-converter' package:
+        pip install hijri-converter
+        from hijri_converter import Gregorian
+        hijri = Gregorian(year, month, day).to_hijri()
+    
+    The current implementation provides approximate dates only (±1-2 days accuracy).
+    """
     if isinstance(gregorian_date, datetime):
         gregorian_date = gregorian_date.date()
+    
+    # TODO: Replace with proper hijri-converter library for production
+    # This simplified calculation is for development/testing only
+    # Real conversion requires complex lunar calendar calculations
     
     year = gregorian_date.year
     month = gregorian_date.month
     day = gregorian_date.day
     
-    # Simplified conversion
+    # PLACEHOLDER: Approximate conversion (NOT ACCURATE)
+    # In production, use: from hijri_converter import Gregorian
+    # hijri = Gregorian(year, month, day).to_hijri()
     hijri_year = int(year - 621.5643)
-    hijri_month = month
+    hijri_month = ((month + 10) % 12) + 1  # Rough approximation
     hijri_day = day
     
     return (hijri_year, hijri_month, hijri_day)
@@ -78,7 +94,7 @@ def is_ramadan(dt=None) -> bool:
     return hijri_month == 9
 
 
-def get_calendar_info(dt=None) -> Dict[str, any]:
+def get_calendar_info(dt=None) -> Dict[str, Any]:
     """Get calendar information for a date"""
     if dt is None:
         dt = datetime.now()

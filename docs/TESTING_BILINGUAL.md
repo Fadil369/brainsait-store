@@ -315,7 +315,14 @@ Test Cases:
 Validation Method:
 Compare with IslamicFinder.org or similar tool
 
-Expected Accuracy: ±1 day
+Expected Accuracy: ±1-2 days (placeholder implementation)
+
+IMPORTANT NOTE:
+The current Hijri conversion uses a simplified algorithm for demonstration.
+For production use, integrate the 'hijri-converter' Python package:
+  pip install hijri-converter
+  
+This will provide accurate lunar calendar calculations.
 ```
 
 **Test Case 18: Islamic Holidays**
