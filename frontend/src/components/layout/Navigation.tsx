@@ -26,6 +26,7 @@ export const Navigation: React.FC<NavigationProps> = ({ className }) => {
     { key: 'solutions', href: '#solutions' },
     { key: 'pricing', href: '#pricing' },
     { key: 'about', href: '#about' },
+    { key: 'customerPortal', href: '/customer-portal', external: true },
   ];
 
   return (
