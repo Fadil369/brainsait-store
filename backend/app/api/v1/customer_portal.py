@@ -149,7 +149,7 @@ async def get_payment_summary(
 
 @router.get("/transactions", response_model=List[TransactionResponse])
 async def get_transactions(
-    period: str = Query("month", regex="^(week|month|year)$"),
+    period: str = Query("month", pattern="^(week|month|year)$"),
     db: AsyncSession = Depends(get_db),
     tenant_id: str = Depends(get_tenant_id),
     current_user: User = Depends(get_current_user),
@@ -371,7 +371,7 @@ async def submit_feedback(
 
 @router.get("/usage-analytics")
 async def get_usage_analytics(
-    period: str = Query("month", regex="^(week|month|year)$"),
+    period: str = Query("month", pattern="^(week|month|year)$"),
     db: AsyncSession = Depends(get_db),
     tenant_id: str = Depends(get_tenant_id),
     current_user: User = Depends(get_current_user),

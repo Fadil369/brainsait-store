@@ -111,12 +111,12 @@ class ComplaintCreate(BaseModel):
     title: str
     category: str
     description: str
-    priority: str = Field(default="medium", regex="^(low|medium|high)$")
+    priority: str = Field(default="medium", pattern="^(low|medium|high)$")
 
 
 class ComplaintUpdate(BaseModel):
     """Update complaint request"""
-    status: Optional[str] = Field(None, regex="^(open|in-progress|resolved)$")
+    status: Optional[str] = Field(None, pattern="^(open|in-progress|resolved)$")
     description: Optional[str] = None
 
 
