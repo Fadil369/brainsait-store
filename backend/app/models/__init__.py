@@ -8,6 +8,7 @@ from . import payments
 from . import invoices
 from . import sso
 from . import analytics
+from . import distributionlinc
 
 # Make models available for import
 from .users import User, UserSession, UserPreference, UserRole, UserStatus
@@ -22,6 +23,10 @@ from .sso import TenantSSO, SSOSession, SSOUserMapping, SSOType, SSOProvider
 from .analytics import (
     AnalyticsEvent, ProductAnalytics, UserBehaviorAnalytics, BusinessMetrics, RetentionAnalytics, EventType
 )
+from .distributionlinc import (
+    DemandForecast, DynamicPricing, RouteOptimization, InventoryPrediction,
+    CustomerChurnPrediction, DistributionLincAuditLog
+)
 
 __all__ = [
     # Model classes
@@ -33,4 +38,6 @@ __all__ = [
     "Invoice", "InvoiceLineItem", "ZATCASubmission", "InvoiceType", "InvoiceStatus", "ZATCAStatus",
     "TenantSSO", "SSOSession", "SSOUserMapping", "SSOType", "SSOProvider",
     "AnalyticsEvent", "ProductAnalytics", "UserBehaviorAnalytics", "BusinessMetrics", "RetentionAnalytics", "EventType",
+    "DemandForecast", "DynamicPricing", "RouteOptimization", "InventoryPrediction",
+    "CustomerChurnPrediction", "DistributionLincAuditLog",
 ]

@@ -29,7 +29,7 @@ def event_loop():
     loop.close()
 
 
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 async def async_engine():
     """Create async database engine for testing."""
     engine = create_async_engine(
@@ -39,7 +39,16 @@ async def async_engine():
         connect_args={"check_same_thread": False},
     )
     
+    # Create tables
+    from app.core.database import Base
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    
     yield engine
+    
+    # Drop tables and dispose
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
     await engine.dispose()
 
 

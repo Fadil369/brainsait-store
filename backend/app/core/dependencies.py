@@ -199,6 +199,32 @@ async def get_product_with_permission(
     return product
 
 
+def require_role(allowed_roles: list[str]):
+    """
+    Dependency to check if user has required role
+    Usage: current_user: User = Depends(require_role(["admin", "manager"]))
+    """
+    async def check_role(
+        current_user: User = Depends(get_current_user),
+    ) -> User:
+        # Check if user has admin role or one of the allowed roles
+        user_role = getattr(current_user, 'role', 'user')
+        
+        # Admin users have access to everything
+        if current_user.is_admin or user_role == 'admin':
+            return current_user
+            
+        # Check if user's role is in allowed roles
+        if user_role not in allowed_roles:
+            raise AuthorizationError(
+                f"Access denied. Required role: {', '.join(allowed_roles)}"
+            )
+        
+        return current_user
+    
+    return check_role
+
+
 async def verify_rate_limit(
     request: Request,
     identifier: str = None,
