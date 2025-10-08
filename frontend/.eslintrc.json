@@ -41,6 +41,15 @@
           "argsIgnorePattern": "^_|^(product|query|category|sortBy|direction|min|max|paymentId|error|clientSecret|token|language|theme|notification|id|isLoading|message)$"
         }]
       }
+    },
+    {
+      "files": ["**/__tests__/**/*", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "no-undef": "off"
+      }
     }
   ],
   "ignorePatterns": [

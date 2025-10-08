@@ -1,6 +1,48 @@
 version: 2
 updates:
-  - package-ecosystem: "" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  # Frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
     schedule:
       interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "Fadil369"
+    labels:
+      - "dependencies"
+      - "frontend"
+    groups:
+      production-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "@types/*"
+      development-dependencies:
+        dependency-type: "development"
+        patterns:
+          - "@types/*"
+          - "*"
+  
+  # Backend dependencies
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "Fadil369"
+    labels:
+      - "dependencies"
+      - "backend"
+  
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "Fadil369"
+    labels:
+      - "dependencies"
+      - "ci-cd"
