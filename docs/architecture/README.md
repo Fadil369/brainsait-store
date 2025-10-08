@@ -2,7 +2,12 @@
 
 ## Overview
 
-The BrainSAIT Store is a enterprise-grade B2B SaaS platform built with modern technologies and designed for scalability, security, and maintainability.
+The BrainSAIT Store is a enterprise-grade B2B SaaS platform built with modern technologies and designed for scalability, security, and maintainability. It features deep integration with the GIVC Healthcare Platform, providing a unified ecosystem for healthcare services, e-commerce, and AI-powered medical processing.
+
+### Key Documentation
+- **[GIVC Integration Architecture](./givc-integration.md)** - Cross-repo integration patterns and data flows
+- **[Service Inventory](./service-inventory.md)** - Complete inventory of all services and data flows
+- **[Secrets Management](../security/secrets-management.md)** - Security and compliance procedures
 
 ## Architecture Diagram
 
@@ -53,8 +58,23 @@ The BrainSAIT Store is a enterprise-grade B2B SaaS platform built with modern te
 │  ├── Payment Service (Multi-provider)                          │
 │  ├── Analytics Service (Metrics & Reporting)                   │
 │  ├── Integration Service (LinkedIn, OID)                       │
-│  ├── Auth Service (JWT, OAuth)                                 │
-│  └── Notification Service (Email, SMS)                         │
+│  ├── Auth Service (JWT, OAuth, SSO)                            │
+│  ├── Notification Service (Email, SMS)                         │
+│  └── GIVC Integration Service (Healthcare)                     │
+│      ├── Provider Management                                   │
+│      ├── NPHIES Integration                                    │
+│      ├── FHIR Resource Management                              │
+│      └── Service Provisioning                                  │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│             GIVC Healthcare Services (Cross-Repo)              │
+├─────────────────────────────────────────────────────────────────┤
+│  ├── GIVC Healthcare API (AI Medical Processing)               │
+│  ├── HealthLinc EHR/RCM (Electronic Health Records)            │
+│  ├── HealthLinc Logs (Monitoring & Alerting)                   │
+│  └── MCP ServerLinc (AI Model Context Protocol)                │
 └─────────────────────────────────────────────────────────────────┘
                                │
                                ▼
@@ -215,9 +235,54 @@ User Login → JWT Generation → Token Validation → Role Check → Access Gra
 - **Failover**: Automatic failover mechanisms
 - **Health Checks**: Continuous monitoring with alerts
 
+## GIVC Healthcare Integration
+
+### Unified Architecture
+BrainSAIT Store integrates seamlessly with GIVC Healthcare Platform to provide:
+
+- **Single Sign-On (SSO)**: Unified authentication across BrainSAIT Store and GIVC services
+- **Healthcare Product Provisioning**: Automatic setup of GIVC services on purchase
+- **NPHIES Integration**: Saudi healthcare system integration for claims and authorizations
+- **FHIR Compliance**: Standard healthcare data formats (FHIR R4)
+- **OID Management**: Healthcare provider identification using ISO OID tree (1.3.6.1.4.1.61026.*)
+
+### Cross-Service Data Flow
+```
+BrainSAIT Store → API Gateway → GIVC Healthcare API → NPHIES
+       ↓                                ↓                  ↓
+   PostgreSQL                      AI Processing     Saudi Payers
+   (Shared)                        FHIR Resources    Claims/Auth
+```
+
+### Key Integration Points
+1. **Authentication**: JWT tokens validated across both systems
+2. **Healthcare Providers**: Synchronized via OID Integration Service
+3. **Medical Claims**: GIVC processes claims, BrainSAIT tracks transactions
+4. **Audit Logging**: Unified compliance logging for HIPAA and Saudi regulations
+
+For detailed integration architecture, see [GIVC Integration Documentation](./givc-integration.md).
+
+## Security & Compliance
+
+### Healthcare Compliance
+- **HIPAA**: Protected Health Information (PHI) encryption and access controls
+- **NPHIES**: Saudi healthcare integration standards
+- **FHIR R4**: Standard healthcare resource formats
+- **Audit Logging**: Complete audit trail for healthcare data access
+
+### Encryption Standards
+- **Data at Rest**: AES-256-GCM encryption
+- **Data in Transit**: TLS 1.3 (minimum TLS 1.2)
+- **Secrets Management**: HashiCorp Vault + Cloudflare Workers Secrets
+- **Token Security**: JWT with HS256 algorithm, 30-minute expiration
+
+For detailed security procedures, see [Secrets Management Documentation](../security/secrets-management.md).
+
 ## Next Steps
 
+- [GIVC Integration Architecture](./givc-integration.md)
+- [Service Inventory & Data Flows](./service-inventory.md)
 - [Database Schema Documentation](./database.md)
 - [API Design Patterns](./api-patterns.md)
-- [Security Architecture](./security.md)
+- [Security & Secrets Management](../security/secrets-management.md)
 - [Deployment Guide](../deployment/README.md)

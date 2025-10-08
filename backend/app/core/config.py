@@ -128,6 +128,47 @@ class Settings(BaseSettings):
     TENANT_HEADER: str = "X-Tenant-ID"
     DEFAULT_TENANT: str = "brainsait"
 
+    # GIVC Integration
+    GIVC_API_URL: str = "https://givc-healthcare-api.fadil.workers.dev"
+    GIVC_API_KEY: Optional[str] = None
+    GIVC_WEBHOOK_SECRET: Optional[str] = None
+    GIVC_PROVISIONING_ENDPOINT: str = "/api/v1/provision"
+
+    # OID Configuration
+    OID_ROOT: str = "1.3.6.1.4.1.61026"
+    OID_NPHIES_BRANCH: str = "1.3.6.1.4.1.61026.1.2.1"
+    OID_AI_BRANCH: str = "1.3.6.1.4.1.61026.2.1"
+    OID_SECURITY_BRANCH: str = "1.3.6.1.4.1.61026.3"
+
+    # NPHIES Configuration
+    NPHIES_BASE_URL: str = "https://nphies.sa/api"
+    NPHIES_CLIENT_ID: Optional[str] = None
+    NPHIES_CLIENT_SECRET: Optional[str] = None
+    NPHIES_SCOPE: str = "openid,profile,claims,authorizations"
+    NPHIES_ENABLED: bool = False
+
+    # FHIR Configuration
+    FHIR_SERVER_URL: Optional[str] = None
+    FHIR_VERSION: str = "R4"
+    FHIR_RESOURCES_ENABLED: List[str] = [
+        "Patient",
+        "Practitioner",
+        "Organization",
+        "Claim",
+        "Coverage"
+    ]
+
+    # Healthcare Integration
+    HEALTHLINC_API_URL: Optional[str] = None
+    HEALTHLINC_API_KEY: Optional[str] = None
+    MCP_SERVERLINC_URL: Optional[str] = None
+
+    # Audit Logging
+    AUDIT_LOG_ENABLED: bool = True
+    AUDIT_LOG_LEVEL: str = "INFO"
+    AUDIT_LOG_PHI_ACCESS: bool = True
+    AUDIT_LOG_RETENTION_DAYS: int = 2555  # 7 years for HIPAA compliance
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
