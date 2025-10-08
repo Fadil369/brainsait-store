@@ -2,7 +2,7 @@
 
 Revision ID: add_field_sales_001
 Revises: 9ff80080f0c4
-Create Date: 2024-01-15 10:00:00.000000
+Create Date: 2025-12-15 10:00:00.000000
 
 """
 from alembic import op
@@ -92,7 +92,7 @@ def upgrade():
         sa.Column('extracted_products', postgresql.JSON, nullable=True),
         sa.Column('extracted_customer', postgresql.JSON, nullable=True),
         sa.Column('order_id', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column('processing_status', sa.String(20), nullable=False, server_default='pending'),
+        sa.Column('processing_status', sa.Enum('pending', 'processing', 'completed', 'failed', name='processingstatus'), nullable=False, server_default='pending'),
         sa.Column('error_message', sa.Text, nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.Column('processed_at', sa.DateTime(timezone=True), nullable=True),
@@ -189,3 +189,4 @@ def downgrade():
     op.execute('DROP TYPE IF EXISTS creditstatus')
     op.execute('DROP TYPE IF EXISTS checkinstatus')
     op.execute('DROP TYPE IF EXISTS salesrepstatus')
+    op.execute('DROP TYPE IF EXISTS processingstatus')

@@ -155,7 +155,7 @@ Integrate with:
 
 ## 📚 Documentation
 
-Full documentation: `docs/FIELD_SALES_README.md`
+Full documentation: See the comprehensive Field Sales README in the docs directory
 
 ## 🐛 Troubleshooting
 
@@ -193,7 +193,7 @@ Full documentation: `docs/FIELD_SALES_README.md`
 
 For issues or questions:
 - Check API docs: http://localhost:8000/api/docs
-- Review full documentation: `docs/FIELD_SALES_README.md`
+- Review inline code documentation
 - Contact development team
 
 ---

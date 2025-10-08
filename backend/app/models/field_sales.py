@@ -48,6 +48,13 @@ class CreditStatus(str, enum.Enum):
     EXPIRED = "expired"
 
 
+class ProcessingStatus(str, enum.Enum):
+    PENDING = "pending"
+    PROCESSING = "processing"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
 class BadgeType(str, enum.Enum):
     BRONZE = "bronze"
     SILVER = "silver"
@@ -181,7 +188,7 @@ class VoiceOrder(Base):
     order_id = Column(UUID(as_uuid=True), nullable=True)  # Link to actual order
     
     # Status
-    processing_status = Column(String(20), nullable=False, default="pending")
+    processing_status = Column(Enum(ProcessingStatus), nullable=False, default=ProcessingStatus.PENDING)
     error_message = Column(Text, nullable=True)
     
     # Timestamps
