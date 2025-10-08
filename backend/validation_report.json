@@ -1,0 +1,144 @@
+{
+  "export_timestamp": "2025-10-08T11:15:31.594174",
+  "summary": {
+    "total_gaps": 9,
+    "by_severity": {
+      "CRITICAL": 0,
+      "ERROR": 0,
+      "WARNING": 1,
+      "INFO": 8
+    },
+    "by_type": {
+      "DATA_FLOW": 0,
+      "KPI_CALCULATION": 0,
+      "ALERT_PIPELINE": 1,
+      "ROUTE_READINESS": 5,
+      "COMPLIANCE": 0,
+      "INTEGRATION": 2,
+      "FEATURE_FLAG": 1,
+      "CONTENT_ADAPTER": 0
+    },
+    "latest_gap": {
+      "timestamp": "2025-10-08T11:15:31.594078",
+      "validation_type": "INTEGRATION",
+      "severity": "INFO",
+      "component": "Integration: GIVC_nphies_integration",
+      "expected_value": "implemented",
+      "actual_value": "documented",
+      "error_message": "GIVC nphies_integration is documented but implementation pending",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    }
+  },
+  "validation_gaps": [
+    {
+      "timestamp": "2025-10-08T11:15:31.593705",
+      "validation_type": "ALERT_PIPELINE",
+      "severity": "WARNING",
+      "component": "Alert: alert_band",
+      "expected_value": "implemented",
+      "actual_value": "planned",
+      "error_message": "Alert band UI component is planned but not yet implemented",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.593827",
+      "validation_type": "ROUTE_READINESS",
+      "severity": "INFO",
+      "component": "Route: /api/v1/analytics/fraud",
+      "expected_value": "implemented",
+      "actual_value": "planned",
+      "error_message": "Route /api/v1/analytics/fraud is planned but not implemented",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.593888",
+      "validation_type": "ROUTE_READINESS",
+      "severity": "INFO",
+      "component": "Route: /api/v1/analytics/compliance",
+      "expected_value": "implemented",
+      "actual_value": "planned",
+      "error_message": "Route /api/v1/analytics/compliance is planned but not implemented",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.593927",
+      "validation_type": "ROUTE_READINESS",
+      "severity": "INFO",
+      "component": "Route: /api/v1/alerts",
+      "expected_value": "implemented",
+      "actual_value": "planned",
+      "error_message": "Route /api/v1/alerts is planned but not implemented",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.593958",
+      "validation_type": "ROUTE_READINESS",
+      "severity": "INFO",
+      "component": "Route: /api/v1/notifications",
+      "expected_value": "implemented",
+      "actual_value": "planned",
+      "error_message": "Route /api/v1/notifications is planned but not implemented",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.593987",
+      "validation_type": "ROUTE_READINESS",
+      "severity": "INFO",
+      "component": "Route: /api/v1/integrations/givc",
+      "expected_value": "implemented",
+      "actual_value": "planned",
+      "error_message": "Route /api/v1/integrations/givc is planned but not implemented",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.594018",
+      "validation_type": "FEATURE_FLAG",
+      "severity": "INFO",
+      "component": "feature_flag_system",
+      "expected_value": "implemented",
+      "actual_value": "not_found",
+      "error_message": "Feature flag system is not currently implemented",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.594051",
+      "validation_type": "INTEGRATION",
+      "severity": "INFO",
+      "component": "Integration: GIVC_healthcare_claims",
+      "expected_value": "implemented",
+      "actual_value": "documented",
+      "error_message": "GIVC healthcare_claims is documented but implementation pending",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    },
+    {
+      "timestamp": "2025-10-08T11:15:31.594078",
+      "validation_type": "INTEGRATION",
+      "severity": "INFO",
+      "component": "Integration: GIVC_nphies_integration",
+      "expected_value": "implemented",
+      "actual_value": "documented",
+      "error_message": "GIVC nphies_integration is documented but implementation pending",
+      "tenant_id": null,
+      "endpoint": null,
+      "metadata": null
+    }
+  ]
+}
