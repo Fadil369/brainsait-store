@@ -1,0 +1,204 @@
+name: SSDP Platform CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: '18.x'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # Build and test apps
+  apps:
+    name: Build Apps
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [ssdp-web, ssdp-mobile]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build ${{ matrix.app }}
+        run: npm run build --workspace=@brainsait/${{ matrix.app }}
+      
+      - name: Test ${{ matrix.app }}
+        run: npm test --workspace=@brainsait/${{ matrix.app }}
+
+  # Build and test services
+  services:
+    name: Build Services
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [distribution, sales, finance, ai-forecasting, notifications]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build ${{ matrix.service }} service
+        run: npm run build --workspace=@brainsait/service-${{ matrix.service }}
+      
+      - name: Test ${{ matrix.service }} service
+        run: npm test --workspace=@brainsait/service-${{ matrix.service }}
+
+  # Build and test workers
+  workers:
+    name: Build Workers
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        worker: [route-optimizer, payment, invoice-generator, analytics-aggregator]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build ${{ matrix.worker }} worker
+        run: npm run build --workspace=@brainsait/worker-${{ matrix.worker }}
+      
+      - name: Test ${{ matrix.worker }} worker
+        run: npm test --workspace=@brainsait/worker-${{ matrix.worker }}
+
+  # Build and test packages
+  packages:
+    name: Build Packages
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [ui-components, saudi-compliance, bilingual-utils, audit-logger]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build ${{ matrix.package }} package
+        run: npm run build --workspace=@brainsait/${{ matrix.package }}
+      
+      - name: Test ${{ matrix.package }} package
+        run: npm test --workspace=@brainsait/${{ matrix.package }}
+
+  # Lint all code
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint code
+        run: npm run lint
+
+  # Security scanning
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      
+      - name: Upload Trivy results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Deploy to staging (on develop branch)
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [apps, services, workers, packages, lint]
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build all
+        run: npm run build
+      
+      - name: Deploy to Cloudflare (staging)
+        run: |
+          echo "Deploying to staging environment..."
+          # Add actual deployment commands here
+
+  # Deploy to production (on main branch)
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [apps, services, workers, packages, lint, security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://ssdp.brainsait.io
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build all
+        run: npm run build
+      
+      - name: Deploy to Cloudflare (production)
+        run: |
+          echo "Deploying to production environment..."
+          # Add actual deployment commands here

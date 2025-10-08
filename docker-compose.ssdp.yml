@@ -1,0 +1,244 @@
+version: '3.8'
+
+# SSDP Platform - Docker Compose Configuration
+# Orchestrates all microservices, workers, and infrastructure
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ssdp_postgres
+    environment:
+      POSTGRES_DB: ssdp_platform
+      POSTGRES_USER: ssdp
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-SecurePassword123!}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ssdp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ssdp_network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ssdp_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-RedisPassword123!}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ssdp_network
+
+  # Distribution Service
+  distribution-service:
+    build:
+      context: ./services/distribution
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+    container_name: ssdp_distribution_service
+    environment:
+      DATABASE_URL: postgresql://ssdp:${DB_PASSWORD:-SecurePassword123!}@postgres/ssdp_platform
+      REDIS_URL: redis://:${REDIS_PASSWORD:-RedisPassword123!}@redis:6379/0
+      PORT: 3001
+      SERVICE_NAME: distribution
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # Sales Service
+  sales-service:
+    build:
+      context: ./services/sales
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+    container_name: ssdp_sales_service
+    environment:
+      DATABASE_URL: postgresql://ssdp:${DB_PASSWORD:-SecurePassword123!}@postgres/ssdp_platform
+      REDIS_URL: redis://:${REDIS_PASSWORD:-RedisPassword123!}@redis:6379/0
+      PORT: 3002
+      SERVICE_NAME: sales
+    ports:
+      - "3002:3002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # Finance Service (ZATCA)
+  finance-service:
+    build:
+      context: ./services/finance
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+    container_name: ssdp_finance_service
+    environment:
+      DATABASE_URL: postgresql://ssdp:${DB_PASSWORD:-SecurePassword123!}@postgres/ssdp_platform
+      REDIS_URL: redis://:${REDIS_PASSWORD:-RedisPassword123!}@redis:6379/0
+      PORT: 3003
+      SERVICE_NAME: finance
+      ZATCA_API_URL: ${ZATCA_API_URL}
+      ZATCA_CERT_PATH: ${ZATCA_CERT_PATH}
+      VAT_RATE: 0.15
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # AI Forecasting Service
+  ai-forecasting-service:
+    build:
+      context: ./services/ai-forecasting
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+    container_name: ssdp_ai_forecasting_service
+    environment:
+      DATABASE_URL: postgresql://ssdp:${DB_PASSWORD:-SecurePassword123!}@postgres/ssdp_platform
+      REDIS_URL: redis://:${REDIS_PASSWORD:-RedisPassword123!}@redis:6379/0
+      PORT: 3004
+      SERVICE_NAME: ai-forecasting
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    ports:
+      - "3004:3004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # Notifications Service
+  notifications-service:
+    build:
+      context: ./services/notifications
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+    container_name: ssdp_notifications_service
+    environment:
+      DATABASE_URL: postgresql://ssdp:${DB_PASSWORD:-SecurePassword123!}@postgres/ssdp_platform
+      REDIS_URL: redis://:${REDIS_PASSWORD:-RedisPassword123!}@redis:6379/0
+      PORT: 3005
+      SERVICE_NAME: notifications
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      FCM_PROJECT_ID: ${FCM_PROJECT_ID}
+    ports:
+      - "3005:3005"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # SSDP Web App
+  ssdp-web:
+    build:
+      context: ./apps/ssdp-web
+      dockerfile: ../../infrastructure/docker/Dockerfile.nextjs
+    container_name: ssdp_web
+    environment:
+      NEXT_PUBLIC_API_URL: http://api-gateway:8080
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - distribution-service
+      - sales-service
+      - finance-service
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # API Gateway (Nginx)
+  api-gateway:
+    image: nginx:alpine
+    container_name: ssdp_api_gateway
+    volumes:
+      - ./infrastructure/nginx/ssdp-gateway.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      - distribution-service
+      - sales-service
+      - finance-service
+      - ai-forecasting-service
+      - notifications-service
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ssdp_prometheus
+    volumes:
+      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ssdp_grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin123}
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - ssdp_network
+    restart: unless-stopped
+
+networks:
+  ssdp_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.29.0.0/16
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

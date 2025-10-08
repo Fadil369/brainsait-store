@@ -134,3 +134,16 @@ temp/
 
 # External repositories
 external/linkedin-api-python-client/
+
+# SSDP Monorepo specific
+apps/*/node_modules
+services/*/node_modules
+workers/*/node_modules
+packages/*/node_modules
+apps/*/dist
+services/*/dist
+workers/*/dist
+packages/*/dist
+apps/*/.env.local
+services/*/.env.local
+workers/*/.env.local
