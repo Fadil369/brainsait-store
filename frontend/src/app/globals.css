@@ -590,3 +590,164 @@ body::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===================================
+   RTL/LTR Support for Bilingual Platform
+   =================================== */
+
+/* RTL-specific styles */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+/* LTR-specific styles */
+[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+/* RTL margin/padding adjustments */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+/* RTL padding utilities */
+[dir="rtl"] .pl-4 {
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+[dir="rtl"] .pr-4 {
+  padding-right: 0;
+  padding-left: 1rem;
+}
+
+/* RTL flexbox */
+[dir="rtl"] .flex-row {
+  flex-direction: row-reverse;
+}
+
+/* RTL text alignment */
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* Arabic font optimization */
+[dir="rtl"] body,
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] button {
+  font-family: 'Noto Sans Arabic', 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-feature-settings: 'ss01', 'ss05';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* RTL animations */
+[dir="rtl"] @keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+[dir="rtl"] @keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* RTL border radius */
+[dir="rtl"] .rounded-l-lg {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+[dir="rtl"] .rounded-r-lg {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+/* RTL positioning */
+[dir="rtl"] .left-0 {
+  left: auto;
+  right: 0;
+}
+
+[dir="rtl"] .right-0 {
+  right: auto;
+  left: 0;
+}
+
+/* Cart sidebar RTL support */
+[dir="rtl"] .cart-sidebar-enter {
+  transform: translateX(100%);
+}
+
+[dir="ltr"] .cart-sidebar-enter {
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .cart-sidebar-enter-active {
+  transform: translateX(0);
+}
+
+[dir="ltr"] .cart-sidebar-enter-active {
+  transform: translateX(0);
+}
+
+/* Mobile menu RTL support */
+[dir="rtl"] .mobile-menu-enter {
+  transform: translateX(100%);
+}
+
+[dir="ltr"] .mobile-menu-enter {
+  transform: translateX(-100%);
+}
+
+/* Number formatting for Arabic */
+[dir="rtl"] .price,
+[dir="rtl"] .currency {
+  unicode-bidi: plaintext;
+  direction: ltr;
+  display: inline-block;
+}
+
+/* Search input RTL */
+[dir="rtl"] input[type="search"] {
+  padding-right: 2.5rem;
+  padding-left: 1rem;
+}
+
+[dir="ltr"] input[type="search"] {
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+}

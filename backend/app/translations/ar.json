@@ -1,0 +1,73 @@
+{
+  "welcome": "مرحباً بك في منصة BrainSAIT B2B",
+  "error": {
+    "not_found": "المورد غير موجود",
+    "unauthorized": "وصول غير مصرح به",
+    "forbidden": "الوصول محظور",
+    "bad_request": "طلب غير صالح",
+    "internal_server_error": "خطأ داخلي في الخادم",
+    "validation_error": "خطأ في التحقق من الصحة"
+  },
+  "auth": {
+    "login_success": "تم تسجيل الدخول بنجاح",
+    "logout_success": "تم تسجيل الخروج بنجاح",
+    "invalid_credentials": "بيانات اعتماد غير صالحة",
+    "token_expired": "انتهت صلاحية الرمز",
+    "token_invalid": "رمز غير صالح"
+  },
+  "product": {
+    "created": "تم إنشاء المنتج بنجاح",
+    "updated": "تم تحديث المنتج بنجاح",
+    "deleted": "تم حذف المنتج بنجاح",
+    "not_found": "المنتج غير موجود",
+    "list": "قائمة المنتجات"
+  },
+  "order": {
+    "created": "تم إنشاء الطلب بنجاح",
+    "updated": "تم تحديث الطلب بنجاح",
+    "cancelled": "تم إلغاء الطلب بنجاح",
+    "not_found": "الطلب غير موجود",
+    "status_updated": "تم تحديث حالة الطلب"
+  },
+  "payment": {
+    "success": "تمت الدفعة بنجاح",
+    "failed": "فشلت الدفعة",
+    "pending": "الدفعة قيد الانتظار",
+    "cancelled": "تم إلغاء الدفعة",
+    "refunded": "تم استرداد الدفعة"
+  },
+  "invoice": {
+    "generated": "تم إنشاء الفاتورة بنجاح",
+    "sent": "تم إرسال الفاتورة بنجاح",
+    "paid": "تم دفع الفاتورة",
+    "overdue": "الفاتورة متأخرة"
+  },
+  "tenant": {
+    "created": "تم إنشاء المستأجر بنجاح",
+    "updated": "تم تحديث المستأجر بنجاح",
+    "not_found": "المستأجر غير موجود"
+  },
+  "user": {
+    "created": "تم إنشاء المستخدم بنجاح",
+    "updated": "تم تحديث المستخدم بنجاح",
+    "deleted": "تم حذف المستخدم بنجاح",
+    "not_found": "المستخدم غير موجود"
+  },
+  "validation": {
+    "required": "{{field}} مطلوب",
+    "invalid_email": "عنوان البريد الإلكتروني غير صالح",
+    "invalid_phone": "رقم الهاتف غير صالح",
+    "min_length": "يجب أن يكون {{field}} على الأقل {{min}} أحرف",
+    "max_length": "يجب ألا يتجاوز {{field}} {{max}} حرفًا",
+    "invalid_format": "تنسيق {{field}} غير صالح"
+  },
+  "calendar": {
+    "gregorian": "ميلادي",
+    "hijri": "هجري"
+  },
+  "currency": {
+    "sar": "ريال سعودي",
+    "usd": "دولار أمريكي",
+    "eur": "يورو"
+  }
+}

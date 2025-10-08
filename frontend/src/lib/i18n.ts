@@ -8,15 +8,23 @@ import commonEn from '../../public/locales/en/common.json';
 import commonAr from '../../public/locales/ar/common.json';
 import productsEn from '../../public/locales/en/products.json';
 import productsAr from '../../public/locales/ar/products.json';
+import cartEn from '../../public/locales/en/cart.json';
+import cartAr from '../../public/locales/ar/cart.json';
+import navigationEn from '../../public/locales/en/navigation.json';
+import navigationAr from '../../public/locales/ar/navigation.json';
 
 const resources = {
   en: {
     common: commonEn,
     products: productsEn,
+    cart: cartEn,
+    navigation: navigationEn,
   },
   ar: {
     common: commonAr,
     products: productsAr,
+    cart: cartAr,
+    navigation: navigationAr,
   },
 };
 
@@ -31,7 +39,7 @@ i18n
     
     // Namespace configuration
     defaultNS: 'common',
-    ns: ['common', 'products'],
+    ns: ['common', 'products', 'cart', 'navigation'],
     
     debug: process.env.NODE_ENV === 'development',
     

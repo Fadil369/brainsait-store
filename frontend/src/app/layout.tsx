@@ -1,94 +1,46 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect } from 'react';
 import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from '@/lib/providers';
+import { useAppStore } from '@/stores';
 
 // Use system fonts instead of Google Fonts for static export compatibility
 
-export const metadata: Metadata = {
-  title: 'BrainSAIT Store - Digital Innovation Hub',
-  description: 'Transform Your Business with Premium Digital Solutions - Supporting Saudi Vision 2030',
-  keywords: [
-    'digital solutions',
-    'Saudi Arabia', 
-    'Vision 2030',
-    'AI tools',
-    'business automation',
-    'digital transformation',
-    'BrainSAIT'
-  ],
-  authors: [{ name: 'Dr. Fadil', url: 'https://linkedin.com/in/fadil369' }],
-  creator: 'Dr. Fadil',
-  publisher: 'BrainSAIT',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL('https://store.brainsait.com'),
-  alternates: {
-    canonical: '/',
-    languages: {
-      'en-US': '/en',
-      'ar-SA': '/ar',
-    },
-  },
-  openGraph: {
-    title: 'BrainSAIT Store - Digital Innovation Hub',
-    description: 'Transform Your Business with Premium Digital Solutions',
-    url: 'https://store.brainsait.com',
-    siteName: 'BrainSAIT Store',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'BrainSAIT Store - Digital Innovation Hub',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'BrainSAIT Store - Digital Innovation Hub',
-    description: 'Transform Your Business with Premium Digital Solutions',
-    creator: '@brainsait369',
-    images: ['/og-image.png'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
-  },
-  verification: {
-    google: 'your-google-verification-code',
-  },
-};
+// Note: Since we need client-side features (language switching), 
+// metadata is moved to a separate metadata file or handled via head management
 
-export default function RootLayout({
+function RootLayoutContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { language } = useAppStore();
+  const dir = language === 'ar' ? 'rtl' : 'ltr';
+  const lang = language === 'ar' ? 'ar-SA' : 'en-US';
+
+  useEffect(() => {
+    // Update document direction and language
+    document.documentElement.dir = dir;
+    document.documentElement.lang = lang;
+  }, [dir, lang]);
+
   return (
-    <html lang="en" dir="ltr">
+    <html lang={lang} dir={dir}>
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#00d4aa" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         
-        {/* Preload critical resources - moved to _document.js for proper Next.js font optimization */}
+        <title>BrainSAIT Store - Digital Innovation Hub</title>
+        <meta name="description" content="Transform Your Business with Premium Digital Solutions - Supporting Saudi Vision 2030" />
+        <meta name="keywords" content="digital solutions, Saudi Arabia, Vision 2030, AI tools, business automation, digital transformation, BrainSAIT" />
         
         {/* JSON-LD structured data */}
         <script
@@ -122,4 +74,12 @@ export default function RootLayout({
       </body>
     </html>
   );
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <RootLayoutContent>{children}</RootLayoutContent>;
 }
