@@ -20,6 +20,7 @@ from app.api.v1 import (
     app_store,
     auth,
     billing,
+    distributionlinc,
     integrations,
     performance,
 )
@@ -195,6 +196,12 @@ app.include_router(
 
 app.include_router(
     performance.router, prefix=f"{settings.API_V1_PREFIX}/performance", tags=["Performance"]
+)
+
+app.include_router(
+    distributionlinc.router,
+    prefix=f"{settings.API_V1_PREFIX}/distributionlinc",
+    tags=["DISTRIBUTIONLINC AI Agent"],
 )
 
 
