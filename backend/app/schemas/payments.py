@@ -265,3 +265,49 @@ class PaymentAnalytics(BaseModel):
     period: str  # "daily", "weekly", "monthly"
     transactions: List[Dict[str, Any]]
     summary: TransactionSummary
+
+
+# Additional schemas for compatibility with existing API
+class ApplePayPaymentCreate(BaseModel):
+    """Apple Pay payment creation schema"""
+    order_id: UUID
+    payment_token: str
+    metadata: Optional[Dict[str, Any]] = None
+
+
+class PaymentMethodResponse(BaseModel):
+    """Payment method information response"""
+    id: str
+    name: str
+    name_ar: Optional[str] = None
+    description: Optional[str] = None
+    description_ar: Optional[str] = None
+    supported_currencies: List[str] = ["SAR"]
+    fees: Dict[str, float] = {}
+    enabled: bool = True
+    logo_url: Optional[str] = None
+
+
+class PaymentWebhook(BaseModel):
+    """Payment webhook event schema"""
+    event_type: str
+    payment_id: str
+    status: str
+    amount: Optional[float] = None
+    currency: Optional[str] = "SAR"
+    metadata: Optional[Dict[str, Any]] = None
+    signature: Optional[str] = None
+
+
+class InvoiceResponse(BaseModel):
+    """ZATCA invoice response schema"""
+    id: UUID
+    order_id: UUID
+    invoice_number: str
+    zatca_uuid: Optional[str] = None
+    qr_code: Optional[str] = None
+    total_amount: float
+    tax_amount: float
+    status: str
+    pdf_url: Optional[str] = None
+    created_at: datetime
