@@ -272,19 +272,19 @@ const client = new DistributionLincClient(
   'ar'  // Use Arabic
 );
 
-// Forecast demand
+// Forecast demand (with Arabic response)
 const forecast = await client.forecastDemand('PROD123', 'Riyadh');
-console.log(`التوقع: ${forecast.predicted_quantity}`);
+console.log(`التوقع: ${forecast.predicted_quantity}`);  // "Forecast: <quantity>"
 
-// Optimize route
+// Optimize route (with Arabic response)
 const route = await client.optimizeRoute('Riyadh', 'Jeddah', ['Makkah']);
-console.log(`المسافة: ${route.estimated_distance_km} كم`);
+console.log(`المسافة: ${route.estimated_distance_km} كم`);  // "Distance: <km> km"
 
-// Check for at-risk customers
+// Check for at-risk customers (with Arabic response)
 const churn = await client.predictChurn('CUST123');
 if (churn.risk_level === 'high' || churn.risk_level === 'critical') {
-  console.log(`عميل في خطر! احتمال التسرب: ${churn.churn_probability}`);
-  console.log('استراتيجيات الاحتفاظ:', churn.retention_strategies);
+  console.log(`عميل في خطر! احتمال التسرب: ${churn.churn_probability}`);  // "Customer at risk! Churn probability: <probability>"
+  console.log('استراتيجيات الاحتفاظ:', churn.retention_strategies);  // "Retention strategies:"
 }
 
 // Get analytics
@@ -465,6 +465,6 @@ class MonitoredClient(DistributionLincClient):
 
 For more examples and support:
 - 📧 Technical Support: support@brainsait.com
-- 📧 Arabic Support: دعم@brainsait.com
+- 📧 Arabic Support: support-ar@brainsait.com
 - 📚 Full API Documentation: https://api.brainsait.com/api/docs
 - 🔗 GitHub: https://github.com/Fadil369/brainsait-store

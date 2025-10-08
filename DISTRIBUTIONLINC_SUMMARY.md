@@ -358,7 +358,7 @@ churn_score = (
 ## 📞 Support & Contact
 
 - **Technical Support**: support@brainsait.com
-- **Arabic Support**: دعم@brainsait.com
+- **Arabic Support**: support-ar@brainsait.com
 - **Sales**: sales@brainsait.com
 - **GitHub**: https://github.com/Fadil369/brainsait-store
 - **Documentation**: https://api.brainsait.com/api/docs
