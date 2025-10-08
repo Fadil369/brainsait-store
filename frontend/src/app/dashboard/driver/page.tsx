@@ -199,12 +199,12 @@ export default function DriverDashboard() {
                     </div>
                     <div className="flex items-center justify-between text-sm text-gray-600">
                       <span>Progress: {route.completed_stops}/{route.total_stops} stops</span>
-                      <span>{Math.round((route.completed_stops / route.total_stops) * 100)}%</span>
+                      <span>{route.total_stops > 0 ? Math.round((route.completed_stops / route.total_stops) * 100) : 0}%</span>
                     </div>
                     <div className="mt-2 bg-gray-200 rounded-full h-2">
                       <div
                         className="bg-blue-600 h-2 rounded-full transition-all"
-                        style={{ width: `${(route.completed_stops / route.total_stops) * 100}%` }}
+                        style={{ width: `${route.total_stops > 0 ? (route.completed_stops / route.total_stops) * 100 : 0}%` }}
                       />
                     </div>
                   </div>
