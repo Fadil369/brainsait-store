@@ -1,0 +1,34 @@
+{
+  "name": "@brainsait/ssdp-platform",
+  "version": "1.0.0",
+  "description": "BrainSAIT SSDP - Saudi Sales & Distribution Platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "services/*",
+    "workers/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules"
+  },
+  "keywords": [
+    "b2b",
+    "saas",
+    "multi-tenant",
+    "saudi-arabia",
+    "zatca",
+    "distribution",
+    "sales"
+  ],
+  "author": "BrainSAIT",
+  "license": "PROPRIETARY",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

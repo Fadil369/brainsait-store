@@ -1,0 +1,23 @@
+{
+  "name": "@brainsait/worker-invoice-generator",
+  "version": "1.0.0",
+  "description": "Invoice Generator Worker - ZATCA-compliant Invoices",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "tsc && wrangler publish --dry-run",
+    "deploy": "wrangler publish",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20231218.0",
+    "@brainsait/saudi-compliance": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "jest": "^29.0.0",
+    "typescript": "^5.3.0",
+    "wrangler": "^3.22.0"
+  },
+  "private": true
+}
