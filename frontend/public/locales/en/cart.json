@@ -1,0 +1,21 @@
+{
+  "title": "Shopping Cart",
+  "empty": "Your cart is empty",
+  "emptyDescription": "Start shopping to add items to your cart",
+  "subtotal": "Subtotal",
+  "vat": "VAT (15%)",
+  "total": "Total",
+  "remove": "Remove",
+  "removeItem": "Remove {{item}} from cart",
+  "checkout": "Proceed to Checkout",
+  "continueShopping": "Continue Shopping",
+  "itemAdded": "Added to cart!",
+  "itemRemoved": "Removed from cart",
+  "itemCount": "{{count}} item",
+  "itemCount_plural": "{{count}} items",
+  "viewCart": "View Cart",
+  "addToCart": "Add to Cart",
+  "updating": "Updating cart...",
+  "error": "Failed to update cart. Please try again.",
+  "cartUpdated": "Cart updated successfully"
+}

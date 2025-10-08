@@ -1,0 +1,73 @@
+{
+  "welcome": "Welcome to BrainSAIT B2B Platform",
+  "error": {
+    "not_found": "Resource not found",
+    "unauthorized": "Unauthorized access",
+    "forbidden": "Access forbidden",
+    "bad_request": "Bad request",
+    "internal_server_error": "Internal server error",
+    "validation_error": "Validation error"
+  },
+  "auth": {
+    "login_success": "Login successful",
+    "logout_success": "Logout successful",
+    "invalid_credentials": "Invalid credentials",
+    "token_expired": "Token has expired",
+    "token_invalid": "Invalid token"
+  },
+  "product": {
+    "created": "Product created successfully",
+    "updated": "Product updated successfully",
+    "deleted": "Product deleted successfully",
+    "not_found": "Product not found",
+    "list": "Product list"
+  },
+  "order": {
+    "created": "Order created successfully",
+    "updated": "Order updated successfully",
+    "cancelled": "Order cancelled successfully",
+    "not_found": "Order not found",
+    "status_updated": "Order status updated"
+  },
+  "payment": {
+    "success": "Payment successful",
+    "failed": "Payment failed",
+    "pending": "Payment pending",
+    "cancelled": "Payment cancelled",
+    "refunded": "Payment refunded"
+  },
+  "invoice": {
+    "generated": "Invoice generated successfully",
+    "sent": "Invoice sent successfully",
+    "paid": "Invoice paid",
+    "overdue": "Invoice overdue"
+  },
+  "tenant": {
+    "created": "Tenant created successfully",
+    "updated": "Tenant updated successfully",
+    "not_found": "Tenant not found"
+  },
+  "user": {
+    "created": "User created successfully",
+    "updated": "User updated successfully",
+    "deleted": "User deleted successfully",
+    "not_found": "User not found"
+  },
+  "validation": {
+    "required": "{{field}} is required",
+    "invalid_email": "Invalid email address",
+    "invalid_phone": "Invalid phone number",
+    "min_length": "{{field}} must be at least {{min}} characters",
+    "max_length": "{{field}} must not exceed {{max}} characters",
+    "invalid_format": "Invalid {{field}} format"
+  },
+  "calendar": {
+    "gregorian": "Gregorian",
+    "hijri": "Hijri"
+  },
+  "currency": {
+    "sar": "SAR",
+    "usd": "USD",
+    "eur": "EUR"
+  }
+}

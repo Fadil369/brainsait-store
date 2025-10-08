@@ -1,0 +1,19 @@
+{
+  "home": "Home",
+  "products": "Products",
+  "solutions": "Solutions",
+  "pricing": "Pricing",
+  "about": "About",
+  "contact": "Contact",
+  "cart": "Cart",
+  "search": "Search",
+  "searchPlaceholder": "Search products...",
+  "menu": "Menu",
+  "close": "Close",
+  "login": "Login",
+  "signup": "Sign Up",
+  "profile": "Profile",
+  "logout": "Logout",
+  "language": "Language",
+  "theme": "Theme"
+}
