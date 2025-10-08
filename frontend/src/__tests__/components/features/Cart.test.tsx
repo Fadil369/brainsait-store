@@ -5,21 +5,35 @@ import { useCartStore, useAppStore } from '@/stores';
 import { products } from '@/data/products';
 import '@testing-library/jest-dom';
 
+// Mock translations for Cart component
+jest.mock('@/hooks/useTranslation', () => ({
+  useTranslation: () => ({
+    t: (key: string) => {
+      const translations: Record<string, string> = {
+        'cart.empty': 'Your cart is empty',
+        'cart.title': 'Shopping Cart',
+        'cart.subtotal': 'Subtotal',
+        'cart.vat': 'VAT (15%)',
+        'cart.total': 'Total',
+        'cart.remove': 'Remove',
+        'cart.checkout': 'Proceed to Checkout',
+        'cart.itemAdded': 'Added to cart!',
+        'cart.itemRemoved': 'Removed from cart',
+      };
+      return translations[key] || key;
+    },
+    language: 'en',
+  }),
+}));
+
 // Helper to add real products to cart for testing
 const addRealProductsToCart = () => {
   const cartStore = useCartStore.getState();
   const realProducts = products.slice(0, 3); // Use first 3 real products
   
-  // Add products to cart
+  // Add products to cart - addItem expects full Product objects
   realProducts.forEach(product => {
-    cartStore.addItem({
-      productId: product.id,
-      title: product.title,
-      arabicTitle: product.arabicTitle,
-      price: product.price,
-      icon: product.icon,
-      quantity: 1,
-    });
+    cartStore.addItem(product, 1);
   });
 };
 
@@ -99,8 +113,8 @@ describe('Cart Component', () => {
     it('should display formatted prices for real products', () => {
       render(<Cart />);
       
-      // Check that prices are displayed (formatted prices will be there)
-      const priceElements = screen.getAllByText(/\$|ريال/);
+      // Check that prices are displayed with SAR currency
+      const priceElements = screen.getAllByText(/SAR/);
       expect(priceElements.length).toBeGreaterThan(0);
     });
 
@@ -122,9 +136,9 @@ describe('Cart Component', () => {
     it('should render cart totals with real calculations', () => {
       render(<Cart />);
       
-      expect(screen.getByText(/Subtotal/i)).toBeInTheDocument();
-      expect(screen.getByText(/VAT/i)).toBeInTheDocument();
-      expect(screen.getByText(/Total/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/Subtotal/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/VAT/i)[0]).toBeInTheDocument();
+      expect(screen.getAllByText(/Total/i)[0]).toBeInTheDocument();
       
       // Verify that totals are calculated correctly
       const cartState = useCartStore.getState();
@@ -135,8 +149,8 @@ describe('Cart Component', () => {
     it('should render checkout button', () => {
       render(<Cart />);
       
-      const checkoutButton = screen.getByText(/checkout/i);
-      expect(checkoutButton).toBeInTheDocument();
+      const checkoutButtons = screen.getAllByText(/checkout/i);
+      expect(checkoutButtons.length).toBeGreaterThan(0);
     });
 
     it('should render clear all items button when multiple items', () => {

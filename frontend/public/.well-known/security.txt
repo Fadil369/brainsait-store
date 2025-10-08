@@ -1,0 +1,24 @@
+# Security Contact Information for BrainSAIT Store
+# Updated: 2025-01-14
+# Expires: 2026-01-14
+
+Contact: mailto:security@brainsait.io
+Contact: https://github.com/Fadil369/brainsait-store/security/advisories/new
+Preferred-Languages: en, ar
+Canonical: https://brainsait.com/.well-known/security.txt
+
+# Our security policy
+Policy: https://github.com/Fadil369/brainsait-store/blob/main/SECURITY.md
+
+# Acknowledgments for security researchers
+Acknowledgments: https://github.com/Fadil369/brainsait-store/blob/main/SECURITY.md#acknowledgments
+
+# We appreciate responsible disclosure and will respond within 5 business days
+# Please include:
+# - Type of vulnerability
+# - Steps to reproduce
+# - Impact assessment
+# - Relevant logs, screenshots, or code snippets
+
+# Encryption key for sensitive reports (optional)
+# Encryption: https://brainsait.com/pgp-key.txt

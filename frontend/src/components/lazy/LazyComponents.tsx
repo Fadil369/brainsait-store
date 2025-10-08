@@ -22,14 +22,14 @@ export const AnalyticsDashboard = (props: any) => (
     <div className="glass rounded-2xl p-6 animate-pulse">
       <div className="h-8 bg-gray/20 rounded mb-4" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {[...Array(3)].map((_, i) => (
+        {[...Array(3)].map((_: any, i: number) => (
           <div key={i} className="h-24 bg-gray/20 rounded" />
         ))}
       </div>
       <div className="h-64 bg-gray/20 rounded" />
     </div>
   }>
-    <AnalyticsDashboardLazy {...props} />
+    <AnalyticsDashboardLazy {...(props as any)} />
   </LazyWrapper>
 );
 
@@ -40,13 +40,13 @@ export const RealTimeMetrics = (
     <div className="glass rounded-2xl p-6 animate-pulse">
       <div className="h-6 bg-gray/20 rounded mb-4 w-32" />
       <div className="grid grid-cols-2 gap-4">
-        {[...Array(4)].map((_, i) => (
+        {[...Array(4)].map((_: any, i: number) => (
           <div key={i} className="h-16 bg-gray/20 rounded" />
         ))}
       </div>
     </div>
   }>
-    <RealTimeMetricsLazy {...props} />
+    <RealTimeMetricsLazy {...(props as any)} />
   </LazyWrapper>
 );
 
@@ -57,7 +57,7 @@ export const PaymentMethods = (
     <div className="glass rounded-2xl p-6 animate-pulse">
       <div className="h-6 bg-gray/20 rounded mb-4 w-40" />
       <div className="space-y-3">
-        {[...Array(4)].map((_, i) => (
+        {[...Array(4)].map((_: any, i: number) => (
           <div key={i} className="flex items-center gap-3">
             <div className="w-12 h-8 bg-gray/20 rounded" />
             <div className="h-4 bg-gray/20 rounded flex-1" />
@@ -66,6 +66,6 @@ export const PaymentMethods = (
       </div>
     </div>
   }>
-    <PaymentMethodsLazy {...props} />
+    <PaymentMethodsLazy {...(props as any)} />
   </LazyWrapper>
 );
