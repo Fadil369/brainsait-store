@@ -11,6 +11,8 @@ module.exports = {
   },
   react: {
     useSuspense: false,
+    bindI18n: 'languageChanged',
+    bindI18nStore: '',
   },
   reloadOnPrerender: process.env.NODE_ENV === 'development',
   
@@ -23,6 +25,12 @@ module.exports = {
   supportedLngs: ['en', 'ar'],
   detection: {
     order: ['localStorage', 'navigator', 'htmlTag'],
+    lookupLocalStorage: 'brainsait-language',
     caches: ['localStorage'],
   },
+  
+  // Bilingual-first configuration
+  load: 'languageOnly',
+  cleanCode: true,
+  lowerCaseLng: true,
 };
