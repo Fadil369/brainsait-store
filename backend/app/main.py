@@ -20,7 +20,9 @@ from app.api.v1 import (
     app_store,
     auth,
     billing,
+    drivers,
     integrations,
+    logistics,
     performance,
 )
 from app.api.v1 import integrations_linkedin as linkedin
@@ -34,6 +36,11 @@ from app.api.v1 import (
 from app.core.config import settings
 from app.core.database import close_db, init_db
 from app.core.localization import LocalizationMiddleware
+from app.core.performance import (
+    CacheHeadersMiddleware,
+    CompressionMiddleware,
+    PerformanceMonitoringMiddleware,
+)
 from app.core.tenant import TenantMiddleware
 
 # Configure logging
@@ -195,6 +202,14 @@ app.include_router(
 
 app.include_router(
     performance.router, prefix=f"{settings.API_V1_PREFIX}/performance", tags=["Performance"]
+)
+
+app.include_router(
+    drivers.router, prefix=f"{settings.API_V1_PREFIX}/drivers", tags=["Drivers"]
+)
+
+app.include_router(
+    logistics.router, prefix=f"{settings.API_V1_PREFIX}/logistics", tags=["Logistics"]
 )
 
 
