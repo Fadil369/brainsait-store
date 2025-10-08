@@ -311,7 +311,7 @@ def upgrade() -> None:
         sa.Column('action_taken', sa.Text, nullable=True),
         
         # Metadata
-        sa.Column('metadata', postgresql.JSON, default={}),
+        sa.Column('alert_metadata', postgresql.JSON, default={}),
         sa.Column('created_at', sa.DateTime, nullable=False),
     )
     

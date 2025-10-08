@@ -811,7 +811,7 @@ async def create_safety_alert(
         severity=alert_data.severity,
         message=alert_data.message,
         location=alert_data.location,
-        metadata=alert_data.metadata or {},
+        alert_metadata=alert_data.metadata or {},
     )
     
     db.add(alert)

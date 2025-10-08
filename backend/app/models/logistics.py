@@ -395,5 +395,5 @@ class SafetyAlert(Base):
     action_taken = Column(Text, nullable=True)
     
     # Metadata
-    metadata = Column(JSON, default=dict)  # Additional context
+    alert_metadata = Column(JSON, default=dict)  # Additional context
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
