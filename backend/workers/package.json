@@ -10,10 +10,10 @@
     "deploy:production": "wrangler deploy --env production"
   },
   "dependencies": {
-    "hono": "^4.1.0"
+    "hono": "^4.11.10"
   },
   "devDependencies": {
-    "wrangler": "^4.29.1"
+    "wrangler": "^4.59.1"
   },
   "keywords": ["cloudflare", "workers", "api", "brainsait"],
   "author": "BrainSAIT",
